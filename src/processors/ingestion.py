@@ -49,7 +49,17 @@ class PaperIngestion:
                 # Send single page
                 page_content = self.clients.get_vision_completion([b64_img], prompt)
                 if page_content:
-                    return idx, f"<!-- Page {idx+1} -->\n{page_content}"
+                    # Cleanup specific to per-page output
+                    cleaned = page_content.strip()
+                    if cleaned.startswith("```markdown"):
+                        cleaned = cleaned[11:]
+                    elif cleaned.startswith("```"):
+                        cleaned = cleaned[3:]
+
+                    if cleaned.endswith("```"):
+                        cleaned = cleaned[:-3]
+
+                    return idx, f"<!-- Page {idx+1} -->\n{cleaned.strip()}"
             except Exception as e:
                 print(f"    ! Error on Page {idx+1}: {e}")
             return idx, None

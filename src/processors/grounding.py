@@ -101,16 +101,18 @@ class CodeGrounder:
             Algorithm Steps: {paper_data.get('algorithm_description', 'Unknown')}
             
             Your Goal:
-            1. Analyze if this specific file implements the core optimization logic or mathematical model.
-            2. If YES, extract the snippet and explain the mapping.
-            3. If NO (e.g. it is just utility code, config, or unrelated), return empty values.
+            1. Analyze if this specific file implements the core optimization logic, mathematical model, or key algorithm steps.
+            2. If YES, capture the COMPLETE relevant code block. Do NOT summarize or truncate the implementation logic.
+            3. Include key imports and helper functions associated with the logic within this file.
+            4. Identify dependencies (external libraries or own modules) used in this code.
             
             Output JSON:
             {{
                 "is_match": true/false,
                 "file_path": "{rel_path}",
-                "function_name": "The containing function (or empty)",
-                "code_snippet": "The actual lines of code (approx 10-50 lines). PRESERVE INDENTATION. (or empty)",
+                "function_name": "The containing function/class (or empty)",
+                "code_snippet": "The detailed code implementation. Include imports and helpers if they are in this file. (approx 50-200 lines if needed)",
+                "dependencies": ["list", "of", "dependencies", "or", "helper_functions_used"],
                 "description": "Analysis of compatibility."
             }}
             """
@@ -120,7 +122,7 @@ class CodeGrounder:
                 # Since we parallelize, let's use Instruction model first or a lighter Reasoning call.
                 # Based on previous context, user prefers Reasoning for "deep alignment".
                 resp = self.clients.get_reasoning_completion(
-                    "You are an expert at mapping Mathematical Optimization Models to Code implementations.",
+                    "You are an expert at mapping Mathematical Optimization Models to Code implementations. Provide detailed and self-contained code context.",
                     grounding_prompt,
                 )
 
@@ -157,6 +159,7 @@ class CodeGrounder:
                             function_name=data.get("function_name", ""),
                             code_snippet=data.get("code_snippet", ""),
                             description=data.get("description", ""),
+                            dependencies=data.get("dependencies", []),
                         )
             except Exception as e:
                 # print(f"Error processing {rel_path}: {e}")
@@ -182,5 +185,6 @@ class CodeGrounder:
             file_path="",
             function_name="",
             code_snippet="",
+            dependencies=[],
             description="No exact match found in candidate files.",
         )

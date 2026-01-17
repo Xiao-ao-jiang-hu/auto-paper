@@ -5,6 +5,7 @@ from git import Repo
 import shutil
 import csv
 import re
+import stat
 
 # Adjust paths as necessary
 CSV_PATH = os.path.join(
@@ -142,6 +143,22 @@ def clone_repo(repo_url, output_dir):
         return False
 
 
+def remove_readonly(func, path, excinfo):
+    """
+    Error handler for shutil.rmtree.
+    If the error is due to an access error (read only file)
+    it attempts to add write permission and then retries.
+    If the error is for another reason it re-raises the error.
+    Usage : shutil.rmtree(path, onerror=remove_readonly)
+    """
+    # Clear the readonly bit and reattempt the removal
+    try:
+        os.chmod(path, stat.S_IWRITE)
+        func(path)
+    except Exception:
+        pass
+
+
 def main():
     if not os.path.exists(CSV_PATH):
         print(f"CSV file not found at: {CSV_PATH}")
@@ -161,8 +178,8 @@ def main():
             code = row.get("code", "").strip()
 
             # Filter: Must have code
-            if not code:
-                continue
+            # if not code:
+            #     continue
 
             print(f"\n[{count+1}] Processing: {title}")
             print(f"  Code: {code}")
@@ -177,12 +194,10 @@ def main():
             os.makedirs(repo_dir, exist_ok=True)
             os.makedirs(paper_img_dir, exist_ok=True)
 
-            # 1. Clone Repo
-            repo_success = clone_repo(code, repo_dir)
-
-            # 2. Download and Convert PDF
+            # 1. Download and Convert PDF
             pdf_url = get_pdf_url(link)
             pdf_path = os.path.join(paper_dir, "paper.pdf")
+            pdf_success = False
 
             # Allow attempting download if we successfully resolved a URL
             if pdf_url:
@@ -190,17 +205,34 @@ def main():
                     description = f"Downloading PDF from {pdf_url}"
                     if download_pdf(pdf_url, pdf_path):
                         pdf_to_images(pdf_path, paper_img_dir)
+                        pdf_success = True
                 elif not os.listdir(paper_img_dir):
                     pdf_to_images(pdf_path, paper_img_dir)
+                    pdf_success = True
                 else:
                     print(f"  PDF/Images already ready for {safe_id}.")
+                    pdf_success = True
             else:
                 print(f"  Could not determine PDF URL from: {link}")
 
+            if not pdf_success:
+                print(
+                    f"  PDF download/processing failed for {title}, skipping and removing directory."
+                )
+                if os.path.exists(paper_dir):
+                    shutil.rmtree(paper_dir, onerror=remove_readonly)
+                continue
+
+            # 2. Clone Repo (Only if PDF succeeded)
+            if code:
+                repo_success = clone_repo(code, repo_dir)
+            else:
+                print("  No code link provided, skipping clone.")
+
             count += 1
-            if count >= 10:
-                print("Limit of 10 papers reached for this run.")
-                break
+            # if count >= 10:
+            #     print("Limit of 10 papers reached for this run.")
+            #     break
 
 
 if __name__ == "__main__":

@@ -25,6 +25,7 @@ class CodeMapping(TypedDict):
     function_name: str
     code_snippet: str
     description: str  # Why this code is relevant to the LP model
+    dependencies: List[str]  # List of internal/external dependencies found
 
 
 class ProcessedEntry(TypedDict):

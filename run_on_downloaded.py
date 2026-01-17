@@ -2,11 +2,14 @@ import os
 import random
 import sys
 import glob
+import traceback
+from datetime import datetime
 
 # Constants
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(PROJECT_ROOT, "scripts", "data")
 BATCH_SIZE = 2
+LOG_FILE = os.path.join(PROJECT_ROOT, "processing_errors.log")
 
 # Ensure project root is in python path to allow imports
 if PROJECT_ROOT not in sys.path:
@@ -36,9 +39,11 @@ def get_valid_papers(data_dir):
         image_files = glob.glob(os.path.join(images_path, "*.jpg"))
         has_images = len(image_files) > 0
 
-        if has_repo and has_images:
+        if has_images:
+            # Pass None if no repo, so main.py skips code grounding
+            final_repo_path = repo_path if has_repo else None
             valid_papers.append(
-                {"id": item, "repo_path": repo_path, "images": image_files}
+                {"id": item, "repo_path": final_repo_path, "images": image_files}
             )
 
     return valid_papers
@@ -62,6 +67,22 @@ def process_paper(paper):
         )
     except Exception as e:
         print(f"Exception running workflow: {e}")
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        error_header = (
+            f"[{timestamp}] Error processing paper '{paper['id']}': {str(e)}\n"
+        )
+
+        print(
+            f"!!! Skipping paper {paper['id']} due to error. Details logged to {LOG_FILE} !!!"
+        )
+
+        try:
+            with open(LOG_FILE, "a", encoding="utf-8") as f:
+                f.write(error_header)
+                traceback.print_exc(file=f)
+                f.write("\n" + "-" * 50 + "\n")
+        except Exception as log_err:
+            print(f"CRITICAL: Failed to write to log file: {log_err}")
 
 
 def main():

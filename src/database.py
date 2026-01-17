@@ -67,8 +67,11 @@ class VectorDB:
             ],  # Trucate if necessary
             "repo_path": entry["repo_path"],
             "code_snippet": entry["code_implementation"]["code_snippet"][
-                :2000
+                :3000
             ],  # Limit size
+            "dependencies": json.dumps(
+                entry["code_implementation"].get("dependencies", [])
+            ),
         }
 
         self.collection.add(

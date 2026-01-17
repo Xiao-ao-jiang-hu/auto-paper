@@ -1,0 +1,7 @@
+input
+output
+scripts/data
+__pycache__
+.env
+chroma_db
+API_KEY

@@ -91,25 +91,47 @@ if has_md:
 
 def to_block_latex(text):
     """
-    Ensure the latex string is rendered as a block equation (centered).
-    Converts inline $...$ to block $$...$$ if necessary.
+    Smart format for math content:
+    - Pure single equation -> Block latex ($$...$$)
+    - Mixed text and math -> Markdown (for inline $...$)
     """
     if not text:
         return ""
-    text = text.strip()
+    s = text.strip()
 
-    # Strip existing wrappers
-    if text.startswith("$$") and text.endswith("$$"):
-        text = text[2:-2]
-    elif text.startswith("$") and text.endswith("$"):
-        text = text[1:-1]
-    elif text.startswith(r"\[") and text.endswith(r"\]"):
-        text = text[2:-2]
+    # Already block?
+    if s.startswith("$$") and s.endswith("$$"):
+        return s
 
-    # Return wrapped in double dollars for block rendering
-    return f"$${text}$$"
+    # Single inline expression? ($...$)
+    # Heuristic: Starts/Ends with $ and exactly 2 dollars total (no dollars inside)
+    if s.startswith("$") and s.endswith("$") and s.count("$") == 2:
+        return f"$${s[1:-1]}$$"
 
+    # Block wrapper \[ ... \]
+    if s.startswith(r"\[") and s.endswith(r"\]"):
+        return f"$${s[2:-2]}$$"
 
+    # No wrappers: check if likely pure math or text
+    if "$" not in s:
+        # Heuristic: if contains common English words for constraints, treat as text
+        # otherwise assume it is a raw latex equation meant to be block displayed
+        text_indicators = [
+            " for ",
+            " where ",
+            " with ",
+            "subject to",
+            "defined as",
+            "such that",
+            "if ",
+        ]
+        if any(word in s.lower() for word in text_indicators):
+            return s
+        else:
+            return f"$${s}$$"
+
+    # Mixed content (e.g. "For $x$ use $y$") -> Return absolute original for Markdown rendering
+    return s
 # Main Content Area
 if analysis_data:
     st.header(analysis_data.get("title", selected_paper_dir_name))

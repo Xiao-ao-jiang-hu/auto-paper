@@ -1,0 +1,32 @@
+{
+  "paper_id": "Deep_Graph_Matching_via_Blackbox_Differentiation_of_Combinat",
+  "title": "Deep Graph Matching via Blackbox Differentiation of Combinatorial Solvers",
+  "abstract": "Building on recent progress at the intersection of combinatorial optimization and deep learning, we propose an end-to-end trainable architecture for deep graph matching that contains unmodified combinatorial solvers. Using the presence of heavily optimized combinatorial solvers together with some improvements in architecture design, we advance state-of-the-art on deep graph matching benchmarks for keypoint correspondence. In addition, we highlight the conceptual advantages of incorporating solvers into deep learning architectures, such as the possibility of post-processing with a strong multi-graph matching solver or the indifference to changes in the training setting. Finally, we propose two new challenging experimental setups.",
+  "problem_description_natural": "The paper addresses the problem of semantic keypoint matching between images by formulating it as a graph matching task. Given two graphs constructed from detected keypoints in two images—with nodes representing keypoints and edges encoding geometric relationships—the goal is to find a correspondence (matching) between the nodes that minimizes a cost function combining visual similarity and geometric consistency. This is cast as a discrete optimization problem where the objective is to minimize the sum of vertex (unary) and edge (pairwise) costs over all valid matchings. The authors embed a state-of-the-art combinatorial graph matching solver directly into a deep neural network pipeline, using blackbox differentiation to enable end-to-end training without relaxing or modifying the solver.",
+  "problem_type": "Graph Matching",
+  "datasets": [
+    "Pascal VOC with Berkeley annotations",
+    "Willow ObjectClass",
+    "SPair-71k"
+  ],
+  "performance_metrics": [
+    "matching accuracy",
+    "F1 score"
+  ],
+  "lp_model": {
+    "objective": "$\\min_{(\\mathbf{v},\\mathbf{e}) \\in \\mathrm{Adm}(G_1,G_2)} \\left\\{ \\mathbf{c}^v \\cdot \\mathbf{v} + \\mathbf{c}^e \\cdot \\mathbf{e} \\right\\}$",
+    "constraints": [
+      "$\\mathbf{v} \\in \\{0,1\\}^{|V_1||V_2|}$",
+      "$\\mathbf{e} \\in \\{0,1\\}^{|E_1||E_2|}$",
+      "$\\sum_{j \\in V_2} \\mathbf{v}_{i,j} \\le 1$ for all $i \\in V_1$ (at most one match per source vertex)",
+      "$\\sum_{i \\in V_1} \\mathbf{v}_{i,j} \\le 1$ for all $j \\in V_2$ (at most one match per target vertex)",
+      "$\\mathbf{e}_{(i,j),(k,l)} = \\mathbf{v}_{i,k} \\cdot \\mathbf{v}_{j,l}$ for all $(i,j) \\in E_1, (k,l) \\in E_2$ (edge matching consistent with vertex matching)"
+    ],
+    "variables": [
+      "$\\mathbf{v}_{i,j}$: binary variable indicating if vertex $i \\in V_1$ is matched to vertex $j \\in V_2$",
+      "$\\mathbf{e}_{(i,j),(k,l)}$: binary variable indicating if edge $(i,j) \\in E_1$ is matched to edge $(k,l) \\in E_2$"
+    ]
+  },
+  "raw_latex_model": "$$\\mathrm{GM}(\\mathbf{c}^v, \\mathbf{c}^e) = \\arg\\min_{(\\mathbf{v},\\mathbf{e}) \\in \\mathrm{Adm}(G_1,G_2)} \\left\\{ \\mathbf{c}^v \\cdot \\mathbf{v} + \\mathbf{c}^e \\cdot \\mathbf{e} \\right\\}$$ where $\\mathrm{Adm}(G_1,G_2)$ is the set of all pairs $(\\mathbf{v},\\mathbf{e})$ encoding a valid partial matching between directed graphs $G_1 = (V_1, E_1)$ and $G_2 = (V_2, E_2)$, with constraints as listed above.",
+  "algorithm_description": "The paper uses a deep learning architecture (BB-GM) to generate vertex and edge costs ($\\mathbf{c}^v$, $\\mathbf{c}^e$) from image features. These costs are input to a blackbox combinatorial graph matching solver (a dual block coordinate ascent solver based on Lagrange decomposition) that solves the quadratic assignment problem. The solver is integrated into the neural network via blackbox differentiation [56], allowing end-to-end training. At evaluation, a multi-graph matching solver can be applied for post-processing to enforce cycle consistency across multiple image pairs."
+}

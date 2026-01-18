@@ -1,0 +1,45 @@
+{
+  "paper_id": "DISCS_A_Benchmark_for_Discrete_Sampling",
+  "title": "DISCS: A Benchmark for Discrete Sampling",
+  "abstract": "Sampling in discrete spaces, with critical applications in simulation and optimization, has recently been boosted by significant advances in gradient-based approaches that exploit modern accelerators like GPUs. However, two key challenges are hindering further advancement in research on discrete sampling. First, since there is no consensus on experimental settings and evaluation setups, the empirical results in different research papers are often not comparable. Second, implementing samplers and target distributions often requires a nontrivial amount of effort in terms of calibration and parallelism. To tackle these challenges, we propose DISCS (DISCrete Sampling), a tailored package and benchmark that supports unified and efficient experiment implementation and evaluations for discrete sampling in three types of tasks: sampling from classical graphical models and energy based generative models, and sampling for solving combinatorial optimization. Throughout the comprehensive evaluations in DISCS, we gained new insights into scalability, design principles for proposal distributions, and lessons for adaptive sampling design. DISCS efficiently implements representative discrete samplers in existing research works as baselines and offers a simple interface that researchers can conveniently add new discrete samplers and directly compare their performance with the benchmark result in a calibrated setup.",
+  "problem_description_natural": "The paper addresses the challenge of evaluating and comparing discrete sampling algorithms across diverse tasks including sampling from classical graphical models (e.g., Ising models), deep energy-based generative models, and combinatorial optimization problems (e.g., graph partitioning). The core issue is the lack of standardized benchmarks, evaluation metrics, and reproducible experimental setups, which makes it difficult to assess the relative performance of different samplers. DISCS provides a unified framework to implement, evaluate, and compare discrete samplers under consistent conditions, supporting tasks that involve both simulation (e.g., Bayesian inference) and optimization (e.g., finding low-energy states via simulated annealing).",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "MNIST",
+    "fashion-MNIST",
+    "Omniglot",
+    "Caltech",
+    "TBC",
+    "WikiText-103",
+    "Generated ER Graphs",
+    "Generated BA Graphs",
+    "RB Graphs",
+    "Optiscom",
+    "SATLIB",
+    "Twitter",
+    "MNIST (for Balanced Graph Partition)",
+    "VGG",
+    "ALEXNET",
+    "RESNET",
+    "INCEPTION"
+  ],
+  "performance_metrics": [
+    "Effective Sample Size (ESS)",
+    "Cut Ratio",
+    "Independent Set Size (lower bound: set size - # adjacent pairs)",
+    "Self-BLEU",
+    "Unique n-grams (%)",
+    "Corpus BLEU"
+  ],
+  "lp_model": {
+    "objective": "$\\min_{x \\in \\{0,1\\}^d} -\\sum_{i=1}^d c_i x_i$",
+    "constraints": [
+      "$x_i x_j = 0, \\; \\forall (i,j) \\in E$"
+    ],
+    "variables": [
+      "$x_i \\in \\{0,1\\}$ for $i=1,\\dots,d$, where $x_i=1$ indicates node $i$ is in the independent set, and $x_i=0$ otherwise"
+    ]
+  },
+  "raw_latex_model": "$$\\min_{x \\in \\{0,1\\}^d} -\\sum_{i=1}^d c_i x_i \\quad \\text{s.t. } x_i x_j = 0, \\; \\forall (i,j) \\in E$$",
+  "algorithm_description": "The problem is solved using discrete sampling methods, specifically Markov chain Monte Carlo (MCMC) with locally balanced proposals (e.g., Gibbs with Gradients, Path Auxiliary Sampler) combined with simulated annealing. The optimization problem is converted to an energy-based model with energy function $f(x) = -c^T x + \\lambda \\frac{x^T A x}{2}$, and samples are drawn from a sequence of distributions defined by increasing inverse temperatures to approximate the optimal solution."
+}

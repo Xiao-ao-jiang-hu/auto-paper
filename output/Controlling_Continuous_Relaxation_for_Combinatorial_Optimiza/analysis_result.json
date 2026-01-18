@@ -14,14 +14,15 @@
     "Cut Ratio"
   ],
   "lp_model": {
-    "objective": "\\min_{\\boldsymbol{p} \\in [0,1]^N} \\hat{r}(\\boldsymbol{p}; C, \\boldsymbol{\\lambda}, \\gamma) = \\hat{f}(\\boldsymbol{p}; C) + \\sum_{i=1}^{I+J} \\lambda_i \\hat{v}_i(\\boldsymbol{p}; C) + \\gamma \\sum_{i=1}^N (1 - (2p_i - 1)^\\alpha)",
+    "objective": "$\\min f(\\boldsymbol{x}; C)$",
     "constraints": [
-      "0 \\leq p_i \\leq 1 \\quad \\forall i \\in [N]"
+      "$g_i(\\boldsymbol{x}; C) \\leq 0$ for all $i \\in [I]$",
+      "$h_j(\\boldsymbol{x}; C) = 0$ for all $j \\in [J]$"
     ],
     "variables": [
-      "\\boldsymbol{p} = (p_1, \\dots, p_N) \\in [0,1]^N - relaxed continuous variables"
+      "$\\boldsymbol{x} \\in \\{0,1\\}^N$: binary decision vector"
     ]
   },
-  "raw_latex_model": "$$\\hat{r}(\\boldsymbol{p}; C, \\boldsymbol{\\lambda}, \\gamma) = \\hat{l}(\\boldsymbol{p}; C, \\boldsymbol{\\lambda}) + \\gamma \\Phi(\\boldsymbol{p}), \\quad \\Phi(\\boldsymbol{p}) \\triangleq \\sum_{i=1}^N (1 - (2p_i - 1)^\\alpha), \\quad \\alpha \\in \\{2n \\mid n \\in \\mathbb{N}_+\\},$$",
-  "algorithm_description": "The Continuous Relaxation Annealing (CRA) algorithm for UL-based solvers, specifically applied to the PI-GNN solver (CRA-PI-GNN), proceeds as follows:\n1. Initialize the graph neural network (GNN) parameters θ.\n2. Set the initial penalty parameter γ to a negative value (e.g., γ(0) = -20 for MIS problems) and define the annealing rate ε > 0 (e.g., ε = 10^{-3}).\n3. For each training iteration τ:\n   a. Compute the relaxed solution p_θ = p_θ(C) using the GNN forward pass.\n   b. Compute the loss function: Ĵ(θ; C, λ, γ) = Ĵ(p_θ; C, λ) + γ Φ(p_θ), where Ĵ(p_θ; C, λ) = f̂(p_θ; C) + Σ_{i=1}^{I+J} λ_i v̂_i(p_θ; C) and Φ(p_θ) = Σ_{i=1}^N (1 - (2p_{θ,i} - 1)^α).\n   c. Update θ using gradient descent (e.g., AdamW optimizer) based on the gradients of Ĵ with respect to θ.\n   d. Update γ: γ(τ+1) = γ(τ) + ε.\n   e. Check for early stopping: if Φ(p_θ) ≈ 0 (within a tolerance), stop training.\n4. After training, the output p_θ is nearly binary due to the annealing process. Apply a simple projection if needed: for each i, set x_i = 1 if p_{θ,i} > 0.5, else 0, to obtain the discrete solution."
+  "raw_latex_model": "$$\\min_{\\boldsymbol{x} \\in \\{0,1\\}^N} f(\\boldsymbol{x}; C) \\quad \\text{s.t.} \\quad \\boldsymbol{x} \\in \\mathcal{X}(C),$$ where $\\mathcal{X}(C) = \\{\\boldsymbol{x} \\in \\{0,1\\}^N \\mid \\forall i \\in [I],\\ g_i(\\boldsymbol{x}; C) \\leq 0,\\ \\forall j \\in [J],\\ h_j(\\boldsymbol{x}; C) = 0\\}$.",
+  "algorithm_description": "Continuous Relaxation Annealing (CRA) for Unsupervised Learning-based solvers, specifically applied to the PI-GNN solver using Graph Neural Networks. CRA introduces a penalty term to control discreteness and continuity of relaxed variables, with annealing of the penalty parameter, enabling optimization without labeled data or artificial rounding."
 }

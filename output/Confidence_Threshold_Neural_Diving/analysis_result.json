@@ -17,14 +17,15 @@
     "primal bound"
   ],
   "lp_model": {
-    "objective": "\\min \\mathbf{c}^\\top \\mathbf{x}",
+    "objective": "$\\min \\mathbf{c}^\\top \\mathbf{x}$",
     "constraints": [
-      "\\mathbf{A}^\\top \\mathbf{x} \\leq \\mathbf{b}"
+      "$\\mathbf{A}^\\top \\mathbf{x} \\leq \\mathbf{b}$",
+      "$\\mathbf{x} \\in \\mathbb{Z}^p \\times \\mathbb{R}^{n-p}$"
     ],
     "variables": [
-      "\\mathbf{x} \\in \\mathbb{Z}^p \\times \\mathbb{R}^{n-p} - vector of variables with p integer and n-p continuous variables"
+      "$\\mathbf{x} \\in \\mathbb{R}^n$: decision variable vector with $p$ integer components and $n-p$ continuous components"
     ]
   },
-  "raw_latex_model": "\\begin{aligned}\n& \\arg\\min_{\\mathbf{x}} \\mathbf{c}^\\top \\mathbf{x} \\\\\n& \\text{subject to } \\mathbf{A}^\\top \\mathbf{x} \\leq \\mathbf{b}, \\\\\n& \\quad \\mathbf{x} \\in \\mathbb{Z}^p \\times \\mathbb{R}^{n-p},\n\\end{aligned}",
-  "algorithm_description": "Step 1: Collect training solutions by solving MIP instances with a solver (e.g., SCIP) under specified time limits and heuristic emphasis (aggressive). For data-scarce datasets, augment with additional problems like MIPLIB 2010.\nStep 2: Train a Graph Convolutional Neural Network (GCNN) model using a mini-batch loss function that normalizes by the number of nodes per graph to predict variable assignments.\nStep 3: For inference on new instances, apply the trained model to obtain confidence scores for each variable. Set a confidence threshold; variables with scores above the threshold are fixed to their predicted values, forming a partial solution.\nStep 4: If the partial solution is feasible, use it to warm-start the solver; if infeasible, unfix variables and rely solely on the solver. Determine the optimal confidence threshold via grid search on a validation set to minimize primal integral.\nStep 5: Evaluate the method by measuring primal integral on test instances. For specific datasets like item placement, tune SCIP parameters instead of using the neural network model."
+  "raw_latex_model": "$$\\begin{aligned}& \\arg\\min_{\\mathbf{x}} \\mathbf{c}^\\top \\mathbf{x} \\\\& \\text{subject to } \\mathbf{A}^\\top \\mathbf{x} \\leq \\mathbf{b}, \\\\& \\quad \\mathbf{x} \\in \\mathbb{Z}^p \\times \\mathbb{R}^{n-p},\\end{aligned}$$",
+  "algorithm_description": "Confidence Threshold Neural Diving: A post-hoc heuristic method that trains a graph convolutional neural network (GCNN) to predict partial solutions for Mixed Integer Linear Programs (MILPs). It uses confidence scores from the model to fix variables with high confidence, then employs a solver (e.g., SCIP) to complete the solution, aiming to minimize the primal integral within a time limit."
 }

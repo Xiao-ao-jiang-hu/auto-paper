@@ -23,20 +23,17 @@
     "BO (FoM)"
   ],
   "lp_model": {
-    "objective": "Learn circuit representations by minimizing the reconstruction loss in the VAE framework, though not explicitly stated in LaTeX. The core mathematical operation is message passing: \\( h_v^{t+1} = \\mathcal{U}(h_v^t, \\mathcal{A}(\\{h_u^t | (u,v) \\in E\\})) \\).",
+    "objective": "$\\max_{G, \\theta} \\text{FoM}(G, \\theta)$ where $\\text{FoM}$ is a function of circuit performance metrics (gain, bandwidth, phase margin, power).",
     "constraints": [
-      "The input graph \\( \\mathcal{G} = (V, E) \\) is a directed acyclic graph (DAG).",
-      "Subgraph basis \\( \\mathbb{B} = \\{g_1, g_2, ..., g_K\\} \\) is ordered with a total order \\( o \\).",
-      "For the graph transformation, each subgraph \\( g_{v'} \\in \\mathbb{B} \\) has only one node to be the head (tail) of a directed edge whose tail (head) is outside the subgraph, as per Theorem 3.2."
+      "$G$ is a directed acyclic graph (DAG) with a single input node and a single output node.",
+      "The topology of $G$ must be composed of subgraphs from a predefined basis $\\mathbb{B}$ (as defined in Appendix A).",
+      "For each node $v$ of type $t_v$, the device parameter $\\theta_v$ must lie in a feasible range: $\\theta_v \\in [\\theta_{v,\\min}, \\theta_{v,\\max}]$."
     ],
     "variables": [
-      "\\( h_v^t \\) - representation of node \\( v \\) at time stamp \\( t \\)",
-      "\\( z_{v'} \\) - hidden representation of node \\( v' \\) in the transformed DAG",
-      "\\( a_v^{t+1} \\) - aggregated message for node \\( v \\) at time \\( t+1 \\)",
-      "\\( x_{v'}' \\) - one-hot encoding of subgraph type for node \\( v' \\)",
-      "\\( h_{v'} \\) - subgraph representation learned by inner GNNs"
+      "$G$: the circuit topology (a DAG).",
+      "$\\theta$: the device parameters (continuous)."
     ]
   },
-  "raw_latex_model": "From Section 3.1: \\( a_v^{t+1} = \\mathcal{A}(\\{h_u^t | (u,v) \\in E\\}) \\quad h_v^{t+1} = \\mathcal{U}(h_v^t, a_v^{t+1}) \\). From Section 3.2: \\( a_{v'} = \\mathcal{A}(\\{z_{u'} | u' \\in \\mathcal{N}(v')\\}) = \\sum\\nolimits_{u' \\in \\mathcal{N}(v')} g(z_{u'}) \\otimes m(z_{u'}), \\) and \\( z_{v'} = \\mathcal{U}(\\text{concat}(x_{v'}', h_{v'}), a_{v'}) \\).",
-  "algorithm_description": "The CktGNN algorithm operates as follows: 1. Transform the input circuit graph into a DAG using a pre-designed ordered subgraph basis \\( \\mathbb{B} \\), where nodes in the transformed graph represent non-overlapping subgraphs from the basis. 2. For each node in the transformed DAG, apply an inner GNN (with undirected message passing) to learn a representation for the corresponding subgraph. 3. Perform directed message passing in the outer GNN."
+  "raw_latex_model": "$$\\begin{aligned} \\max_{G, \\theta} \\quad & \\text{FoM}(G, \\theta) \\\\ \\text{s.t.} \\quad & G \\text{ is a DAG with a single input and single output}, \\\\ & G \\text{ is composed of subgraphs from a basis } \\mathbb{B}, \\\\ & \\theta_v \\in [\\theta_{v,\\min}, \\theta_{v,\\max}], \\quad \\forall v \\in V. \\end{aligned}$$",
+  "algorithm_description": "The paper uses a two-level Graph Neural Network (CktGNN) in a Variational Autoencoder (VAE) framework to encode circuits into a latent space. Then, Bayesian Optimization (BO) is performed in the latent space to optimize the Figure of Merit (FoM). The decoder of the VAE generates circuit topologies and device parameters from the latent vectors."
 }

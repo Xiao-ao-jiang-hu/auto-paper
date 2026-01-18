@@ -13,15 +13,15 @@
     "Regret"
   ],
   "lp_model": {
-    "objective": "\\min_{\\mathbf{y}} f(P\\mathbf{y}, \\theta)",
+    "objective": "$\\max_{\\mathbf{x}} \\sum_{j \\in C} \\max_{\\substack{z_j \\in \\{0,1\\}^n \\\\ \\text{s.t.} \\sum_i z_{ij} = T}} \\sum_{i=1}^{n} x_i z_{ij} \\theta_{ij}$",
     "constraints": [
-      "h(P\\mathbf{y}) \\leq 0",
-      "A P \\mathbf{y} = b"
+      "$x_i \\in \\{0,1\\} \\quad \\forall i$",
+      "$\\sum_{i=1}^{n} x_i = k$"
     ],
     "variables": [
-      "\\mathbf{y} \\in \\mathbb{R}^m: surrogate decision variables, where m is the reduced dimensionality"
+      "$x_i$: binary decision variable for acquiring movie $i$"
     ]
   },
-  "raw_latex_model": "\\min_{\\mathbf{y}} \\ g_P(\\mathbf{y}, \\theta) := f(P\\mathbf{y}, \\theta) \\quad \\text{s.t.} \\quad h(P\\mathbf{y}) \\leq 0, \\quad AP\\mathbf{y} = b",
-  "algorithm_description": "1. Initialize the predictive model parameters w and the reparameterization matrix P. 2. For each training iteration: a. Predict parameters θ from features ξ using the model Φ(ξ, w). b. Solve the surrogate optimization problem: minimize f(Py, θ) subject to h(Py) ≤ 0 and APy = b to obtain optimal surrogate solution y*. c. Compute the original solution x* = Py*. d. Evaluate the loss based on the true parameters θ_true: f(x*, θ_true). e. Compute gradients of the loss with respect to w and P by differentiating through the KKT conditions of the surrogate problem. f. Update w and P using gradient descent (e.g., Adam optimizer). 3. Repeat until convergence (e.g., early stopping on validation set). After training, for inference: use the learned P and Φ to predict θ and solve the surrogate problem to obtain decisions."
+  "raw_latex_model": "$$\\begin{aligned} \\max_{\\mathbf{x}} & \\sum_{j \\in C} \\max_{\\substack{z_j \\in \\{0,1\\}^n \\\\ \\text{s.t.} \\sum_i z_{ij} = T}} \\sum_{i=1}^{n} x_i z_{ij} \\theta_{ij} \\\\ \\text{s.t.} & x_i \\in \\{0,1\\} \\quad \\forall i, \\\\ & \\sum_{i=1}^{n} x_i = k \\end{aligned}$$",
+  "algorithm_description": "The paper uses a surrogate learning approach where a linear reparameterization matrix $P$ is learned to create a low-dimensional surrogate optimization problem. This surrogate is solved and differentiated through using differentiable optimization techniques (e.g., via KKT conditions), enabling joint training of the predictive model and the surrogate to minimize decision-focused loss, thereby improving scalability and solution quality."
 }

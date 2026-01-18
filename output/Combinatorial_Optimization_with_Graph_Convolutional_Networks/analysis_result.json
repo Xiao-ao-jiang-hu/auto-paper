@@ -33,14 +33,15 @@
     "Runtime (seconds)"
   ],
   "lp_model": {
-    "objective": "\\max \\sum_{i=1}^{N} x_i",
+    "objective": "$\\max \\sum_{i \\in \\mathcal{V}} x_i$",
     "constraints": [
-      "x_i + x_j \\leq 1 \\quad \\forall (i,j) \\in E"
+      "$x_i + x_j \\leq 1, \\quad \\forall (i,j) \\in \\mathcal{E}$",
+      "$x_i \\in \\{0,1\\}, \\quad \\forall i \\in \\mathcal{V}$"
     ],
     "variables": [
-      "x_i \\in \\{0,1\\} \\quad \\forall i = 1,\\ldots,N"
+      "$x_i$: binary variable indicating whether vertex $i$ is in the independent set (1) or not (0)"
     ]
   },
-  "raw_latex_model": "\\begin{aligned} &\\max \\sum_{i=1}^{N} x_i \\\\ &\\text{subject to} \\\\ &x_i + x_j \\leq 1, \\quad \\forall (i,j) \\in E \\\\ &x_i \\in \\{0,1\\}, \\quad \\forall i = 1,\\ldots,N \\end{aligned}",
-  "algorithm_description": "1. Preprocess the input graph using reduction techniques (e.g., pendant vertices, vertex folding) to obtain a smaller equivalent graph.\n2. Feed the reduced graph into a trained graph convolutional network (GCN) with a diversity loss, which generates M probability maps indicating vertex likelihoods for being in the optimal independent set.\n3. Initialize a queue with the reduced graph.\n4. While within a time budget:\n   a. Randomly select an incomplete graph from the queue.\n   b. For each probability map (m=1 to M):\n      i. Sort vertices in descending order based on the likelihood map.\n      ii. Iterate through the sorted list: if a vertex is unlabelled, label it as 1 and all its neighbors as 0; skip if already labelled.\n      iii. If the graph is completely labelled, record this as a candidate solution.\n      iv. Otherwise, remove labelled vertices to form a residual graph and add it to the queue.\n5. Apply local search (e.g., 2-improvement) to refine candidate solutions.\n6. Output the best solution found after refinement."
+  "raw_latex_model": "$$\\begin{aligned} \\max_{x} & \\sum_{i \\in \\mathcal{V}} x_i \\\\ \\text{s.t.} \\quad & x_i + x_j \\leq 1, \\quad \\forall (i,j) \\in \\mathcal{E}, \\\\ & x_i \\in \\{0,1\\}, \\quad \\forall i \\in \\mathcal{V}. \\end{aligned}$$",
+  "algorithm_description": "The method uses a graph convolutional network (GCN) trained with a diversity-promoting loss to predict multiple probability maps over vertices, indicating the likelihood of each vertex belonging to an optimal solution. These maps guide a parallelized tree search that explores many candidate solutions, which are then refined by classic graph reduction and local search heuristics."
 }

@@ -21,17 +21,17 @@
     "Optimality Gap"
   ],
   "lp_model": {
-    "objective": "\\min \\quad c^T x",
+    "objective": "$\\min c^T x$",
     "constraints": [
-      "A x \\leq b",
-      "x_j \\in \\{0, 1\\}, \\forall j \\in \\mathcal{B}",
-      "x_j \\in \\mathbb{Z}, \\forall j \\in \\mathcal{Q}",
-      "x_j \\geq 0, \\forall j \\in \\mathcal{P}"
+      "$A x \\leq b$",
+      "$x_j \\in \\{0, 1\\}, \\forall j \\in \\mathcal{B}$",
+      "$x_j \\in \\mathbb{Z}, \\forall j \\in \\mathcal{Q}$",
+      "$x_j \\geq 0, \\forall j \\in \\mathcal{P}$"
     ],
     "variables": [
-      "Decision variables indexed by set \\mathcal{U} := \\{1, \\dots, n\\} partitioned into: \\mathcal{B} (binary variables), \\mathcal{Q} (general integer variables), and \\mathcal{P} (continuous variables)"
+      "$x_j$: decision variable for $j \\in \\mathcal{U}$, where $\\mathcal{U} = \\{1, \\dots, n\\}$ is partitioned into binary set $\\mathcal{B}$, general integer set $\\mathcal{Q}$, and continuous set $\\mathcal{P}$"
     ]
   },
-  "raw_latex_model": "\\begin{aligned}\n\\min \\quad & c^T x \\\\\n\\text{s.t.} \\quad & A x \\leq b, \\\\\n& x_j \\in \\{0, 1\\}, \\forall j \\in \\mathcal{B}, \\\\\n& x_j \\in \\mathbb{Z}, \\forall j \\in \\mathcal{Q}, \\quad x_j \\geq 0, \\forall j \\in \\mathcal{P},\n\\end{aligned}",
-  "algorithm_description": "The Graph Convolutional Network forward propagation algorithm for MIP solution prediction consists of three stages: (1) Embedding: Transform input features of variable nodes, constraint nodes, and the objective node into 64-dimensional vectors using fully-connected layers. (2) Graph Attention Transitions: Perform T iterations of information propagation through the tripartite graph. In each iteration: Step 1 updates the objective node by aggregating representations from all variable nodes using attention-weighted summation. Step 2 updates each constraint node using objective node information and aggregated information from neighboring variable nodes. Step 3 updates the objective node again by aggregating information from all constraint nodes. Step 4 updates each variable node using objective node information and aggregated information from neighboring constraint nodes. Attention coefficients are computed for each edge to weight neighbor importance based on node and edge features. (3) Prediction: After T iterations, concatenate each variable node's initial and final embeddings, then apply two fully-connected layers with sigmoid activation to predict the probability that the binary variable takes value 1 in the optimal solution."
+  "raw_latex_model": "$$\\begin{aligned}\\min \\quad & c^T x \\\\\\text{s.t.} \\quad & A x \\leq b, \\\\& x_j \\in \\{0, 1\\}, \\forall j \\in \\mathcal{B}, \\\\& x_j \\in \\mathbb{Z}, \\forall j \\in \\mathcal{Q}, \\quad x_j \\geq 0, \\forall j \\in \\mathcal{P},\\end{aligned}$$",
+  "algorithm_description": "The paper proposes a Graph Convolutional Network (GCN) based on a tripartite graph representation of Mixed Integer Programming (MIP) instances to predict solution values for binary variables. These predictions are used to generate local branching cuts, which can be applied as an approximate heuristic (adding an invalid global cut) or an exact branching rule at the root node, to accelerate primal solution finding in MIP solvers like SCIP."
 }

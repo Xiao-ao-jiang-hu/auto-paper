@@ -18,16 +18,18 @@
     "Inference Time"
   ],
   "lp_model": {
-    "objective": "\\min_{x \\in X} f(x)",
+    "objective": "$\\min \\sum_{i,j \\in V} d_{ij} x_{ij}$",
     "constraints": [
-      "x \\in X",
-      "X \\subset \\mathcal{X}",
-      "X \\neq \\emptyset"
+      "$\\sum_{j \\in V, j \\neq i} x_{ij} = 1$ for all $i \\in V$",
+      "$\\sum_{i \\in V, i \\neq j} x_{ij} = 1$ for all $j \\in V$",
+      "$\\sum_{i \\in S, j \\in V \\setminus S} x_{ij} \\geq 1$ for all $S \\subset V, S \\neq \\emptyset, S \\neq V$",
+      "$x_{ij} \\in \\{0,1\\}$ for all $i,j \\in V, i \\neq j$"
     ],
     "variables": [
-      "x: a feasible solution in X"
+      "$x_{ij}$: binary decision variable indicating if edge from node $i$ to $j$ is included in the tour",
+      "$d_{ij}$: Euclidean distance between nodes $i$ and $j$, defined as $\\| p_i - p_j \\|$ where $p_i$ are coordinates"
     ]
   },
-  "raw_latex_model": "\\min_{x \\in X} f(x)",
-  "algorithm_description": "1. Define a solution space (\\mathcal{X}, \\circ, \\epsilon, \\mathcal{Z}) for the combinatorial optimization problem (COP), where \\mathcal{X} is the set of partial solutions, \\circ is a composition operator, \\epsilon is the neutral element, and \\mathcal{Z} is the set of steps.\n2. Given a COP instance (f, X), derive the direct Markov Decision Process (MDP) \\mathcal{M}_{(f,X)} with states as partial solutions in \\bar{X}, actions in \\mathcal{Z} \\cup \\{\\epsilon\\}, and deterministic transitions defined by equation (2).\n3. Apply bisimulation quotienting to reduce the state space: define a mapping \\Phi_{(f,X)}(x) = (f * x, X * x) to the tail subproblem, leading to the bisimulation quotiented (BQ)-MDP \\mathcal{M} with states as instances in \\mathcal{F}_{\\mathcal{X}} and transitions defined by equation (3).\n4. For recursive COPs (e.g., TSP, CVRP, OP, KP), the bisimulation maps partial solutions to induced instances of the same problem, exploiting symmetries.\n5. Design a policy network for the BQ-MDP, such as a transformer-based architecture that takes the current instance as input and outputs action probabilities. For Euclidean TSP, use node coordinates with origin/destination encodings; for asymmetric TSP, incorporate cost matrices via graph convolutions.\n6. Train the policy by imitation learning using a cross-entropy loss on expert trajectories generated from (near) optimal solutions of small instances. Sample sub-paths or subsequences to augment the dataset.\n7. At inference, use the trained policy to construct solutions greedily (single rollout) or with beam search for improved performance, optionally accelerating with linear attention models like PerceiverIO."
+  "raw_latex_model": "$$\\begin{aligned} \\text{Minimize} & \\quad \\sum_{i,j \\in V} d_{ij} x_{ij} \\\\ \\text{Subject to} & \\quad \\sum_{j \\in V, j \\neq i} x_{ij} = 1 \\quad \\forall i \\in V \\\\ & \\quad \\sum_{i \\in V, i \\neq j} x_{ij} = 1 \\quad \\forall j \\in V \\\\ & \\quad \\sum_{i \\in S, j \\in V \\setminus S} x_{ij} \\geq 1 \\quad \\forall S \\subset V, S \\neq \\emptyset, S \\neq V \\\\ & \\quad x_{ij} \\in \\{0,1\\} \\quad \\forall i,j \\in V, i \\neq j \\end{aligned}$$",
+  "algorithm_description": "The paper proposes a bisimulation quotiented Markov Decision Process (BQ-MDP) framework to model combinatorial optimization problems, reducing state space by exploiting symmetries. For solving, a transformer-based policy network is trained by imitation learning from (near) optimal solutions of small instances, achieving generalization to larger instances without additional search."
 }

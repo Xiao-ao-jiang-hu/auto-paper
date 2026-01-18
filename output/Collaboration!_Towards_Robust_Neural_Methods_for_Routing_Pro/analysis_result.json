@@ -19,15 +19,18 @@
     "Inference Time"
   ],
   "lp_model": {
-    "objective": "\\min_{\\tau \\in \\Phi} c(\\tau | x)",
+    "objective": "$\\min c(\\tau) = \\sum_{i=0}^{S-1} c(v_{\\tau_i}, v_{\\tau_{i+1}})$",
     "constraints": [
-      "For TSP: \\tau must visit each node exactly once and return to the starting node.",
-      "For CVRP: \\tau must consist of multiple sub-tours starting and ending at the depot, each customer node visited exactly once, and the total demand in each sub-tour \\leq Q."
+      "For TSP: $\\tau$ is a Hamiltonian cycle visiting each node in $\\mathcal{V}$ exactly once and returning to the starting node.",
+      "For CVRP: $\\tau_0 = \\tau_S = v_0$ (depot), each customer node $v \\in \\mathcal{V} \\setminus \\{v_0\\}$ appears exactly once in $\\tau$.",
+      "For CVRP: Let $0 = i_0 < i_1 < \\dots < i_m = S$ be the indices of depot visits in $\\tau$. Then $\\sum_{j=i_{k-1}+1}^{i_k-1} \\delta_{\\tau_j} \\leq Q$ for each sub-tour $k=1,\\dots,m$."
     ],
     "variables": [
-      "Tour \\tau as a sequence of nodes."
+      "$\\tau$: a sequence of nodes representing a tour (for TSP) or a set of sub-tours (for CVRP).",
+      "$\\delta_i$: demand of node $v_i$ (with $\\delta_0 = 0$ for depot).",
+      "$Q$: vehicle capacity (for CVRP)."
     ]
   },
-  "raw_latex_model": "\\tau^* = \\arg\\min_{\\tau \\in \\Phi} c(\\tau | x)",
-  "algorithm_description": "The Collaborative Neural Framework (CNF) algorithm for adversarial training of neural VRP methods involves the following steps:\n1. Initialize M models from a pretrained model and initialize the neural router.\n2. For each training step e from 1 to E:\n   a. Sample a batch of clean instances.\n   b. Initialize local and global adversarial instances to the clean instances.\n   c. For t from 1 to T (attack steps):\n      i. For each model, update local adversarial instances by maximizing the loss (inner maximization).\n      ii. Update global adversarial instances by attacking the best-performing model among all models.\n   d. Collect clean, local adversarial, and global adversarial instances into a set.\n   e. Evaluate all models on these instances to obtain a cost matrix.\n   f. The neural router takes the instances and cost matrix as input, outputs a logit matrix, and converts it to a probability matrix via Softmax.\n   g. For each model, select instances with the TopK largest probabilities for training.\n   h. Train each model on its selected instances using reinforcement learning (e.g., REINFORCE).\n   i. Evaluate all models again on the instances to obtain a new cost matrix.\n   j. Update the neural router using the difference in minimum costs (before and after training) as a reward signal, via gradient ascent.\n3. After training, output the set of trained models for inference, discarding the neural router."
+  "raw_latex_model": "$$\\begin{aligned} \\min_{\\tau} \\quad & c(\\tau) = \\sum_{i=0}^{S-1} c(v_{\\tau_i}, v_{\\tau_{i+1}}) \\\\ \\text{s.t.} \\quad & \\text{For TSP: } \\tau \\text{ is a Hamiltonian cycle over } \\mathcal{V}. \\\\ & \\text{For CVRP: } \\tau_0 = \\tau_S = v_0, \\\\ & \\quad \\quad \\text{Each } v \\in \\mathcal{V} \\setminus \\{v_0\\} \\text{ appears exactly once in } \\tau, \\\\ & \\quad \\quad \\text{Let } 0 = i_0 < i_1 < \\dots < i_m = S \\text{ be depot indices in } \\tau. \\\\ & \\quad \\quad \\sum_{j=i_{k-1}+1}^{i_k-1} \\delta_{\\tau_j} \\leq Q, \\quad \\forall k=1,\\dots,m. \\end{aligned}$$",
+  "algorithm_description": "The paper uses autoregressive neural construction methods (e.g., POMO, MatNet) trained with reinforcement learning (REINFORCE) to solve VRPs. The proposed Collaborative Neural Framework (CNF) adversarially trains an ensemble of such models via a min-max optimization, using a neural router to distribute training instances, to enhance robustness against adversarial attacks."
 }

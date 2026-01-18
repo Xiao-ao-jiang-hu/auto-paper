@@ -1,0 +1,35 @@
+{
+  "paper_id": "Distilling_Autoregressive_Models_to_Obtain_High-Performance_",
+  "title": "Distilling Autoregressive Models to Obtain High-Performance Non-Autoregressive Solvers for Vehicle Routing Problems with Faster Inference Speed",
+  "abstract": "Neural construction models have shown promising performance for Vehicle Routing Problems (VRPs) by adopting either the Autoregressive (AR) or Non-Autoregressive (NAR) learning approach. While AR models produce high-quality solutions, they generally have a high inference latency due to their sequential generation nature. Conversely, NAR models generate solutions in parallel with a low inference latency but generally exhibit inferior performance. In this paper, we propose a generic Guided Non-Autoregressive Knowledge Distillation (GNARKD) method to obtain high-performance NAR models having a low inference latency. GNARKD removes the constraint of sequential generation in AR models while preserving the learned pivotal components in the network architecture to obtain the corresponding NAR models through knowledge distillation. We evaluate GNARKD by applying it to three widely adopted AR models to obtain NAR VRP solvers for both synthesized and real-world instances. The experimental results demonstrate that GNARKD significantly reduces the inference time (4~5× faster) with acceptable performance drop (2~3%). To the best of our knowledge, this study is first-of-its-kind to obtain NAR VRP solvers from AR ones through knowledge distillation.",
+  "problem_description_natural": "The paper addresses the Vehicle Routing Problem (VRP), specifically focusing on two variants: the Traveling Salesman Problem (TSP) and the Capacitated Vehicle Routing Problem (CVRP). In TSP, the goal is to find the shortest possible tour that visits each node exactly once and returns to the starting point. In CVRP, the problem is extended by introducing a depot, vehicle capacity constraints, and customer demands; the objective is to construct multiple feasible routes originating and ending at the depot such that all customer demands are satisfied without exceeding vehicle capacities, while minimizing total travel distance. The challenge lies in generating near-optimal solutions quickly enough for real-time deployment in dynamic logistics environments.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "TSPLIB",
+    "Generated TSP instances",
+    "Generated CVRP instances"
+  ],
+  "performance_metrics": [
+    "Learning gap",
+    "Optimality gap",
+    "Average tour length",
+    "Inference time",
+    "Acceleration ratio"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\sum_{i,j \\in V} d_{ij} x_{ij}$",
+    "constraints": [
+      "$\\sum_{j \\in V, j \\neq i} x_{ij} = 1 \\quad \\forall i \\in V \\setminus \\{0\\}$",
+      "$\\sum_{j \\in V, j \\neq i} x_{ji} = 1 \\quad \\forall i \\in V \\setminus \\{0\\}$",
+      "$\\sum_{j \\in V} x_{0j} = \\sum_{j \\in V} x_{j0}$",
+      "$u_i - u_j + Q x_{ij} \\leq Q - \\delta_j \\quad \\forall i,j \\in V \\setminus \\{0\\}, i \\neq j$",
+      "$\\delta_i \\leq u_i \\leq Q \\quad \\forall i \\in V \\setminus \\{0\\}$"
+    ],
+    "variables": [
+      "$x_{ij}$: binary decision variable indicating if edge $(i,j)$ is used in the tour",
+      "$u_i$: auxiliary variable representing the cumulative demand up to node $i$ in a route"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} \\text{Minimize} & \\quad \\sum_{i,j \\in V} d_{ij} x_{ij} \\\\ \\text{Subject to} & \\quad \\sum_{j \\in V, j \\neq i} x_{ij} = 1 \\quad \\forall i \\in V \\setminus \\{0\\} \\\\ & \\quad \\sum_{j \\in V, j \\neq i} x_{ji} = 1 \\quad \\forall i \\in V \\setminus \\{0\\} \\\\ & \\quad \\sum_{j \\in V} x_{0j} = \\sum_{j \\in V} x_{j0} \\\\ & \\quad u_i - u_j + Q x_{ij} \\leq Q - \\delta_j \\quad \\forall i,j \\in V \\setminus \\{0\\}, i \\neq j \\\\ & \\quad \\delta_i \\leq u_i \\leq Q \\quad \\forall i \\in V \\setminus \\{0\\} \\\\ & \\quad x_{ij} \\in \\{0,1\\} \\quad \\forall i,j \\in V \\end{aligned}$$",
+  "algorithm_description": "The paper proposes the Guided Non-Autoregressive Knowledge Distillation (GNARKD) method, which distills knowledge from pre-trained autoregressive Transformer-based models into non-autoregressive models to solve Vehicle Routing Problems. This approach modifies the decoder to enable parallel inference, using the teacher model's solutions as guidance during training to preserve order dependencies and improve solution confidence, resulting in faster inference speeds with competitive solution quality."
+}

@@ -18,16 +18,16 @@
     "Primal Bound"
   ],
   "lp_model": {
-    "objective": "\\min \\sum_{r \\in \\Omega} c_r \\lambda_r",
+    "objective": "$\\min \\sum_{r \\in \\Omega} c_r \\lambda_r$",
     "constraints": [
-      "\\sum_{r \\in \\Omega} \\lambda_r = |K|",
-      "\\sum_{r \\in \\Omega} a_{i,r} \\lambda_r = 1, \\; \\forall i \\in V_c",
-      "\\lambda_r \\in \\{0,1\\}, \\; \\forall r \\in \\Omega"
+      "$\\sum_{r \\in \\Omega} \\lambda_r = |K|$",
+      "$\\sum_{r \\in \\Omega} a_{i,r} \\lambda_r = 1, \\; \\forall i \\in V_c$",
+      "$\\lambda_r \\in \\{0,1\\}, \\; \\forall r \\in \\Omega$"
     ],
     "variables": [
-      "\\lambda_r: binary variable indicating whether route r is selected"
+      "$\\lambda_r$: binary decision variable indicating whether route $r$ is selected"
     ]
   },
-  "raw_latex_model": "$$\\min \\sum_{r \\in \\Omega} c_r \\lambda_r,\\tag{1}$$\n\n$$\\text{s.t.} \\sum_{r \\in \\Omega} \\lambda_r = |K|,\\tag{2}$$\n\n$$\\sum_{r \\in \\Omega} a_{i,r} \\lambda_r = 1, \\; \\forall i \\in V_c,\\tag{3}$$\n\n$$\\lambda_r \\in \\{0,1\\}, \\; \\forall r \\in \\Omega,\\tag{4}$$",
-  "algorithm_description": "The Neural Column Generation (NCG) algorithm integrates machine learning into the column generation process for the 2L-CVRP with LIFO constraints. The steps are as follows:\n1. Initialize the restricted master problem (RMP) with a subset of feasible routes.\n2. Solve the linear relaxation of RMP to obtain dual variables.\n3. Generate candidate columns using a labeling algorithm that solves the elementary shortest path problem with resource constraints (ESPPRC) without checking loading feasibility.\n4. For each candidate column, use a machine learning model to predict feasibility with respect to 2D bin packing and LIFO constraints. The model employs attention mechanisms for homogeneous items within the same customer and recurrence mechanisms (GRU) for heterogeneous items across customers.\n5. Columns predicted as feasible are added directly to the RMP.\n6. Columns predicted as infeasible are verified by an exact feasibility checker. If found feasible (false negatives), they are added to the RMP.\n7. During RMP solution, check loading feasibility of variables in the optimal basis. If any variable is infeasible (false positives), add cuts to exclude it.\n8. Repeat steps 2-7 until no columns with negative reduced cost are found, indicating optimality of the linear relaxation.\n9. For integer solutions, embed the NCG into a branch-and-price-and-cut framework."
+  "raw_latex_model": "$$\\begin{aligned} \\min & \\sum_{r \\in \\Omega} c_r \\lambda_r, \\\\ \\text{s.t.} & \\sum_{r \\in \\Omega} \\lambda_r = |K|, \\\\ & \\sum_{r \\in \\Omega} a_{i,r} \\lambda_r = 1, \\; \\forall i \\in V_c, \\\\ & \\lambda_r \\in \\{0,1\\}, \\; \\forall r \\in \\Omega. \\end{aligned}$$",
+  "algorithm_description": "The paper proposes a Neural Column Generation (NCG) algorithm that integrates a machine learning model into a column generation framework to solve the 2L-CVRP with LIFO constraints. The ML model, combining attention and recurrence mechanisms, predicts the feasibility of candidate routes with respect to 2D packing and LIFO constraints, accelerating the pricing problem by reducing calls to an exact feasibility checker. The overall method is an exact algorithm (branch-and-price-and-cut) that uses the ML model as a heuristic filter within the column generation iterations."
 }

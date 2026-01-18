@@ -28,21 +28,15 @@
     "average number of propagations per step"
   ],
   "lp_model": {
-    "objective": "\\min_{\\theta} \\mathbb{E} \\left[ \\left( Q_{\\theta}(s, a) - \\left( r + \\gamma \\max_{a'} Q_{\\bar{\\theta}}(s', a') \\right) \\right)^2 \\right]",
+    "objective": "$\\min 0$",
     "constraints": [
-      "\\langle \\mathcal{S}, \\mathcal{A}, \\mathcal{R}, \\mathcal{T}, \\gamma, \\rho \\rangle",
-      "s' \\sim \\mathcal{T}(s, a, \\cdot)",
-      "r = \\mathcal{R}(s, a, s')",
-      "\\gamma \\in [0,1)"
+      "$\\sum_{i \\in P_j} x_i + \\sum_{i \\in N_j} (1 - x_i) \\geq 1, \\quad \\forall j = 1, \\ldots, m$",
+      "$x_i \\in \\{0,1\\}, \\quad \\forall i = 1, \\ldots, n$"
     ],
     "variables": [
-      "s \\in \\mathcal{S} - \\text{state}",
-      "a \\in \\mathcal{A} - \\text{action}",
-      "r \\in \\mathbb{R} - \\text{reward}",
-      "\\theta - \\text{parameters of the Q-network}",
-      "\\bar{\\theta} - \\text{parameters of the target network}"
+      "$x_i$: binary decision variable for Boolean variable $i$, where $x_i = 1$ if true, $0$ if false"
     ]
   },
-  "raw_latex_model": "Q^*(s, a) = \\mathbb{E}_{\\pi,\\mathcal{T},\\rho}[\\mathcal{R}(s, a, s') + \\gamma \\max_{a'} Q^*(s', a')] \\quad \\text{and} \\quad L(\\theta) = (Q_\\theta(s, a) - r - \\gamma \\max_{a'} Q_{\\bar{\\theta}}(s', a'))^2",
-  "algorithm_description": "Graph-Q-SAT is a reinforcement learning-based branching heuristic for SAT solvers. The algorithm proceeds as follows: 1. Represent the current SAT state as a bipartite graph with variable and clause nodes, using edge labels for literal polarities. 2. Process the graph through a Graph Neural Network (GNN) to compute Q-values for each possible variable assignment (true or false). 3. Select the variable and assignment with the highest Q-value as the branching decision. 4. Execute the decision in the MiniSat environment, which performs CDCL steps, updates the state, and returns a reward (negative for non-terminal steps, zero for terminal). 5. Store the experience (state, action, reward, next state) in a replay buffer. 6. Train the Q-network using DQN by sampling minibatches from the replay buffer and minimizing the temporal difference error. 7. Periodically update the target network by copying weights from the main network. 8. During testing, use the trained model to make decisions for a capped number of initial iterations, then switch to the VSIDS heuristic. The model is trained on SAT problem distributions and evaluated for generalization across sizes and satisfiability types."
+  "raw_latex_model": "$$\\begin{aligned} & \\min && 0 \\\\ & \\text{s.t.} && \\sum_{i \\in P_j} x_i + \\sum_{i \\in N_j} (1 - x_i) \\geq 1, \\quad \\forall j = 1, \\ldots, m \\\\ & && x_i \\in \\{0,1\\}, \\quad \\forall i = 1, \\ldots, n \\end{aligned}$$",
+  "algorithm_description": "Reinforcement Learning with Graph Neural Networks (Graph-Q-SAT) is used to learn a branching heuristic for a Conflict-Driven Clause Learning (CDCL) SAT solver (MiniSat). The agent is trained via Deep Q-Networks (DQN) to select variables and assignments that reduce the number of iterations needed to solve SAT problems."
 }

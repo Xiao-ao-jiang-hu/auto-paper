@@ -16,15 +16,16 @@
     "Hits@10"
   ],
   "lp_model": {
-    "objective": "\\argmax_{\\boldsymbol{S}} \\sum_{\\substack{i,i' \\in \\mathcal{V}_s \\\\ j,j' \\in \\mathcal{V}_t}} A^{(s)}_{i,i'} A^{(t)}_{j,j'} S_{i,j} S_{i',j'}",
+    "objective": "$\\max_{\\boldsymbol{S}} \\sum_{\\substack{i,i' \\in \\mathcal{V}_s \\\\ j,j' \\in \\mathcal{V}_t}} A^{(s)}_{i,i'} A^{(t)}_{j,j'} S_{i,j} S_{i',j'}$",
     "constraints": [
-      "\\sum_{j \\in \\mathcal{V}_t} S_{i,j} = 1~\\forall i \\in \\mathcal{V}_s",
-      "\\sum_{i \\in \\mathcal{V}_s} S_{i,j} \\leq 1~\\forall j \\in \\mathcal{V}_t"
+      "$\\sum_{j \\in \\mathcal{V}_t} S_{i,j} = 1 \\quad \\forall i \\in \\mathcal{V}_s$",
+      "$\\sum_{i \\in \\mathcal{V}_s} S_{i,j} \\leq 1 \\quad \\forall j \\in \\mathcal{V}_t$",
+      "$S_{i,j} \\in \\{0,1\\} \\quad \\forall i \\in \\mathcal{V}_s, j \\in \\mathcal{V}_t$"
     ],
     "variables": [
-      "\\boldsymbol{S} \\in \\{0, 1\\}^{|\\mathcal{V}_s| \\times |\\mathcal{V}_t|} - correspondence matrix where S_{i,j} = 1 if node i in source graph matches node j in target graph"
+      "$S_{i,j}$: binary decision variable indicating if node $i$ in source graph $\\mathcal{G}_s$ is matched to node $j$ in target graph $\\mathcal{G}_t$"
     ]
   },
-  "raw_latex_model": "\\argmax_{\\boldsymbol{S}} \\sum_{\\substack{i,i' \\in \\mathcal{V}_s \\\\ j,j' \\in \\mathcal{V}_t}} A^{(s)}_{i,i'} A^{(t)}_{j,j'} S_{i,j} S_{i',j'} \\quad \\text{subject to} \\quad \\sum_{j \\in \\mathcal{V}_t} S_{i,j} = 1~\\forall i \\in \\mathcal{V}_s, \\sum_{i \\in \\mathcal{V}_s} S_{i,j} \\leq 1~\\forall j \\in \\mathcal{V}_t",
-  "algorithm_description": "The algorithm is a two-stage neural architecture for graph matching consensus, as described in Algorithm 1. Steps: 1. Compute node embeddings for source and target graphs using a shared graph neural network Ψ_θ1. 2. Compute initial soft correspondence scores Ŝ^(0) by taking the dot product of node embeddings. 3. Sparsify Ŝ^(0) by retaining only the top k candidates for each source node. 4. Perform L refinement iterations: a. Normalize current scores row-wise using softmax to get S^(l-1). b. Sample a random node function R_s^(l) from a normal distribution. c. Map R_s^(l) to the target graph via S^(l-1)⊤ to get R_t^(l). d. Apply a shared graph neural network Ψ_θ2 to distribute functions on both graphs, obtaining O_s and O_t. e. Compute neighborhood consensus measure d_{i,j} = o_i^(s) - o_j^(t) for each correspondence. f. Update correspondence scores using a neural network Φ_θ3: Ŝ_{i,j}^(l) = Ŝ_{i,j}^(l-1) + Φ_θ3(d_{i,j}). 5. After L iterations, apply final row-wise softmax normalization to get refined correspondence matrix S^(L). 6. Output the sparse soft correspondence matrix S^(L) with k non-zero entries per row."
+  "raw_latex_model": "$$\\begin{aligned} \\max_{\\boldsymbol{S}} & \\sum_{\\substack{i,i' \\in \\mathcal{V}_s \\\\ j,j' \\in \\mathcal{V}_t}} A^{(s)}_{i,i'} A^{(t)}_{j,j'} S_{i,j} S_{i',j'} \\\\ \\text{s.t.} \\quad & \\sum_{j \\in \\mathcal{V}_t} S_{i,j} = 1, \\quad \\forall i \\in \\mathcal{V}_s, \\\\ & \\sum_{i \\in \\mathcal{V}_s} S_{i,j} \\leq 1, \\quad \\forall j \\in \\mathcal{V}_t, \\\\ & S_{i,j} \\in \\{0,1\\}, \\quad \\forall i \\in \\mathcal{V}_s, j \\in \\mathcal{V}_t. \\end{aligned}$$",
+  "algorithm_description": "The paper proposes a two-stage neural architecture: (1) A local feature matching stage using a Graph Neural Network (GNN) to compute node embeddings and initial soft correspondences via inner product and Sinkhorn/softmax normalization. (2) An iterative refinement stage using synchronous message passing (another GNN) to enforce neighborhood consensus by mapping node indicator functions between graphs, comparing the resulting distributed features, and updating correspondence scores via a trainable MLP. The method is trained end-to-end with a supervised loss combining initial and refined matching errors."
 }

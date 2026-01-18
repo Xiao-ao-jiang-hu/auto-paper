@@ -13,15 +13,16 @@
     "Time in seconds"
   ],
   "lp_model": {
-    "objective": "\\min \\sum_{p \\in \\tilde{\\mathcal{P}}} \\lambda_p",
+    "objective": "$\\min \\sum_{p \\in \\mathcal{P}} \\lambda_p$",
     "constraints": [
-      "\\sum_{p \\in \\tilde{\\mathcal{P}}} x_{ip} \\lambda_p = d_i \\; \\forall i \\in \\{1, \\cdots, n\\}",
-      "\\lambda_p \\ge 0 \\; \\forall p \\in \\tilde{\\mathcal{P}}"
+      "$\\sum_{p \\in \\mathcal{P}} x_{ip} \\lambda_p = d_i \\quad \\forall i \\in \\{1,\\ldots,n\\}$",
+      "$\\lambda_p \\in \\mathbb{N} \\quad \\forall p \\in \\mathcal{P}$"
     ],
     "variables": [
-      "\\lambda_p \\geq 0 \\text{ for each pattern } p \\in \\tilde{\\mathcal{P}}, \\text{ where } \\lambda_p \\text{ represents the usage of pattern } p"
+      "$\\lambda_p$: integer variable representing the number of times pattern $p$ is used, for each $p \\in \\mathcal{P}$",
+      "$x_{ip}$: parameter indicating the number of cuts of type $i$ in pattern $p$, defined for feasible patterns in $\\mathcal{P}$"
     ]
   },
-  "raw_latex_model": "\\min_{\\lambda \\in \\mathbb{N}^{|\\tilde{\\mathcal{P}}|}} \\left\\{ \\sum_{p \\in \\tilde{\\mathcal{P}}} \\lambda_p : \\sum_{p \\in \\tilde{\\mathcal{P}}} x_{ip} \\lambda_p = d_i \\; \\forall i \\in \\{1, \\cdots, n\\}, \\lambda_p \\ge 0 \\; \\forall p \\in \\tilde{\\mathcal{P}} \\right\\}.",
-  "algorithm_description": "The standard column generation algorithm for solving the LP relaxation of the Cutting Stock Problem proceeds iteratively as follows: 1. Solve the Restricted Master Problem (RMP) to obtain the primal solution \\(\\lambda^*\\) and dual values \\(\\bar{\\pi}\\). 2. Update the objective function of the Sub-Problem (SP) using the dual values \\(\\bar{\\pi}\\). 3. Solve the SP to find a new pattern \\(x^*\\) with the most negative reduced cost. 4. Check the reduced cost: if \\(1 - \\sum_{i=1}^n \\bar{\\pi}_i x_i^* \\le 0\\), add the corresponding column to the RMP and return to step 1; otherwise, stop as the solution is optimal. This process continues until no columns with negative reduced cost are found, indicating convergence to the optimal LP solution."
+  "raw_latex_model": "$$ \\min_{\\lambda \\in \\mathbb{N}^{|\\mathcal{P}|}} \\left\\{ \\sum_{p \\in \\mathcal{P}} \\lambda_p : \\sum_{p \\in \\mathcal{P}} x_{ip} \\lambda_p = d_i \\; \\forall i \\in \\{1,2,\\ldots,n\\} \\right\\}, $$ where $\\mathcal{P} = \\left\\{ x_k \\in \\mathbb{N}^n : \\sum_{i=1}^{n} a_i x_{ik} \\leq L, x_{ik} \\geq 0 \\quad \\forall i \\in \\{1,2,\\ldots,n\\}, \\forall k \\in \\{1,2,\\ldots,|\\mathcal{P}|\\} \\right\\}$.",
+  "algorithm_description": "Deep Reinforcement Learning framework (RLCG) using Graph Neural Networks as Q-function approximators to learn a column selection policy for Column Generation, applied to solve linear program relaxations of the Cutting Stock Problem and Vehicle Routing Problem with Time Windows, aiming to minimize the number of iterations for convergence."
 }

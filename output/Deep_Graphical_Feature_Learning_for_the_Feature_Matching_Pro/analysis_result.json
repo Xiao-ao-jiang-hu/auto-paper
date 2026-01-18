@@ -14,16 +14,16 @@
     "Running Time"
   ],
   "lp_model": {
-    "objective": "\\max \\sum_{i=1}^n \\sum_{j=1}^n \\mathbf{f}_i^T \\mathbf{g}_j \\, x_{ij}",
+    "objective": "$\\max \\sum_{i=1}^n \\sum_{j=1}^n S_1(f_j, g_i) x_{ij} + \\sum_{i=1}^n \\sum_{j=1}^n \\sum_{a=1}^n \\sum_{b=1}^n S_2([f_a, f_b], [g_i, g_j]) x_{ia} x_{jb} + \\cdots$",
     "constraints": [
-      "\\sum_{j=1}^n x_{ij} = 1, \\quad \\forall i = 1,\\ldots,n",
-      "\\sum_{i=1}^n x_{ij} = 1, \\quad \\forall j = 1,\\ldots,n",
-      "x_{ij} \\in \\{0,1\\}, \\quad \\forall i,j = 1,\\ldots,n"
+      "$\\sum_{j=1}^n x_{ij} = 1$ for all $i = 1, \\ldots, n$",
+      "$\\sum_{i=1}^n x_{ij} = 1$ for all $j = 1, \\ldots, n$",
+      "$x_{ij} \\in \\{0,1\\}$ for all $i,j = 1, \\ldots, n$"
     ],
     "variables": [
-      "x_{ij} \\in \\{0,1\\} - binary assignment variable indicating if feature point i from set \\mathcal{F} is matched to feature point j from set \\mathcal{G}"
+      "$x_{ij}$: binary decision variable, $x_{ij}=1$ if point $f_i$ in set $\\mathcal{F}$ is matched to point $g_j$ in set $\\mathcal{G}$"
     ]
   },
-  "raw_latex_model": "From equation (6): \\argmax_{\\pi \\in \\Pi(n)} \\sum_i S_1(\\mathbf{f}_{\\pi(i)}, \\mathbf{g}_i), where after feature extraction, S_1 is the inner product similarity, i.e., S_1(\\mathbf{f}, \\mathbf{g}) = \\mathbf{f}^T \\mathbf{g} for normalized features.",
-  "algorithm_description": "1. Input two sets of feature points \\mathcal{F} and \\mathcal{G}. 2. For each set, construct a graph by connecting k-nearest neighbors (k=8 in the paper). 3. Pass the graphs through the Compositional Message Passing Neural Network (CMPNN) to extract rich local features. The CMPNN uses multiple layers with residual connections and global pooling. 4. Normalize the output features to unit vectors. 5. Compute the similarity matrix between features from \\mathcal{F} and \\mathcal{G} using inner product. 6. Solve the linear assignment problem by applying the Hungarian/Munkres algorithm to the similarity matrix to find the optimal one-to-one matching. 7. Output the matching pairs as a permutation \\pi."
+  "raw_latex_model": "$$\\max_{\\pi \\in \\Pi(n)} S(\\pi) = \\max_{\\pi \\in \\Pi(n)} \\left( \\sum_{i=1}^n S_1(f_{\\pi(i)}, g_i) + \\sum_{i=1}^n \\sum_{j=1}^n S_2([f_{\\pi(i)}, f_{\\pi(j)}], [g_i, g_j]) + \\cdots \\right)$$ where $\\Pi(n)$ is the set of all permutations of $\\{1, \\ldots, n\\}$, $\\mathcal{F} = \\{f_i\\}_{i=1}^n$ and $\\mathcal{G} = \\{g_i\\}_{i=1}^n$ are sets of feature points, and $S_1, S_2, \\ldots$ are similarity functions. For geometric feature matching, $S_1$ is often zero or negligible, making it a Quadratic or Higher Order Assignment Problem.",
+  "algorithm_description": "Proposed a graph neural network called Compositional Message Passing Neural Network (CMPNN) to learn rich local features from point coordinates and graph structure. After feature learning, the problem is reduced to a Linear Assignment Problem, which is solved efficiently using the Hungarian/Munkres algorithm."
 }

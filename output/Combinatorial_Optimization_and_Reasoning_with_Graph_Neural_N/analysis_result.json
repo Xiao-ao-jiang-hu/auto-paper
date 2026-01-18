@@ -19,16 +19,16 @@
     "Objective Value"
   ],
   "lp_model": {
-    "objective": "\\min \\sum_{i=1}^{n} \\sum_{j \\neq i, j=1}^{n} w_{ij} x_{ij}",
+    "objective": "$\\min \\sum_{i=1}^{n} \\sum_{j \\neq i, j=1}^{n} w_{ij} x_{ij}$",
     "constraints": [
-      "\\sum_{i=1, i \\neq j}^{n} x_{ij} = 1 \\quad \\forall j \\in [n]",
-      "\\sum_{j=1, j \\neq i}^{n} x_{ij} = 1 \\quad \\forall i \\in [n]",
-      "\\sum_{i \\in Q} \\sum_{j \\notin Q} x_{ij} \\geq 1 \\quad \\forall Q \\subsetneq [n], |Q| \\geq 2"
+      "$\\sum_{i=1, i \\neq j}^{n} x_{ij} = 1 \\quad \\text{for } j \\in [n]$",
+      "$\\sum_{j=1, j \\neq i}^{n} x_{ij} = 1 \\quad \\text{for } i \\in [n]$",
+      "$\\sum_{i \\in Q} \\sum_{j \\notin Q} x_{ij} \\geq 1 \\quad \\forall Q \\subsetneq [n], |Q| \\geq 2$"
     ],
     "variables": [
-      "x_{ij} \\in \\{0,1\\} \\quad \\text{for } i,j \\in [n], i \\neq j"
+      "$x_{ij}$: binary decision variable, 1 if the cycle goes from city $i$ to city $j$, 0 otherwise"
     ]
   },
-  "raw_latex_model": "\\begin{aligned}\n& \\min \\sum_{i=1}^{n} \\sum_{j \\neq i, j=1}^{n} w_{ij} x_{ij} \\\\\n& \\text{subject to } \\sum_{i=1, i \\neq j}^{n} x_{ij} = 1 \\quad \\quad \\quad \\quad \\quad \\quad j \\in [n], \\\\\n& \\quad \\quad \\quad \\quad \\sum_{j=1, j \\neq i}^{n} x_{ij} = 1 \\quad \\quad \\quad \\quad \\quad \\quad i \\in [n], \\\\\n& \\quad \\quad \\quad \\quad \\sum_{i \\in Q} \\sum_{j \\notin Q} x_{ij} \\geq 1 \\quad \\quad \\quad \\forall Q \\subsetneq [n], |Q| \\geq 2.\n\\end{aligned}",
-  "algorithm_description": "The branch-and-bound algorithm for integer linear programming is an exact method that solves problems by recursively dividing the feasible set and using linear programming relaxations to prune suboptimal regions. The steps are:\n1. Initialize with the original integer linear program (ILP) as the root node.\n2. Solve the linear programming (LP) relaxation of the current node to obtain a lower bound.\n3. If the LP solution is integer feasible, compare it with the current best solution and update if better.\n4. If the LP solution has fractional variables, select one such variable to branch on (e.g., based on strong branching or learned policies).\n5. Create two child nodes by adding constraints that fix the selected variable to 0 and 1, respectively.\n6. Recursively apply steps 2-5 to each child node.\n7. Prune nodes where the LP relaxation bound is worse than the best known solution, as they cannot contain an optimal solution.\n8. Continue until all nodes are pruned or solved, thereby proving optimality or infeasibility."
+  "raw_latex_model": "$$\\begin{aligned}\n& \\min \\sum_{i=1}^{n} \\sum_{j \\neq i, j=1}^{n} w_{ij} x_{ij} \\\\\n& \\text{subject to } \\sum_{i=1, i \\neq j}^{n} x_{ij} = 1 \\quad \\quad \\quad \\quad \\quad \\quad j \\in [n], \\\\\n& \\quad \\quad \\quad \\quad \\sum_{j=1, j \\neq i}^{n} x_{ij} = 1 \\quad \\quad \\quad \\quad \\quad \\quad i \\in [n], \\\\\n& \\quad \\quad \\quad \\quad \\sum_{i \\in Q} \\sum_{j \\notin Q} x_{ij} \\geq 1 \\quad \\quad \\quad \\forall Q \\subsetneq [n], |Q| \\geq 2.\n\\end{aligned}$$",
+  "algorithm_description": "The paper surveys the application of Graph Neural Networks (GNNs) to combinatorial optimization problems, including the Traveling Salesperson Problem (TSP). Various machine learning paradigms are reviewed: supervised learning for direct solution prediction or variable scoring, reinforcement learning for iterative solution construction (e.g., greedy node selection policies), unsupervised learning for constraint satisfaction via differentiable loss functions, and imitation learning for branching decisions in exact solvers. GNNs are often integrated with classical algorithms like branch-and-bound, local search, or constraint programming to enhance primal or dual solution processes."
 }

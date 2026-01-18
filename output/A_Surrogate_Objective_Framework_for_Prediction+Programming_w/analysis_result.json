@@ -13,16 +13,16 @@
     "Regret"
   ],
   "lp_model": {
-    "objective": "\\max_x g(\\theta, x) - \\alpha^T \\max(Cx - d, 0)",
+    "objective": "$\\max_x g(\\theta, x) - \\alpha^T \\max(Cx - d, 0)$",
     "constraints": [
-      "Ax \\leq b",
-      "Bx = c",
-      "x \\geq 0"
+      "$Ax \\leq b$",
+      "$Bx = c$",
+      "$x \\geq 0$"
     ],
     "variables": [
-      "x \\in \\mathbb{R}^n (decision variable)"
+      "$x \\in \\mathbb{R}^n$: decision variable vector"
     ]
   },
-  "raw_latex_model": "$$ \\max_x g(\\theta, x) - \\alpha^T \\max(z, 0), \\; z = Cx - d, \\; \\text{s.t.} \\; Ax \\leq b, Bx = c, x \\geq 0 $$",
-  "algorithm_description": "1. Soften Hard Constraints: Convert all hard constraints (inequalities, equalities, non-negativity) into soft constraints by adding penalty terms with bounded multipliers β, as derived in Section 3.1. 2. Surrogate Function: Replace the non-differentiable max operator with a differentiable piecewise surrogate function S(z) defined in Eq.7. 3. Numerical Solution: For each training batch, solve the optimization problem numerically using a solver (e.g., Gurobi) to find the optimal point and determine active constraints, resulting in diagonal matrices M and U. 4. Analytical Gradient Computation: Use the surrogate function to derive the closed-form solution for x from Eq.8 and compute the Jacobian ∂x/∂θ using Eq.9. 5. Model Update: Backpropagate gradients to update the prediction model parameters ψ via stochastic gradient descent."
+  "raw_latex_model": "$$\\max_x g(\\theta, x) - \\alpha^T \\max(z, 0), \\; z = Cx - d, \\; \\text{s.t.} \\; Ax \\leq b, Bx = c, x \\geq 0$$",
+  "algorithm_description": "The paper proposes a surrogate objective framework for prediction+optimization with soft constraints. It converts hard constraints into soft constraints with bounded multipliers, uses a differentiable surrogate for the max operator, and derives closed-form solutions for gradients. The method is applied to three specific problem variants: 1) Linear programming with soft constraints ($g(\\theta, x) = \\theta^T x$), 2) Quadratic programming with soft constraints ($g(\\theta, x) = \\theta^T x - x^T Q x$ with $Q$ positive semi-definite), and 3) Asymmetric soft constraint minimization ($\\max_x -(\\alpha_1^T \\max(Cx - d, 0) + \\alpha_2^T \\max(d - Cx, 0))$ with constraints $Bx = c, x \\geq 0$)."
 }

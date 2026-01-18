@@ -62,21 +62,42 @@ class PaperAnalyzer:
         Paper Text:
         {paper_markdown} 
         
-        Task: Extract the Mathematical Formulation (Subject To, Objective Function) and Algorithm description.
+        Task: Extract the Mathematical Formulation of the **UNDERLYING OPTIMIZATION PROBLEM** being solved.
+        
+        CRITICAL INSTRUCTION - READ CAREFULLY:
+        1. **Target:** Extract the mathematical definition of the Operations Research / Combinatorial Optimization problem (e.g., TSP, VRP, Bin Packing, Scheduling, SAT, MILP). 
+           - Look for "Objective Function", "Constraints", "Subject to", "Maximize/Minimize".
+           - Even if the paper solves it using Deep Learning, Reinforcement Learning, or GNNs, we want the MODEL of the **PROBLEM** (e.g. min sum distances), NOT the model of the neural network.
+
+        2. **Specificity:** Extract the **MOST SPECIFIC** problem formulation.
+           - If the paper discusses a General Problem (e.g. general Lot Sizing) but solves a SPECIFIC variant (e.g. Capacitated Lot Sizing with Setup Times), extract the **SPECIFIC VARIANT**.
+           - We need the exact constraints and objective used in the experiments/contribution, not the textbook definition.
+        
+        3. **Exclude:** Do NOT extract the equations of the Machine Learning method as the "lp_model". 
+           - Do NOT extract Loss Functions, Backpropagation equations, GNN aggregation formulas, attention weights, or generic MDP definitions unless they define the physical problem constraints.
+           - Those belong in "algorithm_description", not "lp_model".
+        
+        4. **Form:**
+           - Objective: The cost/reward function of the physical/logical problem.
+           - Constraints: The physical/logical constraints (capacity, time windows, non-overlapping).
+           - Variables: The decision variables (x_ij = 1 if edge is used).
+           - **Latex Formatting**: ALWAYS wrap Latex formulas in single dollar signs like $...$ for inline math or double $$...$$ for block math. Ensure all backslashes are properly escaped in JSON.
+
         Output valid JSON:
         {{
             "lp_model": {{
-                "objective": "Latex String (e.g. \\min x^T K x)",
-                "constraints": ["Latex String 1", ...],
-                "variables": ["Latex String - Description"]
+                "objective": "Latex String wrapped in $...$ (e.g. $\\min \\sum c_{{ij}} x_{{ij}}$)",
+                "constraints": ["Latex String 1 wrapped in $...$", "Latex String 2 wrapped in $...$", "... (Include ALL specific constraints defined in the problem formulation)"],
+                "variables": ["Latex String - Description (e.g. $x_{{ij}}$: binary decision variable)", ... (Include ALL key decision variables)"]
             }},
-            "raw_latex_model": "Original latex block",
-            "algorithm_description": "Step-by-step text description of the algorithm"
+            "raw_latex_model": "The latex block defining the OPTIMIZATION PROBLEM formulation (wrapped in $$...$$ if multi-line).",
+            "algorithm_description": "Brief description of the Machine Learning / Heuristic method used to solve this problem."
         }}
         """
         # Use Reasoning model for Math
         response = self.clients.get_reasoning_completion(
-            "You are an OR Expert.", prompt
+            "You are an OR Expert. Focus on extracting the Optimization Problem Formulation, not the AI Model.",
+            prompt,
         )
         return self._parse_with_repair(response) or {}
 

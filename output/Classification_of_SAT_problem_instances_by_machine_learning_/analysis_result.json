@@ -12,10 +12,14 @@
     "Correctly Classified Instances"
   ],
   "lp_model": {
-    "objective": "",
-    "constraints": [],
-    "variables": []
+    "objective": "$\\min 0$ (placeholder objective for feasibility problem; the goal is to find a satisfying assignment)",
+    "constraints": [
+      "$\\sum_{i \\in P_j} x_i + \\sum_{i \\in N_j} (1 - x_i) \\geq 1 \\quad \\forall j = 1, \\ldots, m$"
+    ],
+    "variables": [
+      "$x_i \\in \\{0,1\\} \\quad \\forall i = 1, \\ldots, n$: binary decision variable for each Boolean variable, where 1 represents True and 0 represents False"
+    ]
   },
-  "raw_latex_model": "",
-  "algorithm_description": "1. Feature Extraction: Use the CNFStats tool to extract 48 features from SAT problem instances in DIMACS format, including counts and ratios of variables, clauses, and specific clause types (e.g., unit, binary, Horn, black, white clauses).\n2. Data Preparation: Build training corpora (SAT33 and SAT19) from SATLIB benchmark problems, splitting data into training and test sets.\n3. Model Training: Train classifiers using machine learning algorithms. For neural networks, configure architecture (e.g., number of hidden layers, neurons per layer, activation function like sigmoid), set hyperparameters (e.g., learning rate, number of epochs), and train on the feature data. Also, train other classifiers such as Naive Bayes, Support Vector Machine (SVM), Decision Tree (J48), and Random Forest.\n4. Evaluation: Assess model performance using 10-fold cross-validation and metric like correctly classified instances (accuracy).\n5. Prediction: Use the trained model to predict the class (type) of new SAT instances based on their extracted features."
+  "raw_latex_model": "$$\\begin{aligned} & \\text{Variables:} \\\\ & \\quad x_i \\in \\{0,1\\}, \\quad i = 1, \\ldots, n \\\\ & \\text{Constraints:} \\\\ & \\quad \\sum_{i \\in P_j} x_i + \\sum_{i \\in N_j} (1 - x_i) \\geq 1, \\quad j = 1, \\ldots, m \\\\ & \\text{Objective:} \\\\ & \\quad \\min 0 \\end{aligned}$$",
+  "algorithm_description": "The paper uses machine learning methods to classify SAT problem instances. Features are extracted from CNF formulas using the CNFStats tool, which computes 48 properties such as number of variables, clauses, and clause types. These features are used to train classifiers including a multilayer perceptron neural network (with configurable layers, neurons, and activation functions), support vector machines, naive Bayes, decision trees (J48), and random forests. The models are trained and evaluated on corpora from SATLIB (SAT33 and SAT19) using 10-fold cross-validation, with random forest achieving the highest accuracy (up to 99.03%)."
 }

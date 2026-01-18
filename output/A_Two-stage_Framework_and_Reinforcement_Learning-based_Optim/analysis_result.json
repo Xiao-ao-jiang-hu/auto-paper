@@ -19,24 +19,23 @@
     "Generalization Capability"
   ],
   "lp_model": {
-    "objective": "\\max \\sum_{\\{i|r_i > 0\\}} p^{r_i}_i",
+    "objective": "$\\max \\sum_{\\{i|r_i > 0\\}} p^{r_i}_i$",
     "constraints": [
-      "\\text{card}(\\{r_i \\mid r_i > 0\\}) \\leq 1",
-      "\\sum_{\\{i|r_i = j\\}} Storage(i,j) \\leq Maxstorage(j)",
-      "\\sum_{\\{i|r_i = j\\}} Energy(i,j) \\leq MaxEnergy(j)",
-      "ws^{r_i}_i - es_i \\leq 0",
-      "es_i + d^{r_i}_i - we^{r_i}_i \\leq 0",
-      "(es_{i_0} - es_{i_1})(es_{i_0} - ee_{i_1}) > 0 \\quad \\forall i_0 \\neq i_1, r_{i_0} = r_{i_1}",
-      "(ee_{i_0} - es_{i_1})(ee_{i_0} - ee_{i_1}) > 0 \\quad \\forall i_0 \\neq i_1, r_{i_0} = r_{i_1}",
-      "|es_{i_0} - ee_{i_1}| \\geq MST(i_0, i_1) \\quad \\forall i_0 \\neq i_1, r_{i_0} = r_{i_1}",
-      "i = 1, 2, \\ldots, n",
-      "j = 1, 2, \\ldots, m"
+      "$\\text{card}(\\{r_i \\mid r_i > 0\\}) \\leq 1$",
+      "$\\sum_{\\{i|r_i = j\\}} Storage(i,j) \\leq Maxstorage(j), \\quad \\forall j$",
+      "$\\sum_{\\{i|r_i = j\\}} Energy(i,j) \\leq MaxEnergy(j), \\quad \\forall j$",
+      "$ws^{r_i}_i - es_i \\leq 0, \\quad \\forall i \\text{ with } r_i > 0$",
+      "$es_i + d^{r_i}_i - we^{r_i}_i \\leq 0, \\quad \\forall i \\text{ with } r_i > 0$",
+      "$(es_{i_0} - es_{i_1})(es_{i_0} - ee_{i_1}) > 0, \\quad \\forall i_0 \\neq i_1, r_{i_0} = r_{i_1}$",
+      "$(ee_{i_0} - es_{i_1})(ee_{i_0} - ee_{i_1}) > 0, \\quad \\forall i_0 \\neq i_1, r_{i_0} = r_{i_1}$",
+      "$|es_{i_0} - ee_{i_1}| \\geq MST(i_0, i_1), \\quad \\forall i_0 \\neq i_1, r_{i_0} = r_{i_1}$"
     ],
     "variables": [
-      "r_i: resource assignment for task i, with r_i = -1 if unscheduled, or j if scheduled on resource j",
-      "es_i: execution start time for task i"
+      "$r_i$: resource assignment for task $i$, with $r_i = -1$ if unscheduled or $j$ if scheduled on resource $j$",
+      "$es_i$: execution start time for task $i$, defined only if $r_i > 0$",
+      "$ee_i$: execution end time for task $i$, derived as $ee_i = es_i + d_i^{r_i}$ for $r_i > 0$"
     ]
   },
-  "raw_latex_model": "\\max \\sum_{\\{i|r_i > 0\\}} p^{r_i}_i \\tag{22}\nsubject to\n\\text{card}(\\{r_i \\mid r_i > 0\\}) \\leq 1 \\tag{23}\n\\sum_{\\{i|r_i = j\\}} Storage(i,j) \\leq Maxstorage(j) \\tag{24}\n\\sum_{\\{i|r_i = j\\}} Energy(i,j) \\leq MaxEnergy(j) \\tag{25}\nws^{r_i}_i - es_i \\leq 0 \\tag{26}\nes_i + d^{r_i}_i - we^{r_i}_i \\leq 0 \\tag{27}\n(es_{i_0} - es_{i_1})(es_{i_0} - ee_{i_1}) > 0 \\quad \\forall i_0 \\neq i_1, r_{i_0} = r_{i_1} \\tag{28}\n(ee_{i_0} - es_{i_1})(ee_{i_0} - ee_{i_1}) > 0 \\quad \\forall i_0 \\neq i_1, r_{i_0} = r_{i_1} \\tag{29}\n|es_{i_0} - ee_{i_1}| \\geq MST(i_0, i_1) \\quad \\forall i_0 \\neq i_1, r_{i_0} = r_{i_1} \\tag{30}\ni = 1, 2, \\ldots, n \\tag{31}\nj = 1, 2, \\ldots, m \\tag{32}",
-  "algorithm_description": "The algorithm is a two-stage framework combining reinforcement learning (RL) and operations research (OR) algorithms. Step 1: Initialize a deep Q-network (DQN) for value function approximation in the prior stage. Step 2: In the training phase, iterate until convergence: a. For the prior stage (assignment problem), use DQN to select an action (assign a task to a resource or terminate) based on the current state, balancing exploration and exploitation. b. For the rear stage (sequencing and timing problem), use an OR algorithm (either constructive heuristic HADRT or dynamic programming DP) to schedule the assigned tasks on each resource, satisfying constraints. c. Compute the reward as the change in the objective function value. d. Update the DQN using the reward and next state. Step 3: After training, in the testing phase, use the trained DQN to assign tasks, then apply the OR algorithm for final scheduling to obtain the solution."
+  "raw_latex_model": "$$\\begin{aligned}\n& \\max \\sum_{\\{i|r_i > 0\\}} p^{r_i}_i \\\\\n& \\text{s.t.} \\\\\n& \\text{card}(\\{r_i \\mid r_i > 0\\}) \\leq 1 \\\\\n& \\sum_{\\{i|r_i = j\\}} Storage(i,j) \\leq Maxstorage(j), \\quad \\forall j \\\\\n& \\sum_{\\{i|r_i = j\\}} Energy(i,j) \\leq MaxEnergy(j), \\quad \\forall j \\\\\n& ws^{r_i}_i - es_i \\leq 0, \\quad \\forall i \\text{ with } r_i > 0 \\\\\n& es_i + d^{r_i}_i - we^{r_i}_i \\leq 0, \\quad \\forall i \\text{ with } r_i > 0 \\\\\n& (es_{i_0} - es_{i_1})(es_{i_0} - ee_{i_1}) > 0, \\quad \\forall i_0 \\neq i_1, r_{i_0} = r_{i_1} \\\\\n& (ee_{i_0} - es_{i_1})(ee_{i_0} - ee_{i_1}) > 0, \\quad \\forall i_0 \\neq i_1, r_{i_0} = r_{i_1} \\\\\n& |es_{i_0} - ee_{i_1}| \\geq MST(i_0, i_1), \\quad \\forall i_0 \\neq i_1, r_{i_0} = r_{i_1} \\\\\n& i = 1,2,\\ldots,n \\\\\n& j = 1,2,\\ldots,m\n\\end{aligned}$$",
+  "algorithm_description": "A two-stage framework combining deep Q-learning (DQN) for the assignment problem (prior stage) and traditional operations research algorithms (constructive heuristic HADRT or dynamic programming DP) for the sequencing and timing problem (rear stage)."
 }

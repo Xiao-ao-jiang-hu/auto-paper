@@ -15,14 +15,14 @@
     "TPR"
   ],
   "lp_model": {
-    "objective": "\\min_{W \\in \\mathbb{R}^{d \\times d}} F(W) = \\frac{1}{2n} \\| \\mathbf{X} - \\mathbf{X}W \\|_F^2 + \\lambda \\|W\\|_1",
+    "objective": "$\\min_{W \\in \\mathbb{R}^{d \\times d}} \\left( \\frac{1}{2n} \\| \\mathbf{X} - \\mathbf{X}W \\|_F^2 + \\lambda \\|W\\|_1 \\right)$",
     "constraints": [
-      "h(W) = \\operatorname{tr} \\left( e^{W \\circ W} \\right) - d = 0"
+      "$\\operatorname{tr} \\left( e^{W \\circ W} \\right) - d = 0$"
     ],
     "variables": [
-      "W \\in \\mathbb{R}^{d \\times d} - weighted adjacency matrix representing the directed graph structure"
+      "$W \\in \\mathbb{R}^{d \\times d}$: weighted adjacency matrix where $w_{ij}$ represents the weight of the edge from node $j$ to node $i$"
     ]
   },
-  "raw_latex_model": "\\text{(ECP)} \\quad \\begin{aligned} & \\min_{W \\in \\mathbb{R}^{d \\times d}} \\quad F(W) \\\\ & \\text{subject to} \\quad h(W) = 0. \\end{aligned} \\text{ where } F(W) = \\frac{1}{2n} \\| \\mathbf{X} - \\mathbf{X}W \\|_F^2 + \\lambda \\|W\\|_1 \\text{ and } h(W) = \\operatorname{tr} \\left( e^{W \\circ W} \\right) - d.",
-  "algorithm_description": "The NOTEARS algorithm solves the equality-constrained program using an augmented Lagrangian method with proximal quasi-Newton for subproblems. Steps: 1. Initialize with parameters: initial guess (W_0, α_0), progress rate c ∈ (0,1), tolerance ε > 0, threshold ω > 0. 2. For t = 0,1,2,...: a. Solve the primal subproblem: W_{t+1} ← argmin_W L^ρ(W, α_t), where L^ρ(W, α) = F(W) + (ρ/2)|h(W)|^2 + α h(W), using a proximal quasi-Newton method (Algorithm 2) to handle the ℓ1-regularization. Adjust ρ such that h(W_{t+1}) < c h(W_t). b. Perform dual ascent: α_{t+1} ← α_t + ρ h(W_{t+1}). c. If h(W_{t+1}) < ε, set W̃_ECP = W_{t+1} and break. 3. Apply thresholding: return the final estimate Ŵ = W̃_ECP ∘ 1(|W̃_ECP| > ω), which sets entries with absolute value less than ω to zero."
+  "raw_latex_model": "$$\\min_{W \\in \\mathbb{R}^{d \\times d}} \\quad \\frac{1}{2n} \\| \\mathbf{X} - \\mathbf{X}W \\|_F^2 + \\lambda \\|W\\|_1 \\quad \\text{subject to} \\quad \\operatorname{tr} \\left( e^{W \\circ W} \\right) - d = 0.$$",
+  "algorithm_description": "The NOTEARS algorithm solves the equality-constrained program using an augmented Lagrangian method to handle the acyclicity constraint $h(W)=0$, with proximal quasi-Newton (PQN) for optimizing the unconstrained subproblems that include $\\ell_1$-regularization. This approach transforms the combinatorial DAG learning problem into a continuous optimization problem solvable by standard numerical methods."
 }

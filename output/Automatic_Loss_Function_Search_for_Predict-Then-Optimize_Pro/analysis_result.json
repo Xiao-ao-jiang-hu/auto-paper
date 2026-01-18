@@ -13,14 +13,15 @@
     "SPO loss"
   ],
   "lp_model": {
-    "objective": "\\maximize_{z} U_c(z)",
+    "objective": "$\\max \\sum_{i=1}^{d} c_i z_i$",
     "constraints": [
-      "z \\in Z"
+      "$\\sum_{i=1}^{d} w_i z_i \\leq B$",
+      "$z_i \\in \\{0,1\\}, \\forall i=1,\\dots,d$"
     ],
     "variables": [
-      "z: decision variable"
+      "$z_i$: binary decision variable indicating whether item $i$ is selected"
     ]
   },
-  "raw_latex_model": "\\maximize_{z} U_c(z) \\quad \\text{subject to } z \\in Z",
-  "algorithm_description": "The APOC (Automatic Prediction and Optimization Connector) algorithm searches for an appropriate ATGP loss function for predict-then-optimize problems with strong ranking property. The steps are as follows:\n1. Initialize with a gradient-based prediction model f_w, initial loss parameters θ_0, number of search iterations T, number of samples per iteration M, and exploration ratio σ.\n2. For each iteration t from 1 to T:\n   a. For each sample m from 1 to M:\n      i. Sample DoG filter parameters μ^m from a truncated normal distribution N_truncated(θ_{t-1}, σ^2 I).\n      ii. Compute the ATGP loss function ℓ^m parameterized by μ^m.\n      iii. Train the prediction model to minimize ℓ^m on the training set using stochastic gradient descent, obtaining model parameters ŵ.\n      iv. Evaluate the model on the validation set to compute predictions ĉ^{(i)} = f_ŵ(x^{(i)}) for all i in the validation set V.\n      v. Compute the reward R_t^m as the negative total SPO loss on the validation set: R_t^m = -∑_{i∈V} ℓ_SPO(ĉ^{(i)}, c^{(i)}).\n   b. Update the loss parameters θ_t using a policy gradient method (e.g., REINFORCE or PPO2) based on the rewards from all M samples.\n3. Output the final loss parameters θ^* = θ_T and the final prediction model parameters w^* obtained by training the model to minimize the ATGP loss parameterized by θ^* on the training set."
+  "raw_latex_model": "$$\\begin{aligned} \\max_{z} & \\sum_{i=1}^{d} c_i z_i \\\\ \\text{s.t.} & \\sum_{i=1}^{d} w_i z_i \\leq B \\\\ & z_i \\in \\{0,1\\}, \\forall i=1,\\dots,d \\end{aligned}$$",
+  "algorithm_description": "The paper addresses predict-then-optimize (PTO) problems where the parameters of an optimization problem (e.g., item values in knapsack) are predicted from features using a neural network. The neural network is trained with a loss function (ATGP) that is automatically searched by the APOC algorithm. APOC uses policy gradient methods (REINFORCE or PPO2) to search over TGP matrices parameterized by Derivative-of-Gaussian (DoG) wavelet filters, aiming to minimize the SPO loss (regret) on a validation set. After training, the predicted parameters are fed into a traditional optimization solver (e.g., Gurobi) to obtain the final solution."
 }

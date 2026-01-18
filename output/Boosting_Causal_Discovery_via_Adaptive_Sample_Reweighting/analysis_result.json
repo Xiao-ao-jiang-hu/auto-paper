@@ -20,16 +20,16 @@
     "Structural Intervention Distance (SID)"
   ],
   "lp_model": {
-    "objective": "\\min_{\\mathcal{G}} S_{\\mathbf{w}^*}(\\mathcal{G}; \\mathbf{X}) + \\mathcal{P}_{DAG}(\\mathcal{G})",
+    "objective": "$\\min_{\\mathcal{G}} S(\\mathcal{G}; \\mathbf{X}) = \\mathcal{L}(\\mathcal{G}; \\mathbf{X}) + \\lambda \\mathcal{R}_{\\text{sparse}}(\\mathcal{G})$",
     "constraints": [
-      "\\mathbf{w}^* \\in \\arg\\max_{\\mathbf{w} \\in \\mathbb{C}(\\tau)} S_{\\mathbf{w}}(\\mathcal{G}; \\mathbf{X})",
-      "\\mathbf{w} \\in \\mathbb{C}(\\tau) := \\{\\mathbf{w} : 0 < \\frac{\\tau}{n} \\leq w_1, \\dots, w_n \\leq \\frac{1}{\\tau n}, \\sum_{i=1}^{n} w_i = 1\\}"
+      "$H(\\mathcal{G}) = 0$ (differentiable acyclicity constraint, e.g., $H(\\mathcal{G}) = \\text{Tr}(e^{\\mathcal{A} \\odot \\mathcal{A}}) - d$ for adjacency matrix $\\mathcal{A}$)",
+      "$\\mathcal{G}$ is a directed acyclic graph (DAG)"
     ],
     "variables": [
-      "\\mathcal{G} - the directed acyclic graph (DAG) representing causal structure, often parameterized by an adjacency matrix",
-      "\\mathbf{w} - the sample reweighting vector of length n, where w_i is the weight for the i-th observational sample \\mathbf{x}_i"
+      "$\\mathcal{G}$: a directed graph representing the causal structure",
+      "$\\mathcal{A}(\\mathcal{G}) \\in \\mathbb{R}^{d \\times d}$ or $B \\in \\mathbb{R}^{d \\times d}$: weighted adjacency matrix where $[\\mathcal{A}]_{ij}$ or $B_{ij}$ indicates the presence or weight of edge from $X_j$ to $X_i$"
     ]
   },
-  "raw_latex_model": "\\begin{aligned}\n\\min_{\\mathcal{G}} \\ & S_{\\mathbf{w}^*}(\\mathcal{G}; \\mathbf{X}) + \\mathcal{P}_{DAG}(\\mathcal{G}), \\\\\n\\text{s.t.} \\ & \\mathbf{w}^* \\in \\arg\\max_{\\mathbf{w} \\in \\mathbb{C}(\\tau)} S_{\\mathbf{w}}(\\mathcal{G}; \\mathbf{X}),\n\\end{aligned}",
-  "algorithm_description": "ReScore is a bilevel optimization framework that alternates between learning adaptive sample weights and optimizing the DAG learner. The steps are as follows:\n1. Initialize the DAG learner (e.g., with a random or pre-trained causal graph).\n2. Repeat for a specified number of outer iterations (or until convergence):\n   a. Inner Loop (Weight Update): Fix the current DAG learner \\mathcal{G}. Compute the loss l(\\mathbf{x}_i, f(\\mathbf{x}_i)) for each sample i. Then, solve the inner optimization problem to update the sample weights \\mathbf{w} by maximizing the reweighted score function S_{\\mathbf{w}}(\\mathcal{G}; \\mathbf{X}) = \\sum_{i=1}^{n} w_i l(\\mathbf{x}_i, f(\\mathbf{x}_i)) + \\lambda\\mathcal{R}_{\\text{sparse}}(\\mathcal{G}) subject to the constraints \\mathbf{w} \\in \\mathbb{C}(\\tau). This typically involves gradient-based methods or closed-form solutions depending on the loss function.\n   b. Outer Loop (DAG Update): Fix the updated weights \\mathbf{w}^* from the inner loop. Then, update the DAG learner \\mathcal{G} by minimizing the outer objective S_{\\mathbf{w}^*}(\\mathcal{G}; \\mathbf{X}) + \\mathcal{P}_{DAG}(\\mathcal{G}), where \\mathcal{P}_{DAG}(\\mathcal{G}) enforces the DAG constraint (e.g., via augmented Lagrangian). This is done using standard differentiable optimization techniques (e.g., stochastic gradient descent).\n3. Output the final DAG \\mathcal{G} after training. The adaptive weights \\mathbf{w} are learned dynamically to upweight informative samples and downweight easy-to-fit samples, thereby boosting causal discovery performance."
+  "raw_latex_model": "$$\\min_{\\mathcal{G}} \\; S(\\mathcal{G}; \\mathbf{X}) \\quad \\text{s.t.} \\quad H(\\mathcal{G}) = 0,$$ where $S(\\mathcal{G}; \\mathbf{X}) = \\mathcal{L}(\\mathcal{G}; \\mathbf{X}) + \\lambda \\mathcal{R}_{\\text{sparse}}(\\mathcal{G})$ is the score function, $\\mathcal{L}(\\mathcal{G}; \\mathbf{X})$ is the goodness-of-fit measure (e.g., least-squares loss), $\\mathcal{R}_{\\text{sparse}}(\\mathcal{G})$ is a sparsity regularization term, and $H(\\mathcal{G}) = 0$ is a differentiable constraint enforcing acyclicity.",
+  "algorithm_description": "ReScore is a model-agnostic bilevel optimization framework that boosts differentiable score-based causal discovery methods by learning adaptive sample weights. It alternates between optimizing the DAG learner with reweighted samples (outer loop) and updating the weights based on the learner's errors to upweight informative samples and downweight easy-to-fit samples (inner loop)."
 }

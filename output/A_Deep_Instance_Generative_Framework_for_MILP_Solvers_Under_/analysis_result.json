@@ -19,16 +19,16 @@
     "Performance improvement (%)"
   ],
   "lp_model": {
-    "objective": "\\min_{\\boldsymbol{x} \\in \\mathbb{R}^n} \\boldsymbol{c}^\\top \\boldsymbol{x}",
+    "objective": "$\\min_{\\boldsymbol{x} \\in \\mathbb{R}^n} \\boldsymbol{c}^\\top \\boldsymbol{x}$",
     "constraints": [
-      "\\boldsymbol{A}\\boldsymbol{x} \\leq \\boldsymbol{b}",
-      "\\boldsymbol{l} \\leq \\boldsymbol{x} \\leq \\boldsymbol{u}",
-      "x_j \\in \\mathbb{Z}, \\quad \\forall j \\in \\mathcal{I}"
+      "$\\boldsymbol{A}\\boldsymbol{x} \\leq \\boldsymbol{b}$",
+      "$\\boldsymbol{l} \\leq \\boldsymbol{x} \\leq \\boldsymbol{u}$",
+      "$x_j \\in \\mathbb{Z}, \\, \\forall j \\in \\mathcal{I}$"
     ],
     "variables": [
-      "\\boldsymbol{x} \\in \\mathbb{R}^n \\text{ with } x_j \\in \\mathbb{Z} \\text{ for } j \\in \\mathcal{I}, \\text{ where } \\mathcal{I} \\subset \\{1, 2, \\cdots, n\\}"
+      "$\\boldsymbol{x} \\in \\mathbb{R}^n$: vector of decision variables, where for $j \\in \\mathcal{I} \\subset \\{1,2,\\cdots,n\\}$, $x_j$ is constrained to be an integer, and otherwise continuous."
     ]
   },
-  "raw_latex_model": "\\min_{\\boldsymbol{x} \\in \\mathbb{R}^n} \\boldsymbol{c}^\\top \\boldsymbol{x}, \\quad \\text{s.t.} \\, \\boldsymbol{A}\\boldsymbol{x} \\leq \\boldsymbol{b}, \\, \\boldsymbol{l} \\leq \\boldsymbol{x} \\leq \\boldsymbol{u}, \\, x_j \\in \\mathbb{Z}, \\, \\forall j \\in \\mathcal{I},",
-  "algorithm_description": "G2MILP is a deep generative framework for MILP instances based on a masked variational autoencoder (VAE) paradigm. The algorithm proceeds as follows: 1. Data Representation: Represent each MILP instance as a weighted bipartite graph where constraint vertices correspond to constraints, variable vertices correspond to variables, and edges represent non-zero coefficients with weights. 2. Masking Process: During training, uniformly sample a constraint vertex, mask it and its adjacent edges by replacing it with a [mask] token and adding virtual edges to all variable vertices. 3. Encoding: Use a graph neural network (GNN) to obtain node representations, then apply networks to compute mean and log variance for each vertex, and sample latent vectors from a Gaussian distribution. 4. Decoding: Reconstruct the masked constraint using four cooperative modules: (a) Bias Predictor predicts the bias term (right-hand side) from the masked vertex's representation and latent vector. (b) Degree Predictor predicts the degree (number of connected variables) similarly. (c) Logits Predictor predicts connection logits for each variable vertex using their representations and latent vectors, then selects top-k based on predicted degree. (d) Weights Predictor predicts edge weights (coefficients) for connected variables. 5. Training: Minimize the loss function comprising reconstruction loss (sum of losses from the four predictors) and KL divergence to regularize the latent space, using hyperparameters to balance terms. 6. Inference: Discard the encoder, sample latent vectors from a standard Gaussian distribution, and iteratively mask and replace constraint vertices in the graph for a specified number of iterations (controlled by masking ratio η) to generate new MILP instances."
+  "raw_latex_model": "$$\\min_{\\boldsymbol{x} \\in \\mathbb{R}^n} \\boldsymbol{c}^\\top \\boldsymbol{x}, \\quad \\text{s.t.} \\, \\boldsymbol{A}\\boldsymbol{x} \\leq \\boldsymbol{b}, \\, \\boldsymbol{l} \\leq \\boldsymbol{x} \\leq \\boldsymbol{u}, \\, x_j \\in \\mathbb{Z}, \\, \\forall j \\in \\mathcal{I},$$ where $\\boldsymbol{c} \\in \\mathbb{R}^n$, $\\boldsymbol{A} \\in \\mathbb{R}^{m \\times n}$, $\\boldsymbol{b} \\in \\mathbb{R}^m$, $\\boldsymbol{l} \\in (\\mathbb{R} \\cup \\{-\\infty\\})^n$, $\\boldsymbol{u} \\in (\\mathbb{R} \\cup \\{+\\infty\\})^n$, and $\\mathcal{I} \\subset \\{1, 2, \\cdots, n\\}$.",
+  "algorithm_description": "G2MILP is a deep generative framework for MILP instances. It uses a masked variational autoencoder (VAE) paradigm, where MILP instances are represented as weighted bipartite graphs. The model iteratively corrupts and replaces constraint vertices in the graph using sampled latent vectors to generate new instances, balancing novelty and preservation of structural and computational hardness."
 }

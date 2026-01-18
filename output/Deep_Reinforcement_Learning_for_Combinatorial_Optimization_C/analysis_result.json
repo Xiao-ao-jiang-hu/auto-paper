@@ -1,0 +1,37 @@
+{
+  "paper_id": "Deep_Reinforcement_Learning_for_Combinatorial_Optimization_C",
+  "title": "Deep Reinforcement Learning for Combinatorial Optimization: Covering Salesman Problems",
+  "abstract": "This paper introduces a new deep learning approach to approximately solve the Covering Salesman Problem (CSP). In this approach, given the city locations of a CSP as input, a deep neural network model is designed to directly output the solution. It is trained using deep reinforcement learning without supervision. Specifically, in the model, we apply the Multi-head Attention to capture the structural patterns, and design a dynamic embedding to handle the dynamic patterns of the problem. Once the model is trained, it can generalize to various types of CSP tasks (different sizes and topologies) with no need of re-training. Through controlled experiments, the proposed approach shows desirable time complexity: it runs more than 20 times faster than the traditional heuristic solvers with a tiny gap of optimality. Moreover, it significantly outperforms the current state-of-the-art deep learning approaches for combinatorial optimization in the aspect of both training and inference. In comparison with traditional solvers, this approach is highly desirable for most of the challenging tasks in practice that are usually large-scale and require quick decisions.",
+  "problem_description_natural": "The Covering Salesman Problem (CSP) is a generalization of the Traveling Salesman Problem (TSP). Given a set of cities with their spatial locations, each city has a predefined covering distance. The goal is to find a minimum-length tour over a subset of the cities such that every city is either visited directly or is within the covering distance of at least one city on the tour. If all covering distances are zero, the problem reduces to the classical TSP. The CSP arises in real-world applications like emergency management and healthcare delivery routing, where it is not necessary or feasible to visit every location directly.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "Generated CSP instances (NC=7)",
+    "Generated CSP instances (NC=11)",
+    "Generated CSP instances (NC=15)",
+    "Generated CSP instances (random NC 2-15)",
+    "Generated CSP instances (fixed coverage radius 0.2)",
+    "Generated CSP instances (variable coverage radius [0,0.25])"
+  ],
+  "performance_metrics": [
+    "Average predicted tour length",
+    "Optimality gap",
+    "Execution time",
+    "Training time"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\sum_{(i,j) \\in E} c_{ij} x_{ij}$",
+    "constraints": [
+      "$y_j + \\sum_{i \\in V: j \\in S_i} y_i \\geq 1, \\quad \\forall j \\in V$",
+      "$\\sum_{j \\in V} x_{ij} = 2 y_i, \\quad \\forall i \\in V$",
+      "$\\sum_{i \\in U, j \\in U} x_{ij} \\leq \\sum_{i \\in U} y_i - 1, \\quad \\forall U \\subseteq V, 2 \\leq |U| \\leq |V| - 1$",
+      "$x_{ij} \\in \\{0,1\\}, \\quad \\forall (i,j) \\in E$",
+      "$y_i \\in \\{0,1\\}, \\quad \\forall i \\in V$"
+    ],
+    "variables": [
+      "$x_{ij}$: binary decision variable indicating if edge $(i,j)$ is used in the tour",
+      "$y_i$: binary decision variable indicating if city $i$ is visited (on the tour)"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned}\n\\min & \\sum_{(i,j) \\in E} c_{ij} x_{ij} \\\\\n\\text{s.t.} & \\quad y_j + \\sum_{i \\in V: j \\in S_i} y_i \\geq 1, \\quad \\forall j \\in V \\\\\n& \\quad \\sum_{j \\in V} x_{ij} = 2 y_i, \\quad \\forall i \\in V \\\\\n& \\quad \\sum_{i \\in U, j \\in U} x_{ij} \\leq \\sum_{i \\in U} y_i - 1, \\quad \\forall U \\subseteq V, 2 \\leq |U| \\leq |V| - 1 \\\\\n& \\quad x_{ij} \\in \\{0,1\\}, \\quad \\forall (i,j) \\in E \\\\\n& \\quad y_i \\in \\{0,1\\}, \\quad \\forall i \\in V\n\\end{aligned}$$",
+  "algorithm_description": "The paper proposes a deep reinforcement learning approach using an attention-based neural network model with multi-head attention and dynamic embeddings to capture static and dynamic patterns of the CSP. The model is trained in an unsupervised manner using the REINFORCE algorithm with a greedy rollout baseline, directly outputting solutions without requiring re-training for different instances or variants."
+}

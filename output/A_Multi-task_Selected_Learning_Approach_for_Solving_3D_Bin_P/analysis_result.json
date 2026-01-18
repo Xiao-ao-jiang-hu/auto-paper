@@ -15,29 +15,29 @@
     "Cost Reduction Rate"
   ],
   "lp_model": {
-    "objective": "\\min \\ L \\cdot W + L \\cdot H + W \\cdot H",
+    "objective": "$\\min L \\cdot W + L \\cdot H + W \\cdot H$",
     "constraints": [
-      "s_{ij} + u_{ij} + b_{ij} = 1",
-      "\\delta_{i1} + \\delta_{i2} + \\delta_{i3} + \\delta_{i4} + \\delta_{i5} + \\delta_{i6} = 1",
-      "x_i - x_j + L \\cdot s_{ij} \\leq L - \\hat{l}_i",
-      "y_i - y_j + W \\cdot b_{ij} \\leq W - \\hat{w}_i",
-      "z_i - z_j + H \\cdot u_{ij} \\leq H - \\hat{h}_i",
-      "0 \\leq x_i \\leq L - \\hat{l}_i",
-      "0 \\leq y_i \\leq W - \\hat{w}_i",
-      "0 \\leq z_i \\leq H - \\hat{h}_i",
-      "\\hat{l}_i = \\delta_{i1} l_i + \\delta_{i2} l_i + \\delta_{i3} w_i + \\delta_{i4} w_i + \\delta_{i5} h_i + \\delta_{i6} h_i",
-      "\\hat{w}_i = \\delta_{i1} w_i + \\delta_{i2} w_i + \\delta_{i3} l_i + \\delta_{i4} l_i + \\delta_{i5} l_i + \\delta_{i6} w_i",
-      "\\hat{h}_i = \\delta_{i1} h_i + \\delta_{i2} w_i + \\delta_{i3} h_i + \\delta_{i4} l_i + \\delta_{i5} w_i + \\delta_{i6} l_i",
-      "s_{ij}, u_{ij}, b_{ij} \\in \\{0, 1\\}",
-      "\\delta_{i1}, \\delta_{i2}, \\delta_{i3}, \\delta_{i4}, \\delta_{i5}, \\delta_{i6} \\in \\{0, 1\\}"
+      "$s_{ij} + u_{ij} + b_{ij} = 1$",
+      "$\\delta_{i1} + \\delta_{i2} + \\delta_{i3} + \\delta_{i4} + \\delta_{i5} + \\delta_{i6} = 1$",
+      "$x_i - x_j + L \\cdot s_{ij} \\leq L - \\hat{l}_i$",
+      "$y_i - y_j + W \\cdot b_{ij} \\leq W - \\hat{w}_i$",
+      "$z_i - z_j + H \\cdot u_{ij} \\leq H - \\hat{h}_i$",
+      "$0 \\leq x_i \\leq L - \\hat{l}_i$",
+      "$0 \\leq y_i \\leq W - \\hat{w}_i$",
+      "$0 \\leq z_i \\leq H - \\hat{h}_i$",
+      "$\\hat{l}_i = \\delta_{i1} l_i + \\delta_{i2} l_i + \\delta_{i3} w_i + \\delta_{i4} w_i + \\delta_{i5} h_i + \\delta_{i6} h_i$",
+      "$\\hat{w}_i = \\delta_{i1} w_i + \\delta_{i2} w_i + \\delta_{i3} l_i + \\delta_{i4} l_i + \\delta_{i5} l_i + \\delta_{i6} w_i$",
+      "$\\hat{h}_i = \\delta_{i1} h_i + \\delta_{i2} w_i + \\delta_{i3} h_i + \\delta_{i4} l_i + \\delta_{i5} w_i + \\delta_{i6} l_i$",
+      "$s_{ij}, u_{ij}, b_{ij} \\in \\{0, 1\\}$",
+      "$\\delta_{i1}, \\delta_{i2}, \\delta_{i3}, \\delta_{i4}, \\delta_{i5}, \\delta_{i6} \\in \\{0, 1\\}$"
     ],
     "variables": [
-      "L, W, H: Length, width, and height of the bin (continuous decision variables)",
-      "x_i, y_i, z_i: Front-left-bottom coordinates of item i (continuous variables)",
-      "s_{ij}, u_{ij}, b_{ij}: Binary variables indicating if item i is left of, under, or back of item j, respectively",
-      "\\delta_{i1}, \\delta_{i2}, \\delta_{i3}, \\delta_{i4}, \\delta_{i5}, \\delta_{i6}: Binary variables for the orientation of item i (e.g., front-up, front-down, etc.)"
+      "$L, W, H$: dimensions of the bin (continuous variables)",
+      "$x_i, y_i, z_i$: coordinates of the front-left-bottom corner of item i (continuous variables)",
+      "$s_{ij}, u_{ij}, b_{ij}$: binary variables indicating if item i is left of, under, or back of item j, respectively",
+      "$\\delta_{i1}, \\delta_{i2}, \\delta_{i3}, \\delta_{i4}, \\delta_{i5}, \\delta_{i6}$: binary variables for the orientation of item i"
     ]
   },
-  "raw_latex_model": "$$\\min \\ L \\cdot W + L \\cdot H + W \\cdot H$$\n\nsubject to the following set of constraints:\n\n$$s_{ij} + u_{ij} + b_{ij} = 1 \\tag{1}$$\n$$\\delta_{i1} + \\delta_{i2} + \\delta_{i3} + \\delta_{i4} + \\delta_{i5} + \\delta_{i6} = 1 \\tag{2}$$\n$$x_i - x_j + L \\cdot s_{ij} \\leq L - \\hat{l}_i \\tag{3}$$\n$$y_i - y_j + W \\cdot b_{ij} \\leq W - \\hat{w}_i \\tag{4}$$\n$$z_i - z_j + H \\cdot u_{ij} \\leq H - \\hat{h}_i \\tag{5}$$\n$$0 \\leq x_i \\leq L - \\hat{l}_i \\tag{6}$$\n$$0 \\leq y_i \\leq W - \\hat{w}_i \\tag{7}$$\n$$0 \\leq z_i \\leq H - \\hat{h}_i \\tag{8}$$\n$$\\hat{l}_i = \\delta_{i1} l_i + \\delta_{i2} l_i + \\delta_{i3} w_i + \\delta_{i4} w_i + \\delta_{i5} h_i + \\delta_{i6} h_i \\tag{9}$$\n$$\\hat{w}_i = \\delta_{i1} w_i + \\delta_{i2} w_i + \\delta_{i3} l_i + \\delta_{i4} l_i + \\delta_{i5} l_i + \\delta_{i6} w_i \\tag{10}$$\n$$\\hat{h}_i = \\delta_{i1} h_i + \\delta_{i2} w_i + \\delta_{i3} h_i + \\delta_{i4} l_i + \\delta_{i5} w_i + \\delta_{i6} l_i \\tag{11}$$\n$$s_{ij}, u_{ij}, b_{ij} \\in \\{0, 1\\} \\tag{12}$$\n$$\\delta_{i1}, \\delta_{i2}, \\delta_{i3}, \\delta_{i4}, \\delta_{i5}, \\delta_{i6} \\in \\{0, 1\\} \\tag{13}$$",
-  "algorithm_description": "The Multi-task Selected Learning (MTSL) algorithm trains a neural model to generate packing sequences and orientations for the 3D-FBPP. The steps are:\n1. Initialize parameters for the sequence task (θ_seq) and orientation task (θ_ori), and an empty best solution pool D.\n2. For each training step up to T:\n   a. Sample a batch of problem instances from the training set.\n   b. For each instance, generate a packing sequence s using the current sequence policy P_θ_seq.\n   c. For k times, sample orientations o using the orientation policy P_θ_ori, compute spatial locations f using the Least Waste Space Criteria (LWSC) heuristic, and calculate the surface area SA(s,o|x).\n   d. Keep the best solution (with minimal surface area) from the k samples.\n   e. Compare this with the best solution in pool D for that instance, update D with the overall best solution (s, o*, f, x).\n   f. Compute gradients for the sequence and orientation tasks based on the best solution.\n   g. Select one of the loss functions (sequence loss L_seq, orientation loss L_ori, or combined loss L_all) according to a probability distribution that decays over training steps.\n   h. Update the model parameters using the Adam optimizer with the selected gradient.\n3. After training, return the learned parameters θ_seq and θ_ori."
+  "raw_latex_model": "$$\\min \\ L \\cdot W + L \\cdot H + W \\cdot H$$ subject to the following set of constraints: $$s_{ij} + u_{ij} + b_{ij} = 1 \\tag{1}$$ $$\\delta_{i1} + \\delta_{i2} + \\delta_{i3} + \\delta_{i4} + \\delta_{i5} + \\delta_{i6} = 1 \\tag{2}$$ $$x_i - x_j + L \\cdot s_{ij} \\leq L - \\hat{l}_i \\tag{3}$$ $$y_i - y_j + W \\cdot b_{ij} \\leq W - \\hat{w}_i \\tag{4}$$ $$z_i - z_j + H \\cdot u_{ij} \\leq H - \\hat{h}_i \\tag{5}$$ $$0 \\leq x_i \\leq L - \\hat{l}_i \\tag{6}$$ $$0 \\leq y_i \\leq W - \\hat{w}_i \\tag{7}$$ $$0 \\leq z_i \\leq H - \\hat{h}_i \\tag{8}$$ $$\\hat{l}_i = \\delta_{i1} l_i + \\delta_{i2} l_i + \\delta_{i3} w_i + \\delta_{i4} w_i + \\delta_{i5} h_i + \\delta_{i6} h_i \\tag{9}$$ $$\\hat{w}_i = \\delta_{i1} w_i + \\delta_{i2} w_i + \\delta_{i3} l_i + \\delta_{i4} l_i + \\delta_{i5} l_i + \\delta_{i6} w_i \\tag{10}$$ $$\\hat{h}_i = \\delta_{i1} h_i + \\delta_{i2} w_i + \\delta_{i3} h_i + \\delta_{i4} l_i + \\delta_{i5} w_i + \\delta_{i6} l_i \\tag{11}$$ $$s_{ij}, u_{ij}, b_{ij} \\in \\{0, 1\\} \\tag{12}$$ $$\\delta_{i1}, \\delta_{i2}, \\delta_{i3}, \\delta_{i4}, \\delta_{i5}, \\delta_{i6} \\in \\{0, 1\\} \\tag{13}$$",
+  "algorithm_description": "A multi-task selected learning framework using neural networks with reinforcement learning for sequence generation and supervised learning for orientation prediction, incorporating intra-attention mechanisms and hill-climbing ideas to learn a heuristic-like policy."
 }

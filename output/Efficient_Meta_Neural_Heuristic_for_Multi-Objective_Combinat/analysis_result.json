@@ -1,0 +1,36 @@
+{
+  "paper_id": "Efficient_Meta_Neural_Heuristic_for_Multi-Objective_Combinat",
+  "title": "Efficient Meta Neural Heuristic for Multi-Objective Combinatorial Optimization",
+  "abstract": "Recently, neural heuristics based on deep reinforcement learning have exhibited promise in solving multi-objective combinatorial optimization problems (MOCOPs). However, they are still struggling to achieve high learning efficiency and solution quality. To tackle this issue, we propose an efficient meta neural heuristic (EMNH), in which a meta-model is first trained and then fine-tuned with a few steps to solve corresponding single-objective subproblems. Specifically, for the training process, a (partial) architecture-shared multi-task model is leveraged to achieve parallel learning for the meta-model, so as to speed up the training; meanwhile, a scaled symmetric sampling method with respect to the weight vectors is designed to stabilize the training. For the fine-tuning process, an efficient hierarchical method is proposed to systematically tackle all the subproblems. Experimental results on the multi-objective traveling salesman problem (MOTSP), multi-objective capacitated vehicle routing problem (MOCVRP), and multi-objective knapsack problem (MOKP) show that, EMNH is able to outperform the state-of-the-art neural heuristics in terms of solution quality and learning efficiency, and yield competitive solutions to the strong traditional heuristics while consuming much shorter time.",
+  "problem_description_natural": "The paper addresses multi-objective combinatorial optimization problems (MOCOPs), which involve simultaneously optimizing multiple conflicting objectives over a discrete decision space. Since exact solutions are often intractable (NP-hard), the goal is to find a set of trade-off solutions known as Pareto-optimal solutions. The authors decompose the MOCOP into multiple single-objective subproblems using scalarization methods like weighted sum, each guided by a weight (preference) vector. These subproblems are then solved using a neural heuristic framework based on deep reinforcement learning, enhanced by meta-learning for improved efficiency and stability.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "TSPLIB",
+    "Bi-TSP-1",
+    "Bi-TSP-2",
+    "Tri-TSP-1",
+    "Tri-TSP-2",
+    "Bi-CVRP",
+    "Bi-KP"
+  ],
+  "performance_metrics": [
+    "Hypervolume (HV)",
+    "Optimality Gap"
+  ],
+  "lp_model": {
+    "objective": "$\\min_{x \\in \\mathcal{X}} \\boldsymbol{f}(x) = (f_1(x), f_2(x), \\ldots, f_M(x))$",
+    "constraints": [
+      "For multi-objective traveling salesman problem (MOTSP) type 1: $f_m(x) = \\sum_{i=1}^{n} c_{\\pi_i \\pi_{i+1}}^m$ with $c_{ij}^m = \\|\\boldsymbol{x}_i^m - \\boldsymbol{x}_j^m\\|_2$ for $m=1,\\ldots,M$, where $x$ is a permutation $\\pi$ of nodes forming a Hamiltonian cycle (i.e., $\\pi_{n+1} = \\pi_1$).",
+      "For multi-objective capacitated vehicle routing problem (MOCVRP): $f_1(x)$ is total traveling distance, $f_2(x)$ is makespan (traveling distance of the longest route), subject to vehicle capacity constraints: $\\sum_{i \\in \\text{route}_k} d_i \\leq Q$ for each vehicle $k$, and each node is visited exactly once.",
+      "For multi-objective knapsack problem (MOKP): $f_m(x) = -\\sum_{i=1}^{n} v_{mi} x_i$ for $m=1,2$ (to maximize values in minimization form), subject to $\\sum_{i=1}^{n} w_i x_i \\leq W$, with $x_i \\in \\{0,1\\}$."
+    ],
+    "variables": [
+      "$x$: general decision variable in discrete space $\\mathcal{X}$, specific to each problem.",
+      "For MOTSP: $x$ is a tour represented as a permutation $\\pi = (\\pi_1, \\ldots, \\pi_n)$ of nodes.",
+      "For MOCVRP: $x$ includes assignment of nodes to vehicles and their sequencing, with binary variables for edges and vehicle routes.",
+      "For MOKP: $x = (x_1, \\ldots, x_n)$ with $x_i \\in \\{0,1\\}$ indicating whether item $i$ is selected."
+    ]
+  },
+  "raw_latex_model": "From Section 3.1: $$\\min_{x \\in \\mathcal{X}} \\boldsymbol{f}(x) = (f_1(x), f_2(x), \\ldots, f_M(x)),$$ where $\\mathcal{X}$ is a discrete decision space. The specific objectives $f_m(x)$ and constraints defining $\\mathcal{X}$ vary by problem: for MOTSP, costs are Euclidean distances or altitude variances; for MOCVRP, objectives are total distance and makespan with capacity constraints; for MOKP, objectives are negative values to maximize subject to a weight constraint.",
+  "algorithm_description": "The paper proposes an efficient meta neural heuristic (EMNH) for solving multi-objective combinatorial optimization problems. It uses deep reinforcement learning with a meta-learning paradigm: a meta-model is trained via accelerated multi-task learning (with shared body and task-specific heads), stabilized by scaled symmetric sampling of weight vectors, and then hierarchically fine-tuned with few steps to solve decomposed single-objective subproblems, approximating the Pareto front. The base model is POMO (policy optimization with multiple optima), a neural construction heuristic."
+}

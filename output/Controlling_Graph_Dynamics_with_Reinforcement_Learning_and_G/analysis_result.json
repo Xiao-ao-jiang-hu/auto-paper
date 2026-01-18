@@ -21,16 +21,16 @@
     "Contained epidemic fraction"
   ],
   "lp_model": {
-    "objective": "\\max \\sum_t \\gamma^{t-t_0} g(c_1(t), c_2(t), ..)",
+    "objective": "$\\max \\sum_t \\gamma^{t-t_0} g(c_1(t), c_2(t), \\dots)$ (or $\\min$ for epidemic test prioritization, where $g$ is the negative of the number of infected nodes)",
     "constraints": [
-      "\\sum_i f_i(c_1(t), c_2(t), ..) \\geq z_i(t)"
+      "$\\sum_{v \\in \\mathcal{V}} x_v(t) = k$ for each time step $t$",
+      "$x_v(t) \\in \\{0,1\\}$ for all $v \\in \\mathcal{V}$ and $t$"
     ],
     "variables": [
-      "ST_v(t) - state of node v at time t",
-      "a(t) - subset of k nodes selected for intervention at time t",
-      "c_i(t) - total number of nodes in state y_i at time t"
+      "$x_v(t)$: binary decision variable indicating whether node $v$ is selected for intervention at time $t$",
+      "$c_i(t)$: number of nodes in state $y_i$ at time $t$ (state variable, not directly controlled)"
     ]
   },
-  "raw_latex_model": "The objective is therefore of the form $\\max \\sum_t \\gamma^{t-t_0} g(c_1(t), c_2(t), ..)$, where future evaluations are weighted by a discount factor $\\gamma \\leq 1$. Additionally, the agent may be subject to constraints written in a similar manner $\\sum_i f_i(c_1(t), c_2(t), ..) \\geq z_i(t)$.",
-  "algorithm_description": "Step 1: Input static and dynamic node features, and temporal edge features from the graph. Step 2: Compute local diffusion features for each node using a GNN that aggregates information from direct neighbors based on current interactions and transmission probabilities. Step 3: Compute long-range information features for each node using a multi-layer GNN on a cumulative multi-graph of recent interactions. Step 4: Update the hidden state of each node by combining its previous hidden state, current features, diffusion features, and information features through a neural network (e.g., MLP or GRU). Step 5: Compute a score for each node using another neural network based on the updated hidden state and other inputs. Step 6: Convert scores to a probability distribution using a calibrated function (e.g., subtracting min score and adding epsilon), then sample k nodes without replacement to form the intervention action. Step 7: Train the model using Proximal Policy Optimization (PPO), with a critic module estimating the value function based on aggregated node features."
+  "raw_latex_model": "$$\\begin{aligned} \\text{Maximize } & \\sum_{t} \\gamma^{t-t_0} g(c_1(t), c_2(t), \\dots) \\\\ \\text{subject to } & \\sum_{v \\in \\mathcal{V}} x_v(t) = k, \\quad \\forall t \\\\ & x_v(t) \\in \\{0,1\\}, \\quad \\forall v \\in \\mathcal{V}, \\forall t \\\\ & \\text{State dynamics: } ST_v(t) \\text{ evolves stochastically based on graph interactions and interventions.} \\end{aligned}$$",
+  "algorithm_description": "We propose a reinforcement learning (RL) framework using graph neural networks (GNNs) and proximal policy optimization (PPO) to learn a policy for sequential node selection. The ranking module employs two GNNs: one for local diffusion modeling and another for long-range information propagation. This approach is applied to two specific problems: epidemic test prioritization (minimizing infected nodes via testing) and influence maximization (maximizing influenced nodes via seeding)."
 }

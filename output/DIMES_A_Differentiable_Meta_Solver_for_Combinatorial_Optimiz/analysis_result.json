@@ -1,0 +1,35 @@
+{
+  "paper_id": "DIMES_A_Differentiable_Meta_Solver_for_Combinatorial_Optimiz",
+  "title": "DIMES: A Differentiable Meta Solver for Combinatorial Optimization Problems",
+  "abstract": "Recently, deep reinforcement learning (DRL) models have shown promising results in solving NP-hard Combinatorial Optimization (CO) problems. However, most DRL solvers can only scale to a few hundreds of nodes for combinatorial optimization problems on graphs, such as the Traveling Salesman Problem (TSP). This paper addresses the scalability challenge in large-scale combinatorial optimization by proposing a novel approach, namely, DIMES. Unlike previous DRL methods which suffer from costly autoregressive decoding or iterative refinements of discrete solutions, DIMES introduces a compact continuous space for parameterizing the underlying distribution of candidate solutions. Such a continuous space allows stable REINFORCE-based training and fine-tuning via massively parallel sampling. We further propose a meta-learning framework to enable effective initialization of model parameters in the fine-tuning stage. Extensive experiments show that DIMES outperforms recent DRL-based methods on large benchmark datasets for Traveling Salesman Problems and Maximal Independent Set problems.",
+  "problem_description_natural": "The paper focuses on solving NP-hard combinatorial optimization problems on graphs, specifically addressing scalability limitations of existing deep reinforcement learning approaches. Two primary problems are considered: (1) the Traveling Salesman Problem (TSP), which seeks the shortest possible tour visiting each node exactly once and returning to the start; and (2) the Maximal Independent Set (MIS) problem, which aims to find the largest subset of nodes such that no two nodes in the subset are adjacent. The proposed method, DIMES, avoids step-by-step construction or iterative refinement by modeling the solution space with a continuous, differentiable parameterization that enables efficient parallel sampling and gradient-based optimization.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "TSP-500",
+    "TSP-1000",
+    "TSP-10000",
+    "SATLIB",
+    "ER-[700-800]",
+    "ER-[9000-11000]"
+  ],
+  "performance_metrics": [
+    "Length",
+    "Drop",
+    "Time",
+    "Size"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\sum_{i=1}^{n} \\sum_{j=1}^{n} c_{ij} x_{ij}$",
+    "constraints": [
+      "$\\sum_{j=1}^{n} x_{ij} = 1$ for all $i = 1,\\ldots,n$",
+      "$\\sum_{i=1}^{n} x_{ij} = 1$ for all $j = 1,\\ldots,n$",
+      "$\\sum_{i \\in S} \\sum_{j \\notin S} x_{ij} \\geq 1$ for all subsets $S \\subset \\{1,\\ldots,n\\}$ with $1 < |S| < n$ (subtour elimination constraints)",
+      "$x_{ij} \\in \\{0,1\\}$ for all $i,j$"
+    ],
+    "variables": [
+      "$x_{ij}$: binary decision variable indicating whether the edge from node $i$ to node $j$ is included in the tour"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} \\text{Minimize} & \\quad \\sum_{i=1}^{n} \\sum_{j=1}^{n} c_{ij} x_{ij} \\\\ \\text{Subject to} & \\quad \\sum_{j=1}^{n} x_{ij} = 1, \\quad \\forall i = 1,\\ldots,n \\\\ & \\quad \\sum_{i=1}^{n} x_{ij} = 1, \\quad \\forall j = 1,\\ldots,n \\\\ & \\quad \\sum_{i \\in S} \\sum_{j \\notin S} x_{ij} \\geq 1, \\quad \\forall S \\subset \\{1,\\ldots,n\\}, 1 < |S| < n \\\\ & \\quad x_{ij} \\in \\{0,1\\}, \\quad \\forall i,j \\end{aligned}$$",
+  "algorithm_description": "DIMES (Differentiable MEta Solver) is a deep reinforcement learning-based method that introduces a compact continuous space to parameterize the distribution of candidate solutions. It uses a meta-learning framework with REINFORCE-based training and fine-tuning, enabling efficient sampling and optimization without costly decoding or supervision. The method is applied to solve Traveling Salesman Problem (TSP) and Maximal Independent Set (MIS) problems, as defined in the paper."
+}

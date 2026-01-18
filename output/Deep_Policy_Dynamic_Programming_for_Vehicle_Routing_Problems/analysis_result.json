@@ -1,0 +1,33 @@
+{
+  "paper_id": "Deep_Policy_Dynamic_Programming_for_Vehicle_Routing_Problems",
+  "title": "Deep Policy Dynamic Programming for Vehicle Routing Problems",
+  "abstract": "Routing problems are a class of combinatorial problems with many practical applications. Recently, end-to-end deep learning methods have been proposed to learn approximate solution heuristics for such problems. In contrast, classical dynamic programming (DP) algorithms guarantee optimal solutions, but scale badly with the problem size. We propose Deep Policy Dynamic Programming (DPDP), which aims to combine the strengths of learned neural heuristics with those of DP algorithms. DPDP prioritizes and restricts the DP state space using a policy derived from a deep neural network, which is trained to predict edges from example solutions. We evaluate our framework on the travelling salesman problem (TSP), the vehicle routing problem (VRP) and TSP with time windows (TSPTW) and show that the neural policy improves the performance of (restricted) DP algorithms, making them competitive to strong alternatives such as LKH, while also outperforming most other ‘neural approaches’ for solving TSPs, VRPs and TSPTWs with 100 nodes.",
+  "problem_description_natural": "The paper addresses several classic vehicle routing problems: the Travelling Salesman Problem (TSP), the Capacitated Vehicle Routing Problem (VRP), and the TSP with Time Windows (TSPTW). In the TSP, the goal is to find the shortest possible tour that visits each city exactly once and returns to the origin. In the VRP, multiple vehicles with limited capacity must deliver goods to customers while minimizing total travel cost, starting and ending at a central depot, and respecting vehicle capacity constraints. In the TSPTW, each city must be visited within a specific time window, adding hard temporal constraints to the TSP. The authors aim to solve these problems using a hybrid approach that combines deep neural networks with dynamic programming to guide the search toward high-quality solutions efficiently.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "TSP100 test set from Kool et al. [31]",
+    "VRP100 instances from Nazari et al. [45] and Kool et al. [31]",
+    "Realistic VRP100 instances from Uchoa et al. [55]",
+    "TSPTW100 small time windows dataset from Cappart et al. [6]",
+    "TSPTW100 large time windows dataset (modified from Khachay et al. [10])"
+  ],
+  "performance_metrics": [
+    "Mean cost",
+    "Optimality gap",
+    "Total time",
+    "Failure rate"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\sum_{i,j \\in V} c_{ij} x_{ij}$",
+    "constraints": [
+      "$\\sum_{j \\in V, j \\neq i} x_{ij} = 1$ for all customer nodes $i \\in V'$ (each customer visited exactly once)",
+      "$\\sum_{j \\in V'} x_{0j} = \\sum_{i \\in V'} x_{i0}$ (depot flow balance, ensuring routes start and end at depot)",
+      "$\\sum_{i \\in S} \\sum_{j \\notin S} x_{ij} \\geq \\left\\lceil \\frac{\\sum_{i \\in S} d_i}{\\text{CAPACITY}} \\right\\rceil$ for all subsets $S \\subseteq V'$ (capacity and subtour elimination constraints)"
+    ],
+    "variables": [
+      "$x_{ij} \\in \\{0,1\\}$: binary decision variable indicating if edge $(i,j)$ is used in the solution"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} \\text{Minimize} & \\quad \\sum_{i,j \\in V} c_{ij} x_{ij} \\\\ \\text{Subject to} & \\quad \\sum_{j \\in V, j \\neq i} x_{ij} = 1, \\quad \\forall i \\in V' \\\\ & \\quad \\sum_{j \\in V'} x_{0j} = \\sum_{i \\in V'} x_{i0} \\\\ & \\quad \\sum_{i \\in S} \\sum_{j \\notin S} x_{ij} \\geq \\left\\lceil \\frac{\\sum_{i \\in S} d_i}{\\text{CAPACITY}} \\right\\rceil, \\quad \\forall S \\subseteq V' \\\\ & \\quad x_{ij} \\in \\{0,1\\}, \\quad \\forall i,j \\in V \\end{aligned}$$",
+  "algorithm_description": "Deep Policy Dynamic Programming (DPDP) combines a graph neural network (GNN) trained to predict edge probabilities (heatmap) from example solutions with a restricted dynamic programming algorithm. The heatmap guides the DP search by scoring partial solutions, and the algorithm expands solutions, removes dominated states, and selects the top B solutions per iteration to find near-optimal routes for vehicle routing problems."
+}

@@ -1,0 +1,35 @@
+{
+  "paper_id": "Distributed_Constrained_Combinatorial_Optimization_leveragin",
+  "title": "Distributed Constrained Combinatorial Optimization leveraging Hypergraph Neural Networks",
+  "abstract": "Scalable addressing of high dimensional constrained combinatorial optimization problems is a challenge that arises in several science and engineering disciplines. Recent work introduced novel application of graph neural networks for solving quadratic-cost combinatorial optimization problems. However, effective utilization of models such as graph neural networks to address general problems with higher order constraints is an unsolved challenge. This paper presents a framework, HypOp, which advances the state of the art for solving combinatorial optimization problems in several aspects: (i) it generalizes the prior results to higher order constrained problems with arbitrary cost functions by leveraging hypergraph neural networks; (ii) enables scalability to larger problems by introducing a new distributed and parallel training architecture; (iii) demonstrates generalizability across different problem formulations by transferring knowledge within the same hypergraph; (iv) substantially boosts the solution accuracy compared with the prior art by suggesting a fine-tuning step using simulated annealing; (v) shows a remarkable progress on numerous benchmark examples, including hypergraph MaxCut, satisfiability, and resource allocation problems, with notable run time improvements using a combination of fine-tuning and distributed training techniques. We showcase the application of HypOp in scientific discovery by solving a hypergraph MaxCut problem on NDC drug-substance hypergraph. Through extensive experimentation on various optimization problems, HypOp demonstrates superiority over existing unsupervised learning-based solvers and generic optimization methods.",
+  "problem_description_natural": "The paper addresses a general class of constrained combinatorial optimization problems with discrete integer variables, arbitrary (potentially non-convex and non-linear) cost functions, and higher-order constraints that involve subsets of variables beyond pairwise interactions. The variables take values from a finite ordered set, and the constraints are defined over subsets of these variables. To make the problem amenable to gradient-based learning, the authors relax the discrete variables into continuous ones within a bounded interval, solve the relaxed problem using a hypergraph neural network (HyperGNN) as a learnable transformation function in an unsupervised manner, and then map the continuous outputs back to discrete assignments—enhanced via simulated annealing. The constraints and variable interactions are modeled using a hypergraph, where each hyperedge corresponds to a constraint involving multiple variables.",
+  "problem_type": "constrained combinatorial optimization",
+  "datasets": [
+    "American Physical Society (APS)",
+    "NDC drug-substance hypergraph",
+    "Gset",
+    "OGB-Arxiv",
+    "SATLIB",
+    "Physical Review E (PRE)"
+  ],
+  "performance_metrics": [
+    "Cut Size",
+    "Runtime (s)",
+    "Percentage Solved",
+    "Average number of unsatisfied clauses",
+    "MIS size",
+    "Constraint violation"
+  ],
+  "lp_model": {
+    "objective": "$ \\min_{x_i, i \\in \\mathcal{N}} f(x) $",
+    "constraints": [
+      "$ c_k(x_{\\mathcal{N}_k}) \\leq 0, \\text{ for } k \\in \\mathcal{K} $",
+      "$ x_i \\in \\{d_0, \\cdots, d_v\\}, \\text{ for } i \\in \\mathcal{N} $"
+    ],
+    "variables": [
+      "$ x_i $: integer decision variable for $ i \\in \\mathcal{N} $, where $ \\mathcal{N} = \\{1, \\cdots, N\\} $"
+    ]
+  },
+  "raw_latex_model": "$$ \\begin{aligned} & \\min_{x_i, i \\in \\mathcal{N}} \\quad f(x) \\\\ & \\text{s.t.} \\quad c_k(x_{\\mathcal{N}_k}) \\leq 0, \\text{ for } k \\in \\mathcal{K} \\\\ & \\quad \\quad x_i \\in \\{d_0, \\cdots, d_v\\}, \\text{ for } i \\in \\mathcal{N} \\end{aligned} $$",
+  "algorithm_description": "HypOp is an unsupervised learning-based framework that solves constrained combinatorial optimization problems by: 1) modeling constraints as a hypergraph, 2) using a hypergraph neural network (HyperGNN) as a learnable transformation function to optimize a continuous relaxation via gradient descent, and 3) applying simulated annealing for fine-tuning to map continuous outputs to discrete solutions."
+}

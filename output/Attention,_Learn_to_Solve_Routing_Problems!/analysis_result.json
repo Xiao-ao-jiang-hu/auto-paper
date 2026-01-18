@@ -17,18 +17,15 @@
     "Total Cost (tour length + penalties)"
   ],
   "lp_model": {
-    "objective": "\\min \\sum_{i=1}^{n} \\sum_{j=1}^{n} d_{ij} x_{ij}",
+    "objective": "$\\min \\sum_{t=1}^{n-1} d(\\pi_t, \\pi_{t+1}) + d(\\pi_n, \\pi_1)$",
     "constraints": [
-      "\\sum_{j=1}^{n} x_{ij} = 1 \\quad \\forall i = 1, \\ldots, n",
-      "\\sum_{i=1}^{n} x_{ij} = 1 \\quad \\forall j = 1, \\ldots, n",
-      "x_{ij} \\in \\{0,1\\} \\quad \\forall i,j",
-      "\\text{Subtour elimination constraints, e.g., } u_i - u_j + n x_{ij} \\leq n-1 \\quad \\forall i,j = 2, \\ldots, n, i \\neq j \\text{ (MTZ formulation)}"
+      "$\\pi_t \\in \\{1,\\ldots,n\\} \\quad \\forall t=1,\\ldots,n$",
+      "$\\pi_t \\neq \\pi_{t'} \\quad \\forall t \\neq t'$"
     ],
     "variables": [
-      "x_{ij} \\text{ binary variables indicating if edge from node } i \\text{ to } j \\text{ is in the tour}",
-      "u_i \\text{ continuous variables for subtour elimination (for } i \\geq 2 \\text{)}"
+      "$\\pi_t$: index of node visited at position $t$ in the tour, for $t=1,\\ldots,n$"
     ]
   },
-  "raw_latex_model": "\\mathcal{L}(\\theta|s) = \\mathbb{E}_{p_\\theta(\\pi|s)}[L(\\pi)] \\quad \\text{and} \\quad \\nabla \\mathcal{L}(\\theta|s) = \\mathbb{E}_{p_\\theta(\\pi|s)}\\left[\\left(L(\\pi) - b(s)\\right) \\nabla \\log p_\\theta(\\pi|s)\\right]",
-  "algorithm_description": "Algorithm 1: REINFORCE with Greedy Rollout Baseline\n1. Input: number of epochs E, steps per epoch T, batch size B, significance level α.\n2. Initialize policy parameters θ and baseline policy parameters θ^BL ← θ.\n3. For epoch = 1 to E:\n   a. For step = 1 to T:\n      i. Sample a batch of problem instances s_i for i = 1,...,B.\n      ii. Sample solutions π_i from the current policy p_θ using stochastic rollouts.\n      iii. Compute greedy solutions π_i^BL from the baseline policy p_θ^BL using deterministic greedy rollouts.\n      iv. Compute the gradient: ∇ℒ = Σ_{i=1}^B (L(π_i) - L(π_i^BL)) ∇_θ log p_θ(π_i).\n      v. Update θ using the Adam optimizer.\n   b. At the end of the epoch, compare the current policy p_θ with the baseline policy p_θ^BL on a validation set using a one-sided paired t-test with significance α.\n   c. If the current policy is significantly better, update θ^BL ← θ.\n4. Output the trained policy parameters θ."
+  "raw_latex_model": "$$\\min_{\\pi} \\sum_{t=1}^{n-1} d(\\pi_t, \\pi_{t+1}) + d(\\pi_n, \\pi_1) \\\\ \\text{subject to } \\pi_t \\in \\{1,\\ldots,n\\} \\forall t, \\\\ \\pi_t \\neq \\pi_{t'} \\forall t \\neq t'$$",
+  "algorithm_description": "Attention-based encoder-decoder neural network model that defines a stochastic policy for generating solutions. Trained using REINFORCE policy gradient with a greedy rollout baseline to learn heuristics for combinatorial optimization problems."
 }

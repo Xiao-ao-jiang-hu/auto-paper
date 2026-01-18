@@ -19,16 +19,17 @@
     "Optimality Gap"
   ],
   "lp_model": {
-    "objective": "\\min \\sum_{i=1}^{n} \\sum_{j=1}^{n} d_{ij} x_{ij}",
+    "objective": "$\\min \\sum_{i=1}^{n} \\sum_{j=1}^{n} c_{ij} x_{ij}$",
     "constraints": [
-      "\\sum_{j=1}^{n} x_{ij} = 1 \\quad \\forall i",
-      "\\sum_{i=1}^{n} x_{ij} = 1 \\quad \\forall j",
-      "\\sum_{i \\in S} \\sum_{j \\notin S} x_{ij} \\geq 1 \\quad \\forall S \\subset \\{1,2,...,n\\}, S \\neq \\emptyset"
+      "$\\sum_{j=1}^{n} x_{ij} = 1$ for all $i = 1,...,n$",
+      "$\\sum_{i=1}^{n} x_{ij} = 1$ for all $j = 1,...,n$",
+      "$x_{ij} \\in \\{0,1\\}$ for all $i,j$",
+      "Subtour elimination: $\\sum_{i \\in S} \\sum_{j \\notin S} x_{ij} \\geq 1$ for all subsets $S$ of $\\{1,...,n\\}$ with $S \\neq \\emptyset$ and $S \\neq \\{1,...,n\\}$"
     ],
     "variables": [
-      "x_{ij} \\in \\{0,1\\} \\quad \\forall i,j"
+      "$x_{ij}$: binary decision variable that equals 1 if the edge from city $i$ to city $j$ is included in the tour, and 0 otherwise"
     ]
   },
-  "raw_latex_model": "V^{\\pi}(s) = \\sum_{a}\\pi(s,a)\\sum_{s'}\\wp_{ss'}^{a}(\\Re_{ss'}^{a} + \\gamma V^{\\pi}(s'))",
-  "algorithm_description": "Graves and Whinston's Algorithm for TSP (1970): 1. Initialize k=1 and determine sets S1 and R1 based on feasibility. 2. If Rk is empty, go to step 8. 3. Select arbitrary i* from Sk and j* from Rk, set ik = i*, jk = j*, and remove j* from Rk. 4. If k=n, go to step 12. 5. Increment k by 1. 6. Determine Sk and Rk according to specified rules. 7. Repeat from step 2. 8. If k=1, stop. 9. Decrement k by 1. 10. If Rk is empty, go back to step 8. 11. Select arbitrary j* from Rk, set jk = j*, compute lower bound L_φ. If L_φ ≥ current best A, go to step 9; else go to step 4. 12. Record current mapping and go to step 10."
+  "raw_latex_model": "$$\\begin{aligned} \\text{Minimize} & \\quad \\sum_{i=1}^{n} \\sum_{j=1}^{n} c_{ij} x_{ij} \\\\ \\text{Subject to} & \\quad \\sum_{j=1}^{n} x_{ij} = 1, \\quad \\forall i = 1,...,n \\\\ & \\quad \\sum_{i=1}^{n} x_{ij} = 1, \\quad \\forall j = 1,...,n \\\\ & \\quad x_{ij} \\in \\{0,1\\}, \\quad \\forall i,j \\\\ & \\quad \\sum_{i \\in S} \\sum_{j \\notin S} x_{ij} \\geq 1, \\quad \\forall S \\subset \\{1,...,n\\}, S \\neq \\emptyset, S \\neq \\{1,...,n\\} \\end{aligned}$$",
+  "algorithm_description": "The paper surveys reinforcement learning algorithms for approximating solutions to the Traveling Salesperson Problem (TSP), including historical methods like Graves and Whinston's Algorithm (1970) that uses statistical properties and the Bellman equation, Ant-Q (1995) based on Q-learning and ant colony optimization, and modern deep RL approaches like REINFORCE (2019) that integrate attention models and policy gradient methods."
 }

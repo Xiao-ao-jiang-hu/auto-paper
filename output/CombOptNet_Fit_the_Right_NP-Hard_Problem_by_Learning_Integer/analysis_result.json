@@ -15,16 +15,17 @@
     "Wins"
   ],
   "lp_model": {
-    "objective": "\\min_{\\mathbf{x} \\in \\mathbb{R}^n} \\mathbf{c}^T \\mathbf{x}",
+    "objective": "$\\min \\mathbf{c}^T \\mathbf{x}$",
     "constraints": [
-      "A\\mathbf{x} \\leq \\mathbf{b}",
-      "\\ell \\leq \\mathbf{x} \\leq \\mathbf{u}",
-      "x_j \\in \\mathbb{Z} \\ \\forall j \\in J"
+      "$A\\mathbf{x} \\leq \\mathbf{b}$",
+      "$\\ell \\leq \\mathbf{x} \\leq \\mathbf{u}$",
+      "$x_j \\in \\mathbb{Z}, \\forall j \\in J$"
     ],
     "variables": [
-      "\\mathbf{x} \\in \\mathbb{R}^n - decision variables, with x_j \\in \\mathbb{Z} for all j in J"
+      "$\\mathbf{x} \\in \\mathbb{R}^n$: vector of decision variables",
+      "$J \\subseteq \\{1, \\cdots, n\\}$: index set for integer variables"
     ]
   },
-  "raw_latex_model": "\\min_{\\mathbf{x} \\in \\mathbb{R}^n} \\left\\{ \\mathbf{c}^T \\mathbf{x} : A\\mathbf{x} \\leq \\mathbf{b}, \\ell \\leq \\mathbf{x} \\leq \\mathbf{u}, x_j \\in \\mathbb{Z},\\ \\forall j \\in J \\right\\}",
-  "algorithm_description": "The Branch and Bound algorithm for solving Mixed Integer Programming (MIP) problems proceeds as follows: 1. Initialize a set S with the LP relaxation of the MIP, set the best solution x* to empty and best value c* to infinity. 2. If S is empty, return x* and c*. 3. Select and remove a LP relaxation Q from S. 4. Solve Q to obtain optimal solution hat{x} and optimal value hat{c}. 5. If hat{c} >= c*, prune this node and go to step 2. 6. If hat{x} is feasible for the MIP (i.e., satisfies integer constraints), update x* = hat{x} and c* = hat{c}, then go to step 2. 7. Otherwise, select a variable j to branch on, split Q into two subproblems Q_j^+ and Q_j^- by adding constraints x_j <= floor(hat{x}_j) and x_j >= ceil(hat{x}_j) respectively, add them to S, and go to step 3."
+  "raw_latex_model": "$$\\min_{\\mathbf{x} \\in \\mathbb{R}^n} \\left\\{ \\mathbf{c}^T \\mathbf{x} : A\\mathbf{x} \\leq \\mathbf{b}, \\ell \\leq \\mathbf{x} \\leq \\mathbf{u}, x_j \\in \\mathbb{Z},\\ \\forall j \\in J \\right\\}$$",
+  "algorithm_description": "Reinforcement learning agent with a primal-dual policy network and novelty search evolutionary strategy for learning variable selection policies in the Branch and Bound algorithm to solve Mixed Integer Programming problems."
 }

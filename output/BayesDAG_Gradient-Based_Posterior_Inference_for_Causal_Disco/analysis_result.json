@@ -18,19 +18,16 @@
     "Negative Log-Likelihood (NLL)"
   ],
   "lp_model": {
-    "objective": "\\text{maximize } \\text{ELBO}(\\phi) = \\mathbb{E}_{q_\\phi(\\boldsymbol{W} | \\boldsymbol{p})} \\left[ \\log p(\\mathcal{D}, \\boldsymbol{p}, \\boldsymbol{\\Theta} | \\boldsymbol{W}) \\right] - D_{\\text{KL}} \\left[ q_\\phi(\\boldsymbol{W} | \\boldsymbol{p}) \\| p(\\boldsymbol{W}) \\right]",
+    "objective": "$\\min_{G, \\Theta} \\sum_{n=1}^N \\sum_{i=1}^d \\frac{1}{2\\sigma_i^2} (x_i^{(n)} - f_i(\\boldsymbol{x}^{(n)}_{\\text{Pa}_G^i}; \\Theta))^2 + \\lambda_s \\|G\\|_F^2 + \\frac{1}{2} \\|\\Theta\\|^2$",
     "constraints": [
-      "\\boldsymbol{G} = \\tau(\\boldsymbol{W}, \\boldsymbol{p}) \\text{ where } \\tau(\\boldsymbol{W}, \\boldsymbol{p}) = \\boldsymbol{W} \\odot \\text{Step}(\\text{grad}\\,\\boldsymbol{p}) \\text{ ensures DAG structure}",
-      "\\boldsymbol{W} \\in \\{0,1\\}^{d\\times d}, \\boldsymbol{p} \\in \\mathbb{R}^d, \\boldsymbol{\\Theta} \\in \\mathbb{R}^m \\text{ (parameters domain)}",
-      "Prior distributions: p(\\boldsymbol{W}, \\boldsymbol{p}, \\boldsymbol{\\Theta}) \\propto \\mathcal{N}(\\boldsymbol{\\Theta}; \\boldsymbol{0}, \\boldsymbol{I}) \\mathcal{N}(\\boldsymbol{p}; \\boldsymbol{0}, \\alpha \\boldsymbol{I}) \\mathcal{N}(\\boldsymbol{W}; \\boldsymbol{0}, \\boldsymbol{I}) \\exp(-\\lambda_s \\| \\tau(\\boldsymbol{W}, \\boldsymbol{p}) \\|_F^2)"
+      "$G_{ij} \\in \\{0,1\\}, \\quad \\forall i,j = 1,\\dots,d$",
+      "$G$ must be a Directed Acyclic Graph (DAG), i.e., no directed cycles."
     ],
     "variables": [
-      "\\boldsymbol{W}: binary matrix representing edge existence mask",
-      "\\boldsymbol{p}: node potential vector defining topological ordering",
-      "\\boldsymbol{\\Theta}: parameters of neural networks in the structural causal model",
-      "\\phi: parameters of variational network \\mu_\\phi for approximating posterior of \\boldsymbol{W}"
+      "$G_{ij}$: binary variable indicating presence of directed edge from node $i$ to node $j$",
+      "$\\Theta$: continuous parameters of the neural networks defining the functions $f_i$"
     ]
   },
-  "raw_latex_model": "Likelihood: p(\\boldsymbol{x} | \\boldsymbol{G}) = \\prod_{i=1}^d p_{\\epsilon_i}(x_i - f_i(\\boldsymbol{x}_{\\text{Pa}_G^i})) \\\\ Prior: p(\\boldsymbol{W}, \\boldsymbol{p}, \\boldsymbol{\\Theta}) \\propto \\mathcal{N}(\\boldsymbol{\\Theta}; \\boldsymbol{0}, \\boldsymbol{I}) \\mathcal{N}(\\boldsymbol{p}; \\boldsymbol{0}, \\alpha \\boldsymbol{I}) \\mathcal{N}(\\boldsymbol{W}; \\boldsymbol{0}, \\boldsymbol{I}) \\exp(-\\lambda_s \\| \\tau(\\boldsymbol{W}, \\boldsymbol{p}) \\|_F^2)",
-  "algorithm_description": "Algorithm 1: BayesDAG SG-MCMC+VI Inference\\n1. Input: dataset \\mathcal{D}, priors p(\\boldsymbol{p}, \\boldsymbol{W}) and p(\\boldsymbol{\\Theta}), SG-MCMC sampler, hyperparameters \\Psi, variational network \\mu_\\phi, training iterations T.\\n2. Initialize parameters \\boldsymbol{\\Theta}^{(0)}, \\boldsymbol{p}^{(0)}, and variational parameters \\phi.\\n3. For t = 1 to T:\\n   a. Sample \\boldsymbol{W}^{(t-1)} from variational posterior q_\\phi(\\boldsymbol{W} | \\boldsymbol{p}^{(t-1)}).\\n   b. Compute gradients \\nabla_{\\boldsymbol{p},\\boldsymbol{\\Theta}} U using Equations (12) and (13) with current \\boldsymbol{\\Theta}^{(t-1)}, \\boldsymbol{p}^{(t-1)}, \\boldsymbol{W}^{(t-1)}.\\n   c. Update \\boldsymbol{\\Theta}^{(t)}, \\boldsymbol{p}^{(t)} using SG-MCMC sampler with gradients \\nabla_{\\boldsymbol{p},\\boldsymbol{\\Theta}} U and hyperparameters \\Psi.\\n   d. If storing condition met, store samples \\boldsymbol{p}^{(t)}, \\boldsymbol{\\Theta}^{(t)}.\\n   e. Update \\phi by maximizing ELBO (Equation (15)) using current \\boldsymbol{p}^{(t)}, \\boldsymbol{\\Theta}^{(t)}.\\n4. Output: samples \\{\\boldsymbol{\\Theta}, \\boldsymbol{p}\\} and variational posterior q_\\phi."
+  "raw_latex_model": "$$\\begin{aligned} \\min_{G, \\Theta} \\quad & \\sum_{n=1}^N \\sum_{i=1}^d \\frac{1}{2\\sigma_i^2} (x_i^{(n)} - f_i(\\boldsymbol{x}^{(n)}_{\\text{Pa}_G^i}; \\Theta))^2 + \\lambda_s \\|G\\|_F^2 + \\frac{1}{2} \\|\\Theta\\|^2 \\\\ \\text{s.t.} \\quad & G_{ij} \\in \\{0,1\\}, \\quad \\forall i,j = 1,\\dots,d \\\\ & G \\text{ is a DAG (no directed cycles)} \\end{aligned}$$",
+  "algorithm_description": "The paper introduces BayesDAG, a Bayesian causal discovery framework that uses a combination of stochastic gradient Markov Chain Monte Carlo (SG-MCMC) and variational inference (VI) to approximate the posterior distribution over DAGs and model parameters. It reparameterizes the DAG constraint via an augmented space of binary edge masks and node potentials $(\\boldsymbol{W}, \\boldsymbol{p})$, with a mapping $\\tau(\\boldsymbol{W}, \\boldsymbol{p})$ that guarantees acyclicity. SG-MCMC samples $\\boldsymbol{p}$ and $\\boldsymbol{\\Theta}$, while VI approximates the posterior over $\\boldsymbol{W}$ using an independent Bernoulli distribution parameterized by a neural network $\\mu_\\phi(\\boldsymbol{p})$."
 }

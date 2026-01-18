@@ -17,17 +17,19 @@
     "average number of packed boxes"
   ],
   "lp_model": {
-    "objective": "\\max r_u(C_\\pi) = \\frac{\\sum_{n=1}^N l^n w^n h^n}{L_{C_\\pi} W H}",
+    "objective": "$\\max r_u = \\frac{\\sum_{n=1}^N l^n w^n h^n}{L_{C_\\pi} W H}$",
     "constraints": [
-      "No overlap between any two boxes: for all boxes i and j, their placements do not intersect.",
-      "Each box must be placed within the bin boundaries: for each box n, after orientation o, its coordinates (x^n, y^n, z^n) satisfy 0 \\leq x^n \\leq L - l^n_o, 0 \\leq y^n \\leq W - w^n_o, 0 \\leq z^n \\leq H - h^n_o, where l^n_o, w^n_o, h^n_o are dimensions after orientation.",
-      "Each box must be in contact with at least one other box or the bin wall during placement: for each box n, there exists at least one point of contact with another box or the rear wall (x=0)."
+      "$0 \\leq y^n \\leq W - w^{n}_{o^n}$ for all $n$",
+      "$0 \\leq z^n \\leq H - h^{n}_{o^n}$ for all $n$",
+      "$x^n \\geq 0$ for all $n$",
+      "No overlap between any two boxes $i$ and $j$: the boxes do not intersect in 3D space",
+      "Each box $n$ must be in contact with at least one other box or the rear wall at $x=0$"
     ],
     "variables": [
-      "Sequence actions s_t for t=1 to N, where s_t \\in \\{1,\\dots,N\\} \\setminus s_{1:t-1} selects the next box index.",
-      "Placement actions p_t = (o^{s_t}, y^{s_t}) for t=1 to N, where o^{s_t} \\in \\{1,\\dots,6\\} is the orientation and y^{s_t} \\in \\{0,\\dots,W-1\\} is the width coordinate, with x^{s_t} and z^{s_t} determined as the nearest feasible points to ensure contact and no overlap."
+      "$o^n$: orientation of box $n$, with $o^n \\in \\{1, \\dots, 6\\}$ for 3D packing",
+      "$x^n, y^n, z^n$: coordinates of the rear-left-bottom corner of box $n$"
     ]
   },
-  "raw_latex_model": "r_u(C_\\pi) = \\frac{\\sum_{n=1}^N l^n w^n h^n}{L_{C_\\pi} W H}",
-  "algorithm_description": "1. Input: Receive a set of N boxes with dimensions (l^n, w^n, h^n) and bin dimensions (L, W, H). 2. Encoding: Compute fixed box embeddings using self-attention layers on normalized box dimensions. At each time step, compute a frontier embedding via a convolutional network from the current packing state (front-view of loaded structure). 3. Sequence Decoding: At time step t, the sequence policy (pointer network) selects the next box s_t from unpacked boxes based on the mean of leftover box embeddings and frontier embedding. 4. Placement Decoding: For the selected box s_t, the placement policy (parametric network) selects orientation o^{s_t} and width coordinate y^{s_t}. The length coordinate x^{s_t} and height coordinate z^{s_t} are automatically determined as the nearest feasible points where the box contacts another box or the wall without overlap. 5. Update: Place the box, update the frontier, and repeat from step 3 until all boxes are packed. 6. Reward: After packing all boxes, compute the utility r_u as the terminal reward. 7. Training: Optimize using REINFORCE policy gradient with a greedy rollout baseline. The loss minimizes expected cost c = 1 - r_u. 8. Prioritized Oversampling (optional): During training, collect batches with poor performance and re-learn on them to improve sequence selection, using a separate optimizer and scaling losses to stabilize training."
+  "raw_latex_model": "$$ \\max \\frac{\\sum_{n=1}^N l^n w^n h^n}{L_{C_\\pi} W H} \\\\ \\text{subject to:} \\\\ 0 \\leq y^n \\leq W - w^{n}_{o^n}, \\quad 0 \\leq z^n \\leq H - h^{n}_{o^n}, \\quad x^n \\geq 0 \\quad \\forall n \\\\ \\text{No overlap: } \\forall i \\neq j, \\text{ boxes } i \\text{ and } j \\text{ do not overlap in 3D space} \\\\ \\text{Contact: } \\forall n, x^n = 0 \\text{ or } \\exists m \\neq n \\text{ such that } x^n = x^m + l^{m}_{o^m} \\\\ \\text{where } L_{C_\\pi} = \\max_n (x^n + l^{n}_{o^n}) $$",
+  "algorithm_description": "The paper proposes Attend2Pack, a deep reinforcement learning model for solving the bin packing problem. It uses self-attention-based encoding to represent boxes and bin state, decomposes the action space into a sequence policy (selecting the next box) and a placement policy (choosing orientation and width coordinate), and trains with policy gradient methods enhanced by prioritized oversampling to speed up learning."
 }

@@ -1,0 +1,31 @@
+{
+  "paper_id": "Efficient_and_Robust_Neural_Combinatorial_Optimization_via_W",
+  "title": "EFFICIENT AND ROBUST NEURAL COMBINATORIAL OPTIMIZATION VIA WASSERSTEIN-BASED CORESETS",
+  "abstract": "Combinatorial optimization (CO) is a fundamental tool in many fields. Many neural combinatorial optimization (NCO) methods have been proposed to solve CO problems. However, existing NCO methods typically require significant computational and storage resources, and face challenges in maintaining robustness to distribution shifts between training and test data. To address these issues, we model CO instances into probability measures, and introduce Wasserstein-based metrics to quantify the difference between CO instances. We then leverage a popular data compression technique, coreset, to construct a small-size proxy for the original large dataset. However, the time complexity of constructing a coreset is linearly dependent on the size of the dataset. Consequently, it becomes challenging when datasets are particularly large. Further, we accelerate the coreset construction by adapting it to the merge-and-reduce framework, enabling parallel computing. Additionally, we prove that our coreset is a good representation in theory. Subsequently, to speed up the training process for existing NCO methods, we propose an efficient training framework based on the coreset technique. We train the model on a small-size coreset rather than on the full dataset, and thus save substantial computational and storage resources. Inspired by hierarchical Gonzalez’s algorithm, our coreset method is designed to capture the diversity of the dataset, which consequently improves robustness to distribution shifts. Finally, experimental results demonstrate that our training framework not only enhances robustness to distribution shifts but also achieves better performance with reduced resource requirements.",
+  "problem_description_natural": "The paper addresses the challenge of making neural combinatorial optimization (NCO) methods more efficient and robust. Specifically, it tackles two main issues: (1) the high computational and storage demands of training NCO models on large datasets, and (2) the poor generalization of these models when test data distributions differ from training data (distribution shift). To solve this, the authors represent combinatorial optimization instances (e.g., TSP, MIS) as probability measures in Euclidean space using graph embedding. They define a new metric—Wasserstein distance under rigid transformations (RWD)—to measure similarity between instances in a way that respects invariances like rotation and translation. Using this metric, they construct a coreset: a small, weighted subset of the original dataset that preserves the essential structure and diversity. Training on this coreset reduces resource usage while improving robustness. The coreset construction is accelerated via a merge-and-reduce framework for scalability.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "TSP100-2D-$\\mathcal{N}(0,1)$",
+    "TSP100-3D-$\\mathcal{N}(0,1)$",
+    "TSP100-2D-$\\mathcal{U}(0,10)$",
+    "TSPLIB"
+  ],
+  "performance_metrics": [
+    "Greedy Length",
+    "Greedy+2-opt Length",
+    "Time"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\sum_{i=1}^{n} \\sum_{j=i+1}^{n} \\| \\mathbf{p}_i - \\mathbf{p}_j \\| x_{ij}$",
+    "constraints": [
+      "$\\sum_{j=1, j\\neq i}^{n} x_{ij} = 2$ for all $i \\in [n]$",
+      "$\\sum_{i \\in S} \\sum_{j \\notin S} x_{ij} \\geq 2$ for all $S \\subset [n], S \\neq \\emptyset, S \\neq [n]$"
+    ],
+    "variables": [
+      "$x_{ij} \\in \\{0,1\\}$ for all $i,j \\in [n], i < j$: binary decision variable indicating whether edge $(i,j)$ is included in the tour",
+      "$\\mathbf{p}_i \\in \\mathbb{R}^d$ for all $i \\in [n]$: coordinates of city $i$ in $d$-dimensional Euclidean space (with $d=2$ or $3$ in experiments)"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} \\text{Minimize} & \\quad \\sum_{i=1}^{n} \\sum_{j=i+1}^{n} \\| \\mathbf{p}_i - \\mathbf{p}_j \\| x_{ij} \\\\ \\text{Subject to} & \\quad \\sum_{j=1, j\\neq i}^{n} x_{ij} = 2, \\quad \\forall i \\in [n] \\\\ & \\quad \\sum_{i \\in S} \\sum_{j \\notin S} x_{ij} \\geq 2, \\quad \\forall S \\subset [n], S \\neq \\emptyset, S \\neq [n] \\\\ & \\quad x_{ij} \\in \\{0,1\\}, \\quad \\forall i,j \\in [n], i < j \\end{aligned}$$",
+  "algorithm_description": "The paper uses DIFUSCO, a diffusion-based neural network model, to solve the Traveling Salesperson Problem (TSP) instances. It proposes a Wasserstein-based coreset technique to accelerate the training of such neural combinatorial optimization methods by reducing dataset size and improving robustness to distribution shifts."
+}

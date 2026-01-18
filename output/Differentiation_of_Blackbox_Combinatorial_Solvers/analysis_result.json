@@ -1,0 +1,32 @@
+{
+  "paper_id": "Differentiation_of_Blackbox_Combinatorial_Solvers",
+  "title": "Differentiation of Blackbox Combinatorial Solvers",
+  "abstract": "Achieving fusion of deep learning with combinatorial algorithms promises transformative changes to artificial intelligence. One possible approach is to introduce combinatorial building blocks into neural networks. Such end-to-end architectures have the potential to tackle combinatorial problems on raw input data such as ensuring global consistency in multi-object tracking or route planning on maps in robotics. In this work, we present a method that implements an efficient backward pass through blackbox implementations of combinatorial solvers with linear objective functions. We provide both theoretical and experimental backing. In particular, we incorporate the Gurobi MIP solver, Blossom V algorithm, and Dijkstra’s algorithm into architectures that extract suitable features from raw inputs for the traveling salesman problem, the min-cost perfect matching problem and the shortest path problem.",
+  "problem_description_natural": "The paper addresses the challenge of integrating unmodified, blackbox combinatorial solvers—such as those for the traveling salesman problem (TSP), min-cost perfect matching, and shortest path—into differentiable neural network pipelines. These solvers optimize a linear objective function over a discrete set of feasible solutions. The core issue is that the solver's output is piecewise constant with respect to its continuous input (e.g., edge weights), making standard backpropagation yield zero or undefined gradients. The authors propose a method to construct a continuous interpolation of the loss composed with the solver, enabling informative gradient computation via a single additional call to the same blackbox solver during the backward pass.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "Warcraft Shortest Path (SP(k))",
+    "Globe Traveling Salesman Problem (TSP(k))",
+    "MNIST Min-cost Perfect Matching (PM(k))"
+  ],
+  "performance_metrics": [
+    "Accuracy (percentage of paths with optimal cost)",
+    "Full tour accuracy",
+    "Accuracy of predicting an optimal matching"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\sum_{e \\in E} w_e x_e$",
+    "constraints": [
+      "$x_e \\in \\{0,1\\}$ for all $e \\in E$",
+      "$\\sum_{e \\in \\delta(s)} x_e = 1$",
+      "$\\sum_{e \\in \\delta(t)} x_e = 1$",
+      "$\\sum_{e \\in \\delta(v)} x_e = 2$ for all $v \\in V \\setminus \\{s,t\\}$",
+      "The set $\\{ e \\in E : x_e = 1 \\}$ forms a simple path from $s$ to $t$ in $G$"
+    ],
+    "variables": [
+      "$x_e$: binary decision variable indicating whether edge $e$ is included in the path for all $e \\in E$"
+    ]
+  },
+  "raw_latex_model": "Given an undirected graph $G=(V,E)$ with source vertex $s \\in V$ and target vertex $t \\in V$, and edge weights $w_e \\in \\mathbb{R}$ for $e \\in E$, the shortest path problem is formulated as:\n\n$$\\begin{aligned}\n\\text{Minimize} & \\quad \\sum_{e \\in E} w_e x_e \\\\\n\\text{Subject to} & \\quad \\sum_{e \\in \\delta(s)} x_e = 1 \\\\\n& \\quad \\sum_{e \\in \\delta(t)} x_e = 1 \\\\\n& \\quad \\sum_{e \\in \\delta(v)} x_e = 2 \\quad \\forall v \\in V \\setminus \\{s,t\\} \\\\\n& \\quad x_e \\in \\{0,1\\} \\quad \\forall e \\in E \\\\\n& \\quad \\text{The edges with } x_e = 1 \\text{ form a simple path from } s \\text{ to } t.\n\\end{aligned}$$",
+  "algorithm_description": "The paper proposes a method to differentiate through blackbox combinatorial solvers with linear objectives. A neural network (e.g., CNN) extracts features from raw input (e.g., images) to predict the parameters (e.g., edge weights $w$) of the optimization problem. The blackbox solver (e.g., Dijkstra's algorithm for shortest path) computes the optimal solution $y(w)$. During backpropagation, a perturbed problem is solved with modified weights $w' = w + \\lambda \\frac{dL}{dy}$ to compute gradients, where $\\lambda$ is a hyperparameter, enabling end-to-end training of the neural network and solver combination."
+}

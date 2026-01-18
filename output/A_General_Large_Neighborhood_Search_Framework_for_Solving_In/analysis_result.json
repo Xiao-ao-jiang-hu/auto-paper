@@ -21,14 +21,15 @@
     "Wall-clock time"
   ],
   "lp_model": {
-    "objective": "\\min c^T x",
+    "objective": "$\\min c^T x$",
     "constraints": [
-      "A x \\leq b"
+      "$A x \\leq b$",
+      "$x \\in \\mathbb{Z}^n$"
     ],
     "variables": [
-      "x \\in \\mathbb{Z}^n"
+      "$x$: vector of integer decision variables"
     ]
   },
-  "raw_latex_model": "",
-  "algorithm_description": "The algorithm is a decomposition-based large neighborhood search (LNS) framework for integer linear programs (ILPs). Step 1: Input an ILP problem P with integer variables X, an initial feasible solution S_X, a decomposition of X into k disjoint subsets X1, X2, ..., Xk, and a solver F (e.g., Gurobi). Step 2: For each subset Xi in the decomposition, fix the variables not in Xi to their current values in S_X, and use solver F to optimize the variables in Xi, updating S_X with the new solution. Step 3: Repeat Step 2 for all subsets, then return the final solution S_X. This process can be iterated multiple times, with decompositions generated randomly or learned via imitation or reinforcement learning."
+  "raw_latex_model": "$$\\begin{aligned} \\min_{x} \\quad & c^T x \\\\ \\text{s.t.} \\quad & A x \\leq b \\\\ & x \\in \\mathbb{Z}^n \\end{aligned}$$",
+  "algorithm_description": "A general large neighborhood search (LNS) framework for solving integer linear programs (ILPs). The framework iteratively decomposes the integer variables into disjoint subsets, fixes the values of variables outside the selected subset, and uses an existing ILP solver (e.g., Gurobi) to optimize the sub-problem. Decomposition policies are learned via imitation learning (behavior cloning and forward training) and reinforcement learning (REINFORCE) to improve solution quality. The method is applied to benchmarks including minimum vertex cover, maximum cut, combinatorial auctions, and risk-aware path planning, all formulated as ILPs."
 }

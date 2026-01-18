@@ -13,16 +13,16 @@
     "F1 score"
   ],
   "lp_model": {
-    "objective": "\\min_{\\mathbf{X}} \\| \\mathbf{A}_D - \\mathbf{X} \\mathbf{B}_D \\mathbf{X}^T \\|_F^2 - \\text{tr}(\\mathbf{X}_u^T \\mathbf{X})",
+    "objective": "$\\min_{\\mathbf{X}} \\| \\mathbf{A}_D - \\mathbf{X} \\mathbf{B}_D \\mathbf{X}^T \\|_F^2 - \\text{tr}(\\mathbf{K}_p^l \\mathbf{X})$",
     "constraints": [
-      "\\mathbf{X} \\in [0,1]^{n \\times m}",
-      "\\mathbf{X} \\mathbf{1}_m = \\mathbf{1}_n",
-      "\\mathbf{X}^T \\mathbf{1}_n \\leq \\mathbf{1}_m"
+      "$\\mathbf{X} \\in [0,1]^{n_A \\times n_B}$",
+      "$\\mathbf{X} \\mathbf{1}_{n_B} = \\mathbf{1}$",
+      "$\\mathbf{X}^T \\mathbf{1}_{n_A} \\leq \\mathbf{1}_{n_A}$"
     ],
     "variables": [
-      "\\mathbf{X} \\in \\mathbb{R}^{n \\times m} - correspondence matrix between graph nodes"
+      "$\\mathbf{X}$: continuous correspondence matrix between graph $\\mathcal{G}_A$ and graph $\\mathcal{G}_B$, where $\\mathbf{X}_{ij}$ indicates the matching probability between node $i$ in $\\mathcal{G}_A$ and node $j$ in $\\mathcal{G}_B$"
     ]
   },
-  "raw_latex_model": "\\min_{\\mathbf{X}} g(\\mathbf{X}) = \\min_{\\mathbf{X}} ||\\mathbf{A}_D - \\mathbf{X} \\mathbf{B}_D \\mathbf{X}^T||_F^2 - \\text{tr}(\\mathbf{X}_u^T \\mathbf{X}) \\quad \\text{s.t.} \\quad \\mathbf{X} \\in [0,1]^{n_A \\times n_B}, \\mathbf{X}\\mathbf{1}_{n_B} = \\mathbf{1}, \\mathbf{X}^T\\mathbf{1}_{n_A} \\leq \\mathbf{1}_{n_A}",
-  "algorithm_description": "The algorithm for deep graph matching under quadratic constraint proceeds as follows: 1. Extract and align CNN features (from VGG16 layers relu4_2 and relu5_1) with graph node coordinates to form initial node attributes, augmented with normalized 2D coordinates as unary geometric prior. 2. Construct deep feature weighted adjacency matrices using a linear kernel on node attributes. 3. In the training stage, for each epoch: a. Refine node attributes via GCN or SplineCNN layers. b. Update adjacency matrices and compute node affinity matrix using a learnable metric. c. Initialize the correspondence matrix \\mathbf{X} with the node affinity matrix. d. Perform quadratic constrained-optimization using a differentiable Frank-Wolfe algorithm: i. Compute the gradient \\nabla g(\\mathbf{X}) as per Eq. (12). ii. Solve \\mathbf{y} = \\arg\\min_{\\mathbf{y}} \\nabla g(\\mathbf{X})^T \\mathbf{y}. iii. Project \\mathbf{y} to the set of doubly stochastic matrices via Sinkhorn normalization to obtain \\mathbf{s}. iv. Update \\mathbf{X} as \\bar{\\mathbf{X}} = \\mathbf{X} - \\epsilon_k (\\mathbf{X} - \\mathbf{s}) with step size \\epsilon_k, then project \\bar{\\mathbf{X}} back using Sinkhorn. v. Repeat for a fixed number of inner and outer iterations. e. Compute the false matching loss between the optimized \\mathbf{X} and ground truth, and update model parameters via backpropagation. 4. In the inference stage, follow similar steps but use the Hungarian algorithm for projection to obtain a discrete permutation matrix, iterating until convergence."
+  "raw_latex_model": "$$ \\min_{\\mathbf{X}} \\| \\mathbf{A}_D - \\mathbf{X} \\mathbf{B}_D \\mathbf{X}^T \\|_F^2 - \\text{tr}(\\mathbf{K}_p^l \\mathbf{X}) \\\\ \\text{subject to } \\mathbf{X} \\in [0,1]^{n_A \\times n_B}, \\mathbf{X} \\mathbf{1}_{n_B} = \\mathbf{1}, \\mathbf{X}^T \\mathbf{1}_{n_A} \\leq \\mathbf{1}_{n_A} $$",
+  "algorithm_description": "The paper proposes a deep graph matching method that incorporates quadratic constraint into a differentiable framework. It uses CNN (VGG16) to extract deep features from images, aligns them to graph nodes, and adds geometric prior (coordinates). Node attributes are refined via Graph Convolutional Network (GCN) or SplineCNN, and node affinity matrix $\\mathbf{K}_p^l$ is constructed. Weighted adjacency matrices $\\mathbf{A}_D$ and $\\mathbf{B}_D$ are built using deep features. A relaxed quadratic assignment problem (QAP) is formulated with objective minimizing structural discrepancy and maximizing node affinity, subject to continuous constraints. During training, a differentiable Frank-Wolfe algorithm with Sinkhorn normalization is used to solve the optimization, and a false matching loss is applied for supervision. During inference, Hungarian algorithm is used for discrete matching."
 }

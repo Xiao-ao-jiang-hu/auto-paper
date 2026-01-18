@@ -6,7 +6,19 @@
   "problem_type": "Combinatorial Optimization (NP-hard), with variants formulated as Mixed-Integer Linear Programs (MILP), Stochastic Programs, Robust Optimization, and Chance-Constrained Programs",
   "datasets": [],
   "performance_metrics": [],
-  "lp_model": {},
-  "raw_latex_model": "",
-  "algorithm_description": ""
+  "lp_model": {
+    "objective": "$\\min \\sum_{i \\in V} \\sum_{j \\in V} c_{ij} x_{ij}$",
+    "constraints": [
+      "$\\sum_{i \\in V} x_{ij} = 1 \\quad \\forall j \\in V \\setminus \\{0\\}$",
+      "$\\sum_{j \\in V} x_{ij} = 1 \\quad \\forall i \\in V \\setminus \\{0\\}$",
+      "$\\sum_{i \\in V} x_{i0} = K$",
+      "$\\sum_{j \\in V} x_{0j} = K$",
+      "$\\sum_{i \\notin S} \\sum_{j \\in S} x_{ij} \\geq r(S) \\quad \\forall S \\subseteq V \\setminus \\{0\\}, S \\neq \\emptyset$"
+    ],
+    "variables": [
+      "$x_{ij}$: binary decision variable that indicates whether the arc $(i,j)$ is part of the solution"
+    ]
+  },
+  "raw_latex_model": "$$\\min \\sum_{i \\in V} \\sum_{j \\in V} c_{ij} x_{ij}$$ subject to $$\\sum_{i \\in V} x_{ij} = 1 \\quad \\forall j \\in V \\setminus \\{0\\}$$ $$\\sum_{j \\in V} x_{ij} = 1 \\quad \\forall i \\in V \\setminus \\{0\\}$$ $$\\sum_{i \\in V} x_{i0} = K$$ $$\\sum_{j \\in V} x_{0j} = K$$ $$\\sum_{i \\notin S} \\sum_{j \\in S} x_{ij} \\geq r(S) \\quad \\forall S \\subseteq V \\setminus \\{0\\}, S \\neq \\emptyset$$",
+  "algorithm_description": "The paper reviews various machine learning methods to assist in solving vehicle routing problems, including ML-assisted modelling for uncertainties (e.g., stochastic programming, robust optimisation) and ML-assisted optimisation algorithms such as decomposition strategies, perturbative algorithms (e.g., adaptive large neighborhood search with learning), and constructive approaches (e.g., reinforcement learning for solution generation). For the basic CVRP, heuristic-based methods are commonly used, and ML is integrated to enhance algorithm performance through learning heuristics, parameter tuning, or guiding search processes."
 }

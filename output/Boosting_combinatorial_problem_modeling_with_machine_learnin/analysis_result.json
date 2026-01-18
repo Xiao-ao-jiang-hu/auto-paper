@@ -7,14 +7,16 @@
   "datasets": [],
   "performance_metrics": [],
   "lp_model": {
-    "objective": "\\min z = x_0",
+    "objective": "$\\min z = x_0$",
     "constraints": [
-      "\\pi_i(\\vec{x}) \\quad \\forall i \\in I"
+      "$\\pi_i(\\vec{x}) \\quad \\forall i \\in I$",
+      "$\\vec{x} \\in D_{\\vec{x}}$"
     ],
     "variables": [
-      "\\vec{x} \\in D_{\\vec{x}}"
+      "$\\vec{x}$: vector of problem variables with domain $D_{\\vec{x}}$",
+      "$x_0$: cost variable to be minimized"
     ]
   },
   "raw_latex_model": "$$\\begin{aligned}& \\min z = x_0 \\\\& \\text{subject to: } \\pi_i(\\vec{x}) \\quad \\forall i \\in I \\\\& \\vec{x} \\in D_{\\vec{x}}\\end{aligned}$$",
-  "algorithm_description": "The constraint acquisition algorithm involves learning constraints from examples to build a combinatorial model. Key steps include: 1. Define a bias set of potential constraints. 2. Collect examples passively from data or actively by generating candidate solutions and querying a constraint checker. 3. Evaluate constraints in the bias against examples; add constraints compatible with all positive examples (and possibly inconsistent with negative examples) to the model. 4. In active learning, iteratively generate new examples to refine the model until convergence. 5. Simplify the model by removing redundant constraints. This process is used in systems like CONACQ, QUACQ, and model seeker, with variations such as using partial examples or matching global constraints."
+  "algorithm_description": "The paper surveys Machine Learning techniques to enhance combinatorial problem modeling, including constraint acquisition via native constraint languages (e.g., CONACQ, QUACQ, model seeker), embedding pre-trained ML models (e.g., neural networks, decision trees) into optimization frameworks using constraint programming or mixed-integer linear programming encodings, and active learning approaches for learning objective functions while solving problems."
 }

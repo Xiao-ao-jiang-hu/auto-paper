@@ -1,0 +1,32 @@
+{
+  "paper_id": "Deep_Reinforcement_Learning_for_Exact_Combinatorial_Optimiza",
+  "title": "Deep Reinforcement Learning for Exact Combinatorial Optimization: Learning to Branch",
+  "abstract": "Branch-and-bound is a systematic enumerative method for combinatorial optimization, where the performance highly relies on the variable selection strategy. State-of-the-art handcrafted heuristic strategies suffer from relatively slow inference time for each selection, while the current machine learning methods require a significant amount of labeled data. We propose a new approach for solving the data labeling and inference latency issues in combinatorial optimization based on the use of the reinforcement learning (RL) paradigm. We use imitation learning to bootstrap an RL agent and then use Proximal Policy Optimization (PPO) to further explore global optimal actions. Then, a value network is used to run Monte-Carlo tree search (MCTS) to enhance the policy network. We evaluate the performance of our method on four different categories of combinatorial optimization problems and show that our approach performs strongly compared to the state-of-the-art machine learning and heuristics based methods.",
+  "problem_description_natural": "The paper addresses the variable selection problem within the branch-and-bound (B&B) algorithm for solving mixed-integer linear programs (MILPs), which are a common formulation for many combinatorial optimization problems. In B&B, at each node of the search tree, a decision must be made about which variable to branch on—a choice that critically affects the size of the search tree and thus the computational efficiency. Traditional approaches rely on handcrafted heuristics like strong branching, which are computationally expensive or suboptimal. The authors aim to learn a variable selection policy using deep reinforcement learning that minimizes the number of nodes explored (or equivalently, maximizes the improvement in the dual bound over time) without requiring large amounts of labeled training data.",
+  "problem_type": "Mixed-Integer Linear Programming (MILP) within combinatorial optimization",
+  "datasets": [
+    "Set Covering",
+    "Combinatorial Auction",
+    "Capacitated Facility Location",
+    "Maximum Independent Set"
+  ],
+  "performance_metrics": [
+    "Average solving time",
+    "Average number of B&B nodes",
+    "Dual integral"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\mathbf{c}^T \\mathbf{x}$",
+    "constraints": [
+      "$\\mathbf{A}\\mathbf{x} \\leq \\mathbf{b}$",
+      "$\\mathbf{l} \\leq \\mathbf{x} \\leq \\mathbf{u}$",
+      "$x_i \\in \\mathbb{Z} \\text{ for } i \\in \\mathcal{I}$"
+    ],
+    "variables": [
+      "$\\mathbf{x}$: decision variable vector with $n$ components",
+      "$x_i$: individual variable, integer if $i \\in \\mathcal{I}$, otherwise continuous"
+    ]
+  },
+  "raw_latex_model": "$$\\arg \\min_{\\mathbf{x}} \\mathbf{c}^T \\mathbf{x}, \\quad \\text{s.t.} \\quad \\mathbf{A}\\mathbf{x} \\leq \\mathbf{b}, \\quad \\mathbf{l} \\leq \\mathbf{x} \\leq \\mathbf{u}, \\quad x_i \\in \\mathbb{Z} \\text{ where } i \\in \\mathcal{I}, \\quad |\\mathcal{I}| \\leq n$$",
+  "algorithm_description": "Deep reinforcement learning approach using imitation learning to bootstrap, Proximal Policy Optimization (PPO) for policy exploration, and Monte-Carlo Tree Search (MCTS) to enhance the policy for variable selection in the branch-and-bound algorithm to solve mixed-integer linear programs."
+}

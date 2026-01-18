@@ -15,15 +15,16 @@
     "Wins"
   ],
   "lp_model": {
-    "objective": "\\min \\mathbf{c}^T \\mathbf{x}",
+    "objective": "$\\min \\mathbf{c}^T \\mathbf{x}$",
     "constraints": [
-      "\\mathbf{A} \\mathbf{x} \\leq \\mathbf{b}",
-      "\\mathbf{l} \\leq \\mathbf{x} \\leq \\mathbf{u}"
+      "$\\mathbf{A} \\mathbf{x} \\leq \\mathbf{b}$",
+      "$\\mathbf{l} \\leq \\mathbf{x} \\leq \\mathbf{u}$",
+      "$\\mathbf{x} \\in \\mathbb{Z}^p \\times \\mathbb{R}^{n-p}$"
     ],
     "variables": [
-      "\\mathbf{x} \\in \\mathbb{Z}^p \\times \\mathbb{R}^{n-p}: mixed integer variable vector with p integer variables and n-p real variables"
+      "$\\mathbf{x} \\in \\mathbb{R}^n$: decision variable vector, where $p$ components are integer and $n-p$ are real"
     ]
   },
-  "raw_latex_model": "\\arg \\min_{\\mathbf{x}} \\left\\{ \\mathbf{c}^T \\mathbf{x} \\mid \\mathbf{A} \\mathbf{x} \\leq \\mathbf{b}, \\mathbf{l} \\leq \\mathbf{x} \\leq \\mathbf{u}, \\mathbf{x} \\in \\mathbb{Z}^p \\times \\mathbb{R}^{n-p} \\right\\}",
-  "algorithm_description": "1. Initialize the replay buffer with demonstration data from expert branching rules (e.g., Strong Branching).\n2. Initialize three Q-networks (online, target, superior) with random weights and set hyperparameters (learning rate, discount factor, exploration rate, update frequencies).\n3. For each training step:\n   a. Select an action using an ε-greedy policy based on the online Q-network.\n   b. Execute the action in the environment (solver) and observe the next state and reward.\n   c. Store the transition (state, action, reward, next state) in a temporary buffer.\n   d. Sample a mini-batch from the replay buffer and compute the loss using target and superior networks, then update the online network via gradient descent.\n   e. Periodically update the target network by copying weights from the online network.\n   f. Periodically evaluate the policy by computing cumulative reward on a validation set.\n   g. If cumulative reward exceeds a threshold, add transitions from the temporary buffer to the replay buffer, overwriting old self-generated data if full.\n   h. If cumulative reward is better than the best recorded, update the superior network with the current online network weights.\n4. Repeat training for a specified number of epochs or until convergence."
+  "raw_latex_model": "$$\\arg \\min_{\\mathbf{x}} \\left\\{ \\mathbf{c}^T \\mathbf{x} \\mid \\mathbf{A} \\mathbf{x} \\leq \\mathbf{b}, \\mathbf{l} \\leq \\mathbf{x} \\leq \\mathbf{u}, \\mathbf{x} \\in \\mathbb{Z}^p \\times \\mathbb{R}^{n-p} \\right\\}$$",
+  "algorithm_description": "A reinforcement learning algorithm based on Double DQN with a superior network and prioritized storage mechanism to learn variable selection policies in branch-and-bound for solving mixed integer linear programs."
 }

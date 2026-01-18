@@ -1,0 +1,37 @@
+{
+  "paper_id": "DIFUSCO_Graph-based_Diffusion_Solvers_for_Combinatorial_Opti",
+  "title": "DIFUSCO: Graph-based Diffusion Solvers for Combinatorial Optimization",
+  "abstract": "Neural network-based Combinatorial Optimization (CO) methods have shown promising results in solving various NP-complete (NPC) problems without relying on hand-crafted domain knowledge. This paper broadens the current scope of neural solvers for NPC problems by introducing a new graph-based diffusion framework, namely DIFUSCO. Our framework casts NPC problems as discrete {0,1}-vector optimization problems and leverages graph-based denoising diffusion models to generate high-quality solutions. We investigate two types of diffusion models with Gaussian and Bernoulli noise, respectively, and devise an effective inference schedule to enhance the solution quality. We evaluate our methods on two well-studied NPC combinatorial optimization problems: Traveling Salesman Problem (TSP) and Maximal Independent Set (MIS). Experimental results show that DIFUSCO strongly outperforms the previous state-of-the-art neural solvers, improving the performance gap between ground-truth and neural solvers from 1.76% to 0.46% on TSP-500, from 2.46% to 1.17% on TSP-1000, and from 3.19% to 2.58% on TSP-10000. For the MIS problem, DIFUSCO outperforms the previous state-of-the-art neural solver on the challenging SATLIB benchmark.",
+  "problem_description_natural": "The paper addresses NP-complete combinatorial optimization problems by formulating them as discrete {0,1}-vector optimization tasks over graphs. Specifically, it considers two canonical problems: (1) the Traveling Salesman Problem (TSP), where the goal is to find the shortest tour visiting each node exactly once and returning to the start, represented by a binary vector indicating selected edges; and (2) the Maximal Independent Set (MIS) problem, where the goal is to select the largest possible subset of nodes such that no two are adjacent, represented by a binary vector indicating selected nodes. The objective is to minimize a cost function that combines task-specific costs (e.g., tour length for TSP, or number of unselected nodes for MIS) and a validation term that enforces feasibility (infinite penalty for invalid solutions).",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "TSP-50",
+    "TSP-100",
+    "TSP-500",
+    "TSP-1000",
+    "TSP-10000",
+    "SATLIB",
+    "ER-[700-800]",
+    "TSPLIB"
+  ],
+  "performance_metrics": [
+    "average tour length",
+    "average relative performance gap",
+    "total run time",
+    "average size of the independent set",
+    "average optimality gap",
+    "latency time"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\sum_{e \\in E} d_e x_e$",
+    "constraints": [
+      "$\\sum_{e \\in \\delta(v)} x_e = 2$ for all $v \\in V$",
+      "$\\sum_{e \\in E(S)} x_e \\leq |S| - 1$ for all $S \\subset V$, $|S| \\geq 2$"
+    ],
+    "variables": [
+      "$x_e \\in \\{0,1\\}$ for all $e \\in E$, where $E$ is the set of edges in the graph"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} \\text{Minimize: } & \\sum_{e \\in E} d_e x_e \\\\ \\text{Subject to: } & \\sum_{e \\in \\delta(v)} x_e = 2, \\quad \\forall v \\in V \\\\ & \\sum_{e \\in E(S)} x_e \\leq |S| - 1, \\quad \\forall S \\subset V, |S| \\geq 2 \\\\ & x_e \\in \\{0,1\\}, \\quad \\forall e \\in E \\end{aligned}$$",
+  "algorithm_description": "DIFUSCO is a graph-based diffusion framework that solves combinatorial optimization problems like TSP and MIS. It uses denoising diffusion models (with Gaussian or Bernoulli noise) parameterized by an anisotropic graph neural network to generate solution heatmaps. Inference involves parallel denoising steps with cosine schedules, and decoding strategies include greedy decoding with 2-opt or Monte Carlo Tree Search for TSP, and greedy decoding for MIS."
+}

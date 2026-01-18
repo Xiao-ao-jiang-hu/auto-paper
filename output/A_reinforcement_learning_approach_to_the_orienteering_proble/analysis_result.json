@@ -16,15 +16,27 @@
     "Inference Time"
   ],
   "lp_model": {
-    "objective": "\\max \\sum_{i=1}^{n} r_i y_i",
+    "objective": "$\\max \\sum_{i=1}^{n} r_i \\cdot y_i$",
     "constraints": [
-      "a_j + \\text{wait}_j \\leq c_j \\quad \\forall j \\text{ in the route}",
-      "a_j + \\text{wait}_j + d_j + \\Delta_{jn} \\leq T_{end} \\quad \\forall j \\text{ in the route}",
-      "\\text{wait}_j = \\max(0, o_j - a_j)",
-      "The route must start at v_1 and end at v_n"
+      "$y_i \\in \\{0,1\\}, \\quad i = 1,\\dots,n$",
+      "$\\sum_{j=2}^{n} x_{1j} = 1$",
+      "$\\sum_{i=1}^{n-1} x_{in} = 1$",
+      "$\\sum_{i=1}^{n} x_{ik} = y_k, \\quad k = 2,\\dots,n$",
+      "$\\sum_{j=1}^{n} x_{kj} = y_k, \\quad k = 1,\\dots,n-1$",
+      "$a_j + \\text{wait}_j \\leq c_j, \\quad \\forall j \\in \\{2,\\dots,n\\}$",
+      "$a_j + \\text{wait}_j + d_j + \\Delta_{jn} \\leq T_{\\text{end}}, \\quad \\forall j \\in \\{2,\\dots,n\\}$",
+      "$a_j \\geq 0, \\quad \\forall j \\in \\{1,\\dots,n\\}$",
+      "$\\text{wait}_j = \\max(0, o_j - a_j), \\quad \\forall j \\in \\{1,\\dots,n\\}$",
+      "$a_1 = T_{\\text{start}}$",
+      "$a_j \\geq a_i + \\text{wait}_i + d_i + \\Delta_{ij} - M(1 - x_{ij}), \\quad \\forall i,j \\in \\{1,\\dots,n\\}, i \\neq j$"
     ],
-    "variables": "y_i \\in \\{0,1\\} \\text{ for node } i \\text{ visited}, a_i \\in \\mathbb{R} \\text{ arrival time at node } i"
+    "variables": [
+      "$y_i$: binary variable indicating if node $v_i$ is visited ($y_i=1$) or not ($y_i=0$).",
+      "$x_{ij}$: binary variable indicating if the route goes directly from node $v_i$ to node $v_j$.",
+      "$a_i$: continuous variable representing the arrival time at node $v_i$ (if visited).",
+      "$\\text{wait}_i$: continuous variable representing the waiting time at node $v_i$ before the visit can start."
+    ]
   },
-  "raw_latex_model": "The objective is to maximize the total score collected from visited locations. Formally, for a solution route $S = (\\pi_1, \\dots, \\pi_m)$, maximize $\\sum_{v_i \\in S} r_i$. Subject to constraints for each node $v_j$ in the route: $$ a_j + \\text{wait}_j \\leq c_j; $$ and $$ a_j + \\text{wait}_j + d_j + \\Delta_{jn} \\leq T_{end}, $$ where $\\text{wait}_j = \\max(0, o_j - a_j)$.",
-  "algorithm_description": "Step-by-step description of the reinforcement learning algorithm using Pointer Network for OPTW:\n1. Model Initialization: Initialize the Pointer Network model with parameters θ. The model consists of a set encoder (Transformer with recursion and graph masked self-attention), a sequence encoder (LSTM), and a pointing mechanism.\n2. Training Loop (REINFORCE Algorithm):\n   a. For each training epoch (e.g., 500,000 epochs):\n      i. Sample an instance φ (a tourist-region instance with generated parameters).\n      ii. For b = 1 to B (batch size, e.g., 32):\n          - Construct a solution S_b by sequentially sampling nodes from the model's policy pθ until the end node v_n is reached.\n          - Compute the total reward R(S_b) as the sum of scores of visited nodes.\n      iii. Compute the average reward R̄ = (1/B) ∑_{b=1}^{B} R(S_b).\n      iv. Compute the gradient estimate: gθ = - (1/B) ∑_{b=1}^{B} (R(S_b) - R̄) ∇θ log pθ(S_b|φ).\n      v. Update model parameters θ using the Adam optimizer with learning rate scheduling.\n3. Inference for New Instances:\n   a. Beam Search: For a given instance, maintain a beam of top-nb partial solutions (e.g., up to 128 beams). At each step, expand all admissible next nodes for each partial solution, compute probabilities using the model, and keep the top-nb sequences with highest cumulative probability. Continue until all sequences reach v_n, then select the solution with the highest total score.\n   b. Active Search (Optional): For a specific instance, fine-tune the model using the REINFORCE algorithm for a fixed number of epochs (e.g., 128), then apply beam search as above."
+  "raw_latex_model": "$$\\begin{aligned} \\text{maximize} \\quad & \\sum_{i=1}^{n} r_i \\cdot y_i \\\\ \\text{subject to} \\quad & y_i \\in \\{0,1\\}, \\quad i = 1,\\dots,n \\\\ & \\sum_{j=2}^{n} x_{1j} = 1 \\\\ & \\sum_{i=1}^{n-1} x_{in} = 1 \\\\ & \\sum_{i=1}^{n} x_{ik} = y_k, \\quad k = 2,\\dots,n \\\\ & \\sum_{j=1}^{n} x_{kj} = y_k, \\quad k = 1,\\dots,n-1 \\\\ & a_j + \\text{wait}_j \\leq c_j, \\quad \\forall j \\in \\{2,\\dots,n\\} \\\\ & a_j + \\text{wait}_j + d_j + \\Delta_{jn} \\leq T_{\\text{end}}, \\quad \\forall j \\in \\{2,\\dots,n\\} \\\\ & a_j \\geq 0, \\quad \\forall j \\in \\{1,\\dots,n\\} \\\\ & \\text{wait}_j = \\max(0, o_j - a_j), \\quad \\forall j \\in \\{1,\\dots,n\\} \\\\ & a_1 = T_{\\text{start}} \\\\ & a_j \\geq a_i + \\text{wait}_i + d_i + \\Delta_{ij} - M(1 - x_{ij}), \\quad \\forall i,j \\in \\{1,\\dots,n\\}, i \\neq j \\end{aligned}$$",
+  "algorithm_description": "The paper uses a Pointer Network (a neural network with attention mechanisms) trained with reinforcement learning (REINFORCE algorithm) to solve the OPTW. The model sequentially selects nodes to visit, using a Transformer-based set encoder with recursion and graph-masked self-attention to handle dynamic time-dependent constraints. Inference is performed using beam search and active search."
 }

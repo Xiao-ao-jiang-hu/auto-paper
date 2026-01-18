@@ -1,0 +1,40 @@
+{
+  "paper_id": "Deep_Reinforcement_Learning_for_the_Electric_Vehicle_Routing",
+  "title": "Deep Reinforcement Learning for the Electric Vehicle Routing Problem with Time Windows",
+  "abstract": "The past decade has seen a rapid penetration of electric vehicles (EVs) as more and more logistics and transportation companies start to deploy electric vehicles (EVs) for service provision. In order to model the operations of a commercial EV fleet, we utilize the EV routing problem with time windows (EVRPTW). In this paper, we propose an end-to-end deep reinforcement learning framework to solve the EVRPTW. In particular, we develop an attention model incorporating the pointer network and a graph embedding layer to parameterize a stochastic policy for solving the EVRPTW. The model is then trained using policy gradient with rollout baseline. Our numerical studies show that the proposed model is able to efficiently solve EVRPTW instances of large sizes that are not solvable with current existing approaches.",
+  "problem_description_natural": "The Electric Vehicle Routing Problem with Time Windows (EVRPTW) involves routing a fleet of capacitated electric vehicles to serve customers, each with a specific demand that must be fulfilled within a given time window. Vehicles start fully charged from a depot and may visit charging stations to recharge their batteries fully when needed. The goal is to minimize the total distance traveled by the fleet while respecting constraints on vehicle capacity, battery energy, time windows, and the limited number of available vehicles.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "Generated EVRPTW instances"
+  ],
+  "performance_metrics": [
+    "Mean total distance",
+    "Optimality Gap",
+    "Average solution time (seconds)",
+    "Number of solved instances"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\sum_{k \\in K} \\sum_{i \\in V} \\sum_{j \\in V} w_{ij} x_{ijk}$",
+    "constraints": [
+      "$\\sum_{k \\in K} \\sum_{j \\in V} x_{ijk} = 1 \\quad \\forall i \\in V_c$",
+      "$\\sum_{j \\in V} x_{0jk} \\leq 1 \\quad \\forall k \\in K$",
+      "$\\sum_{i \\in V} x_{i0k} \\leq 1 \\quad \\forall k \\in K$",
+      "$\\sum_{j \\in V} x_{ijk} = \\sum_{j \\in V} x_{jik} \\quad \\forall k \\in K, \\forall i \\in V$",
+      "$t_{jk} \\geq t_{ik} + s_i + w_{ij} - M(1 - x_{ijk}) \\quad \\forall k \\in K, \\forall i,j \\in V$",
+      "$e_i \\leq t_{ik} \\leq l_i \\quad \\forall k \\in K, \\forall i \\in V_c$",
+      "$b_{jk} \\leq b_{ik} - f_{ij} x_{ijk} \\text{ if } i \\notin V_s, \\quad b_{jk} = B \\text{ if } i \\in V_s, \\quad \\forall k \\in K, \\forall i,j \\in V$",
+      "$b_{ik} \\geq 0 \\quad \\forall k \\in K, \\forall i \\in V$",
+      "$q_{jk} \\leq q_{ik} - d_j x_{ijk} \\quad \\forall j \\in V_c, \\forall k \\in K, \\forall i \\in V$",
+      "$0 \\leq q_{ik} \\leq Q \\quad \\forall k \\in K, \\forall i \\in V$",
+      "$t_{ik} \\leq T \\quad \\forall k \\in K, \\forall i \\in V$"
+    ],
+    "variables": [
+      "$x_{ijk} \\in \\{0,1\\}$: binary variable indicating if vehicle $k$ travels from node $i$ to node $j$",
+      "$t_{ik} \\geq 0$: arrival time of vehicle $k$ at node $i$",
+      "$b_{ik} \\geq 0$: battery level of vehicle $k$ at node $i$",
+      "$q_{ik} \\geq 0$: cargo load of vehicle $k$ after leaving node $i$"
+    ]
+  },
+  "raw_latex_model": "$$ \\begin{aligned} \\text{Minimize} & \\sum_{k \\in K} \\sum_{i \\in V} \\sum_{j \\in V} w_{ij} x_{ijk} \\\\ \\text{subject to} & \\\\ & \\sum_{k \\in K} \\sum_{j \\in V} x_{ijk} = 1, \\quad \\forall i \\in V_c \\\\ & \\sum_{j \\in V} x_{0jk} \\leq 1, \\quad \\forall k \\in K \\\\ & \\sum_{i \\in V} x_{i0k} \\leq 1, \\quad \\forall k \\in K \\\\ & \\sum_{j \\in V} x_{ijk} = \\sum_{j \\in V} x_{jik}, \\quad \\forall k \\in K, \\forall i \\in V \\\\ & t_{jk} \\geq t_{ik} + s_i + w_{ij} - M(1 - x_{ijk}), \\quad \\forall k \\in K, \\forall i,j \\in V \\\\ & e_i \\leq t_{ik} \\leq l_i, \\quad \\forall k \\in K, \\forall i \\in V_c \\\\ & b_{jk} \\leq b_{ik} - f_{ij} x_{ijk} \\text{ if } i \\notin V_s, \\quad b_{jk} = B \\text{ if } i \\in V_s, \\quad \\forall k \\in K, \\forall i,j \\in V \\\\ & b_{ik} \\geq 0, \\quad \\forall k \\in K, \\forall i \\in V \\\\ & q_{jk} \\leq q_{ik} - d_j x_{ijk}, \\quad \\forall j \\in V_c, \\forall k \\in K, \\forall i \\in V \\\\ & 0 \\leq q_{ik} \\leq Q, \\quad \\forall k \\in K, \\forall i \\in V \\\\ & t_{ik} \\leq T, \\quad \\forall k \\in K, \\forall i \\in V \\end{aligned} $$",
+  "algorithm_description": "The paper proposes an end-to-end deep reinforcement learning framework to solve the EVRPTW. It develops an attention model incorporating pointer network and graph embedding to parameterize a stochastic policy, which is trained using policy gradient with rollout baseline. The model decodes solutions via greedy decoding, stochastic sampling, or beam search."
+}

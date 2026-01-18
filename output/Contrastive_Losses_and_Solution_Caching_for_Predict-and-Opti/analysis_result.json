@@ -13,14 +13,15 @@
     "Regret"
   ],
   "lp_model": {
-    "objective": "\\min_{v \\in V} f(v, c)",
+    "objective": "$\\max \\sum_{i=1}^{48} c_i x_i$",
     "constraints": [
-      "v \\in V"
+      "$\\sum_{i=1}^{48} w_i x_i \\leq C$",
+      "$x_i \\in \\{0,1\\}$ for $i=1,\\ldots,48$"
     ],
     "variables": [
-      "v \\in V: decision variable vector representing a feasible solution"
+      "$x_i$: binary decision variable indicating whether item $i$ is selected"
     ]
   },
-  "raw_latex_model": "v^*(c) = \\argmin_{v \\in V} f(v, c)",
-  "algorithm_description": "1. Initialize model parameters ω and solution cache S with true optimal solutions from training data.\n2. For each epoch and each training instance (x, c):\n   a. Compute predicted cost vector ĉ = m(ω, x).\n   b. Optionally transform ĉ to č using transformation t (e.g., for specific loss functions).\n   c. With probability p_solve, call the solver to find optimal solution v for č and add it to cache S if new.\n   d. Otherwise, find v by argmin over cache S for cost č.\n   e. Compute gradient of loss function L^v with respect to č, and update ω via backpropagation.\n3. Repeat for specified number of epochs."
+  "raw_latex_model": "$$\\begin{aligned} \\max & \\sum_{i=1}^{48} c_i x_i \\\\ \\text{s.t.} & \\sum_{i=1}^{48} w_i x_i \\leq C \\\\ & x_i \\in \\{0,1\\}, \\quad i=1,\\ldots,48 \\end{aligned}$$",
+  "algorithm_description": "The paper proposes a predict-and-optimize approach using gradient-descent with contrastive loss functions (e.g., $\\mathcal{L}_{\\text{NCE}}$ or $\\mathcal{L}_{\\text{MAP}}$) and a solution caching mechanism to approximate the feasible region, reducing the need to solve the optimization problem repeatedly during training."
 }

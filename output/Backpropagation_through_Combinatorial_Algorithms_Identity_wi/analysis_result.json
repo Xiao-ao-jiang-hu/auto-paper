@@ -22,16 +22,16 @@
     "Path cost ratio"
   ],
   "lp_model": {
-    "objective": "\\min_{y \\in Y} \\langle \\omega, y \\rangle",
+    "objective": "$\\min_{y \\in Y} \\langle \\omega, y \\rangle$",
     "constraints": [
-      "y \\in Y",
-      "Y \\subset \\mathbb{R}^n \\text{ is a finite set of solutions}"
+      "$y \\in Y$",
+      "where $Y \\subset \\mathbb{R}^n$ is a finite set of feasible solutions."
     ],
     "variables": [
-      "y \\in \\mathbb{R}^n \\text{ (solution vector)}",
-      "\\omega \\in W \\subseteq \\mathbb{R}^n \\text{ (cost vector, input to solver)}"
+      "$y$: a vector in $\\mathbb{R}^n$, the decision variable representing the solution.",
+      "$\\omega$: a vector in $\\mathbb{R}^n$, the cost coefficients (input parameter)."
     ]
   },
-  "raw_latex_model": "y(\\omega) = \\arg\\min_{y \\in Y} \\langle \\omega, y \\rangle",
-  "algorithm_description": "The Identity method for backpropagation through combinatorial solvers involves the following steps during training: 1. Forward pass: Predict the cost vector ω from the input using a backbone neural network. Optionally, apply a projection P(ω) (e.g., standardization P_std) to handle solver invariants. Then, solve the combinatorial problem y = argmin_{y' in Y} ⟨ω, y'⟩ to obtain the discrete solution. 2. Compute the loss ℓ based on y and the ground truth. 3. Backward pass: Compute the gradient dℓ/dy. For the solver layer, replace the true zero gradient with -P'(ω) dℓ/dy (or -dℓ/dy if no projection is used), effectively treating the solver as a negative identity. Backpropagate this gradient to update the backbone network weights. Optionally, add noise ξ to ω before solving in the forward pass to induce a margin and prevent cost collapse."
+  "raw_latex_model": "$$ y(\\omega) = \\arg\\min_{y \\in Y} \\langle \\omega, y \\rangle, $$ where $\\omega \\in W \\subseteq \\mathbb{R}^n$ is the cost vector and $Y \\subset \\mathbb{R}^n$ is a finite set of possible solutions.",
+  "algorithm_description": "The paper proposes a hyperparameter-free method for backpropagation through combinatorial solvers that solve linear-cost optimization problems. The method, called Identity with Projection, treats the solver as a negative identity on the backward pass and uses projections (e.g., $P_{\\text{mean}}$, $P_{\\text{norm}}$, $P_{\\text{std}}$) to handle invariances in the cost vector, thereby providing informative gradients without additional solver calls."
 }

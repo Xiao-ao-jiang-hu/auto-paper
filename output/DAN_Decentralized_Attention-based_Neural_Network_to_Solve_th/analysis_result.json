@@ -12,16 +12,18 @@
     "Computing time"
   ],
   "lp_model": {
-    "objective": "\\min \\max_{i \\in \\{1, \\dots, m\\}} L(\\pi^i), \\text{ where } L(\\pi^i) = \\sum_{j=1}^{n_i-1} c_{\\pi_j^i \\pi_{j+1}^i}",
+    "objective": "$\\min \\max_{i \\in \\{1, ..., m\\}} L(\\pi^i)$, where $L(\\pi^i) = \\sum_{j=1}^{n_i-1} c_{\\pi_j^i \\pi_{j+1}^i}$",
     "constraints": [
-      "\\pi_1^i = 1 \\quad \\forall i \\in \\{1, \\dots, m\\}",
-      "\\pi_{n_i}^i = 1 \\quad \\forall i \\in \\{1, \\dots, m\\}",
-      "\\sum_{i=1}^m \\sum_{t=1}^{n_i} \\mathbb{I}(\\pi_t^i = j) = 1 \\quad \\forall j \\in \\{2, \\dots, n\\}"
+      "$\\sum_{i=1}^m \\sum_{t=1}^{n_i} \\mathbb{I}(\\pi_t^i = j) = 1$ for all $j \\in V \\setminus \\{1\\}$",
+      "$\\pi_1^i = \\pi_{n_i}^i = 1$ for all $i \\in \\{1, ..., m\\}$",
+      "$\\pi_t^i \\in V$ for all $i, t$"
     ],
     "variables": [
-      "\\pi^i: \\text{tour of agent } i, \\text{ an ordered set of cities visited, with } \\pi_t^i \\text{ denoting the city at step } t"
+      "$\\pi^i$: tour of agent $i$, an ordered sequence of cities",
+      "$\\pi_t^i$: the $t$-th city visited by agent $i$",
+      "$c_{ij}$: Euclidean distance between cities $i$ and $j$"
     ]
   },
-  "raw_latex_model": "The mTSP is defined on a graph $G = (V, E)$, where $V = \\{1, ..., n\\}$ is a set of $n$ nodes (cities), and $E$ is a set of edges. Node 1 is defined as the depot, where all $m$ agents are initially placed, and the remaining nodes as cities to be visited. The cities must be visited exactly once by any agent. After all cities are visited, all agents return to the depot to finish their tour. A solution to mTSP $\\pi = \\{\\pi^1, ..., \\pi^m\\}$ as a set of agent tours. Each agent tour $\\pi^i = (\\pi_1^i, \\pi_2^i, ..., \\pi_{n_i}^i)$ is an ordered set of the cities visited by this agent, where $\\pi_t^i \\in V$ and $\\pi_1^i = \\pi_{n_i}^i$ is the depot. $n_i$ denotes the number of cities in this agent tour, so $\\sum_{i=1}^m n_i = n + 2m - 1$ since all agent tours involve the depot twice. Denoting the Euclidean distance between cities $i$ and $j$ as $c_{ij}$, the cost of agent $i$’s tour reads: $L(\\pi^i) = \\sum_{j=1}^{n_i-1} c_{\\pi_j^i \\pi_{j+1}^i}$. We consider MinMax ($\\min \\max_{i \\in \\{1, ..., m\\}} L(\\pi^i)$) as the objective.",
-  "algorithm_description": "Algorithm 1: Sequential Decision Making for mTSP\n1. Initialize: Set mask M to zeros (indicating no cities visited), remaining travel time g to zeros for all agents, and tours π^i for each agent starting at the depot (π_1^i = 1).\n2. While not all cities are visited (i.e., sum(M) < n), iterate over all agents i from 1 to m.\n3. For each agent i:\n   a. If the agent's remaining travel time g_i ≤ 0:\n      i. Observe the cities state s_i^c, agents state s_i^a, and global mask M.\n      ii. Use the neural network (DAN) to output a policy p.\n      iii. Select the next city π_t^i from policy p, where t is the next position in the tour.\n      iv. Append π_t^i to tour π^i.\n      v. Update mask M for the selected city to 1 (visited).\n      vi. Set g_i to the Euclidean distance from the previous city to π_t^i.\n   b. Decrease g_i by Δg (the time step).\n4. Once all cities are visited, return the solution π = {π^1, ..., π^m}."
+  "raw_latex_model": "$$\\begin{aligned} & \\min \\max_{i=1,...,m} \\sum_{j=1}^{n_i-1} c_{\\pi_j^i \\pi_{j+1}^i} \\\\ & \\text{subject to:} \\\\ & \\quad \\sum_{i=1}^m \\sum_{t=1}^{n_i} \\mathbb{I}(\\pi_t^i = j) = 1, \\quad \\forall j \\in \\{2, ..., n\\} \\\\ & \\quad \\pi_1^i = \\pi_{n_i}^i = 1, \\quad \\forall i \\in \\{1, ..., m\\} \\\\ & \\quad \\pi_t^i \\in V, \\quad \\forall i, t \\end{aligned}$$",
+  "algorithm_description": "DAN is a decentralized attention-based neural network that uses multi-agent reinforcement learning with parameter sharing to train agents to asynchronously and collaboratively construct tours for the MinMax mTSP."
 }

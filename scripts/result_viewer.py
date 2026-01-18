@@ -89,6 +89,27 @@ if has_md:
         md_content = f.read()
 
 
+def to_block_latex(text):
+    """
+    Ensure the latex string is rendered as a block equation (centered).
+    Converts inline $...$ to block $$...$$ if necessary.
+    """
+    if not text:
+        return ""
+    text = text.strip()
+
+    # Strip existing wrappers
+    if text.startswith("$$") and text.endswith("$$"):
+        text = text[2:-2]
+    elif text.startswith("$") and text.endswith("$"):
+        text = text[1:-1]
+    elif text.startswith(r"\[") and text.endswith(r"\]"):
+        text = text[2:-2]
+
+    # Return wrapped in double dollars for block rendering
+    return f"$${text}$$"
+
+
 # Main Content Area
 if analysis_data:
     st.header(analysis_data.get("title", selected_paper_dir_name))
@@ -121,7 +142,8 @@ with tab1:
 
             if analysis_data.get("raw_latex_model"):
                 st.markdown("### Raw LaTeX")
-                st.latex(analysis_data.get("raw_latex_model"))
+                # Render as Markdown to support $$...$$ directly
+                st.markdown(analysis_data.get("raw_latex_model"))
 
             if lp_model:
                 st.markdown("### Structured Model")
@@ -130,15 +152,14 @@ with tab1:
                 obj = lp_model.get("objective", "")
                 if obj:
                     st.markdown("**Objective Function:**")
-                    st.latex(obj)
+                    st.markdown(to_block_latex(obj))
 
                 # Constraints
                 constraints = lp_model.get("constraints", [])
                 if constraints:
                     st.markdown("**Constraints:**")
                     for c in constraints:
-                        # Clean up text for latex rendering if needed
-                        st.latex(c)
+                        st.markdown(to_block_latex(c))
 
                 # Variables
                 variables = lp_model.get("variables", [])

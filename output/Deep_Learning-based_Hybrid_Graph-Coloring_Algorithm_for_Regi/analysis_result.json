@@ -1,0 +1,40 @@
+{
+  "paper_id": "Deep_Learning-based_Hybrid_Graph-Coloring_Algorithm_for_Regi",
+  "title": "Deep Learning-based Hybrid Graph-Coloring Algorithm for Register Allocation",
+  "abstract": "Graph-coloring is an NP-hard problem which has a myriad of applications. Register allocation, which is a crucial phase of a good optimizing compiler, relies on graph coloring. Hence, an efficient graph-coloring algorithm is of paramount importance. In this work we try to ‘learn’ a good heuristic for coloring interference graphs that are used in the register allocation phase. We aim to handle moderate-sized interference graphs which have 100 nodes or less. For such graphs we can get the optimal allocation of colors to the nodes. Such optimal coloring is then used to train our Deep Learning (DL) network which is based on several layers of LSTM that output a color for each node of the graph. However, the current network may allocate the same color to the nodes connected by an edge resulting in an invalid coloring of the interference graph. Since it is difficult to encode constraints in an LSTM to avoid invalid coloring, we augment our deep learning network with a color correction phase that runs after the colors have been allocated by the DL network. Thus, our algorithm is hybrid in nature consisting of a mix of a DL algorithm followed by a more traditional correction phase. The color correction phase handles the edges with invalid coloring by first trying to reuse a color allocated to other nodes that are not connected to the invalid nodes, failing which it adds a totally new color – thereby breaking the invalid allocation. Our experience with many graphs shows that around 10%-30% edges may get an invalid coloring. We have trained our DL network using several thousand random graphs of varying sparsity(density). On application of our hybrid algorithm to various popular graphs found in literature we see that our algorithm does very well when compared to the optimal coloring of these graphs. We have also run our algorithm against LLVM’s popular greedy register allocator for several SPEC CPU® 2017 benchmarks and notice that the hybrid algorithm performs on par or better than such a well-tuned allocator for most of these benchmarks.",
+  "problem_description_natural": "The paper addresses the graph coloring problem as it arises in register allocation during compiler optimization. Specifically, the goal is to assign a minimal number of colors (representing physical registers) to the nodes (representing live ranges of variables) of an interference graph such that no two adjacent nodes share the same color. This is a classical combinatorial optimization problem that is NP-hard. The authors focus on moderate-sized graphs (≤100 nodes), for which optimal colorings can be computed and used as training data. They propose a deep learning approach using LSTMs to predict color assignments, followed by a post-hoc color correction phase to fix any constraint violations (i.e., adjacent nodes assigned the same color). The ultimate objective is to minimize the number of colors used—thereby reducing register spills—while maintaining correctness through the correction phase.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "very_nauty-generated Erdős–Rényi random graphs",
+    "COLOR02/03/04 workshop dataset",
+    "Forest-Fire graph",
+    "Karate graph",
+    "Chvatal graph",
+    "Baidu graph",
+    "Planar graph from [16]",
+    "LLVM-9.0-generated interference graphs from SPEC CPU® 2017 benchmarks",
+    "SPEC CPU® 2017 benchmarks (505.mcf_r, 557.xz_r, 541.leela_r, 508.namd_r, 502.gcc_r)"
+  ],
+  "performance_metrics": [
+    "Percentage of invalid edges",
+    "Number of colors used (before and after color correction)",
+    "Chromatic number (χ(G))",
+    "Comparison against optimal coloring",
+    "Comparison against LLVM’s Greedy Register Allocator (GRA) in number of physical registers used",
+    "Training error (mean_absolute_percentage_error, ~5%)"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\sum_{i=1}^{n} y_i$",
+    "constraints": [
+      "$\\sum_{i=1}^{n} x_{v,i} = 1 \\quad \\forall v \\in V$",
+      "$x_{u,i} + x_{v,i} \\leq 1 \\quad \\forall (u,v) \\in E, \\forall i = 1, \\ldots, n$",
+      "$x_{v,i} \\leq y_i \\quad \\forall v \\in V, \\forall i = 1, \\ldots, n$"
+    ],
+    "variables": [
+      "$x_{v,i} \\in \\{0,1\\}$: binary variable indicating if vertex $v$ is assigned color $i$, for $i = 1, \\ldots, n$ where $n = |V|$",
+      "$y_i \\in \\{0,1\\}$: binary variable indicating if color $i$ is used"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} \\text{Minimize: } & \\sum_{i=1}^{n} y_i \\\\ \\text{Subject to: } & \\sum_{i=1}^{n} x_{v,i} = 1 \\quad \\forall v \\in V \\\\ & x_{u,i} + x_{v,i} \\leq 1 \\quad \\forall (u,v) \\in E, \\forall i = 1, \\ldots, n \\\\ & x_{v,i} \\leq y_i \\quad \\forall v \\in V, \\forall i = 1, \\ldots, n \\\\ & x_{v,i}, y_i \\in \\{0,1\\} \\end{aligned}$$",
+  "algorithm_description": "A hybrid algorithm consisting of an LSTM-based deep learning model that predicts colors for each node in a graph, followed by a color correction phase to fix invalid edges where adjacent nodes have the same color by reusing existing colors or adding new colors."
+}

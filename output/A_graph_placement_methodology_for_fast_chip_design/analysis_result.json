@@ -18,17 +18,19 @@
     "Vertical Congestion (%)"
   ],
   "lp_model": {
-    "objective": "\\max_{\\theta} J(\\theta, G) = \\frac{1}{K} \\sum_{g \\in G} \\mathbb{E}_{p \\sim \\pi_\\theta} [R_{p,g}]",
+    "objective": "$ \\min \\left( \\text{Wirelength}(p,g) + \\lambda \\text{Congestion}(p,g) + \\gamma \\text{Density}(p,g) \\right) $",
     "constraints": [
-      "Actions are restricted to grid cells where placing the current macro does not violate hard constraints on density or blockages.",
-      "Density in each grid cell must not exceed the maximum density threshold: \\text{density} \\leq \\text{max}_{\\text{density}}.",
-      "Macros cannot overlap."
+      "$ \\text{density}(c) \\leq D_{\\text{max}} \\quad \\forall c \\in \\text{grid cells} $",
+      "$ \\text{no overlap between macros} $",
+      "$ x_i, y_i \\in \\text{grid bounds} \\quad \\forall i \\in \\text{macros} $"
     ],
     "variables": [
-      "Policy parameters \\theta that define the placement policy \\pi_\\theta.",
-      "Placement sequence p for macros and standard cell clusters."
+      "$ x_i, y_i $: coordinates of the center of macro $i$ on the discretized chip grid",
+      "$ \\text{Wirelength}(p,g) = \\sum_{i=1}^{N_{\\text{netlist}}} q(i) \\cdot \\text{HPWL}(i) $, where $\\text{HPWL}(i) = (\\max_{b \\in i} x_b - \\min_{b \\in i} x_b + 1) + (\\max_{b \\in i} y_b - \\min_{b \\in i} y_b + 1) $",
+      "$ \\text{Congestion}(p,g) $: proxy congestion based on routing allocations",
+      "$ \\text{Density}(p,g) $: density penalty calculated from placed items"
     ]
   },
-  "raw_latex_model": "J(\\theta, G) = \\frac{1}{K} \\sum_{g \\in G} E_{g,p=\\pi_\\theta}[R_{p,g}]. \\quad R_{p,g} = -\\text{Wirelength}(p,g) - \\lambda \\text{Congestion}(p,g) - \\gamma \\text{Density}(p,g).",
-  "algorithm_description": "1. Formulate chip floorplanning as a Markov Decision Process (MDP) with states encoding netlist information, node features, current macro, and feasibility mask; actions as valid grid cell placements for the current macro; and rewards as zero except at the final step, where it is a weighted sum of proxy wirelength, congestion, and density.\n2. Use an Edge-Based Graph Neural Network (Edge-GNN) to encode the netlist graph into embeddings for state representation.\n3. Train a policy network using Proximal Policy Optimization (PPO) to maximize cumulative reward by sequentially placing macros.\n4. After all macros are placed, apply a force-directed method to place clusters of standard cells.\n5. Pre-train the policy network on a dataset of chip placements via supervised learning to predict rewards, enabling transfer learning.\n6. Fine-tune the pre-trained policy on new netlists for further optimization.\n7. At inference, generate placements for new chips using the policy network, with optional fine-tuning to meet design criteria."
+  "raw_latex_model": "$$ \\begin{aligned} \\min_{p} & \\quad \\text{Wirelength}(p,g) + \\lambda \\text{Congestion}(p,g) + \\gamma \\text{Density}(p,g) \\\\ \\text{s.t.} & \\quad \\text{density}(c) \\leq D_{\\text{max}}, \\quad \\forall c \\in \\text{grid cells} \\\\ & \\quad \\text{no overlap between macros} \\\\ & \\quad x_i, y_i \\in \\text{grid bounds}, \\quad \\forall i \\in \\text{macros} \\end{aligned} $$",
+  "algorithm_description": "Deep reinforcement learning approach using an edge-based graph convolutional neural network (Edge-GNN) for state representation and proximal policy optimization (PPO) to train a policy that sequentially places macros on a chip canvas, followed by a force-directed method for standard cell placement."
 }

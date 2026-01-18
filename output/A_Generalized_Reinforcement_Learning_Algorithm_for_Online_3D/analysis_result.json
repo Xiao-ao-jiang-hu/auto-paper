@@ -17,21 +17,21 @@
     "Time per box (inference time)"
   ],
   "lp_model": {
-    "objective": "\\min T_{used} \\quad \\text{or equivalently, maximize packing efficiency } \\frac{V_{packed}}{T_{used} \\cdot L \\cdot B \\cdot H}",
+    "objective": "$\\min T_{\\text{used}}$",
     "constraints": [
-      "\\forall \\text{ box } b \\text{ with dimensions } (l_b, b_b, h_b) \\text{ placed at location } (i,j) \\text{ with orientation } o \\in \\{0^\\circ, 90^\\circ\\}, \\text{ the occupied area } O = \\{(x,y) | i \\leq x < i+l, j \\leq y < j+b\\} \\text{ must satisfy } 0 \\leq i \\leq L-l, 0 \\leq j \\leq B-b",
-      "\\forall (x,y) \\in O, \\text{ the current height } h_{x,y} \\text{ must be equal to a constant } h_{\\text{base}} \\text{ (flat surface constraint)}",
-      "h_{\\text{base}} + h_b \\leq H \\quad \\text{(height constraint)}",
-      "\\text{Boxes cannot be reshuffled or placed below existing parcels}",
-      "\\text{Only upcoming } n \\text{ boxes are known to the agent}",
-      "\\text{Placement accuracy is 1 cm, with dimensions rounded up}"
+      "For each box $t$, $\\sum_{k,i,j,o} x_{t,k,i,j,o} = 1$",
+      "For each placement with $x_{t,k,i,j,o}=1$, the box must fit within container dimensions: $i + l_t(o) - 1 \\leq L$, $j + b_t(o) - 1 \\leq B$",
+      "The base must be flat: for all $(u,v)$ in the area $[i, i+l_t(o)-1] \\times [j, j+b_t(o)-1]$, the current height $h_{k,u,v}$ is uniform and $h_{k,u,v} + h_t \\leq H$",
+      "Boxes are packed sequentially in the order of arrival, so heights $h_{k,u,v}$ are updated dynamically",
+      "Orientation is restricted to $90^\\circ$ rotations along the z-axis: $o_t \\in \\{0,1\\}$ for two possible orientations",
+      "Boxes cannot be placed below existing parcels: placement must be on top of a flat surface"
     ],
     "variables": [
-      "T_{used}: \\text{number of containers used}",
-      "h_{i,j}: \\text{height at grid cell } (i,j) \\text{ in the container(s)}",
-      "\\text{Placement decisions: location } (i,j) \\text{ and orientation } o \\text{ for each box}"
+      "$T_{\\text{used}}$: integer variable representing the number of non-empty containers used",
+      "$x_{t,k,i,j,o}$: binary decision variable indicating whether box $t$ is placed in container $k$ at grid location $(i,j)$ with orientation $o$",
+      "$h_{k,i,j}$: continuous variable representing the height at cell $(i,j)$ in container $k$ after placements"
     ]
   },
-  "raw_latex_model": "Stability score for WallE heuristic: $S = -\\alpha_1 G_{\\text{var}} + \\alpha_2 G_{\\text{high}} + \\alpha_3 G_{\\text{flush}} - \\alpha_4 (i+j) - \\alpha_5 h_{i,j}$ \\\\ Terminal reward for RL: $\\zeta = \\frac{V_{packed}}{T_{used} \\cdot L \\cdot B \\cdot H} - \\tau$ \\\\ Step reward: $r_t = \\rho^{N-t} \\zeta$ \\\\ Q-learning update: $Q(s_t, a_t) = (1 - \\gamma) r_t + \\gamma Q(s_{t+1}, a_{t+1})$",
-  "algorithm_description": "The PackMan algorithm for online 3D bin-packing using Deep Reinforcement Learning involves the following steps: 1. For each incoming box, generate a shortlist of feasible placement options using selective search: only consider locations where a corner of the box coincides with a corner of the container or with corners of existing boxes. 2. For each option in the shortlist, compute the potential future state of the container if the box were placed there with a specific orientation. 3. Use a Deep Q-Network (DQN) to evaluate the Q-value for each potential future state. The DQN takes inputs including pooled representations of the container state, border information of the proposed location, and a one-hot encoding of the location's receptive field. 4. Select the option with the highest Q-value. 5. Place the box in the chosen location and orientation. 6. Update the container state by modifying the grid heights accordingly. 7. Repeat steps 1-6 for the next box until all boxes are packed or a maximum number of containers is reached. If no feasible location is found for a box, open a new container. The algorithm is trained using experience replay, a target network, and rewards based on terminal packing efficiency."
+  "raw_latex_model": "$$\\begin{aligned}\\text{Minimize} & \\quad T_{\\text{used}} \\\\\\text{Subject to} & \\quad \\forall t, \\sum_{k,i,j,o} x_{t,k,i,j,o} = 1 \\\\& \\quad \\forall t,k,i,j,o \\text{ with } x_{t,k,i,j,o}=1, \\\\& \\quad i + l_t(o) - 1 \\leq L, \\quad j + b_t(o) - 1 \\leq B \\\\& \\quad \\forall (u,v) \\in [i, i+l_t(o)-1] \\times [j, j+b_t(o)-1], \\\\& \\quad h_{k,u,v} \\text{ is uniform (denoted } h \\text{) and } h + h_t \\leq H \\\\& \\quad \\text{Heights } h_{k,u,v} \\text{ are updated sequentially after each placement} \\\\& \\quad o_t \\in \\{0,1\\} \\\\& \\quad \\text{Boxes are packed in the order of arrival}\\end{aligned}$$",
+  "algorithm_description": "Deep Reinforcement Learning algorithm (PackMan) using a Deep Q-Network (DQN) to select the best placement location and orientation from a shortlist of feasible options generated by a heuristic search that considers corner locations. The method is trained with a reward based on terminal packing efficiency and designed for online decision-making with limited future visibility (n upcoming boxes known)."
 }

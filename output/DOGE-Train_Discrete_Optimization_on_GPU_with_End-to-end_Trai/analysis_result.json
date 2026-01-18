@@ -1,0 +1,31 @@
+{
+  "paper_id": "DOGE-Train_Discrete_Optimization_on_GPU_with_End-to-end_Trai",
+  "title": "DOGE-Train: Discrete Optimization on GPU with End-to-end Training",
+  "abstract": "We present a fast, scalable, data-driven approach for solving relaxations of 0-1 integer linear programs. We use a combination of graph neural networks (GNN) and the Lagrange decomposition based algorithm (Abbas and Swoboda 2022b). We make the latter differentiable for end-to-end training and use GNNs to predict its algorithmic parameters. This allows to retain the algorithm’s theoretical properties including dual feasibility and guaranteed non-decrease in the lower bound while improving it via training. We overcome suboptimal fixed points of the basic solver by additional non-parametric GNN update steps maintaining dual feasibility. For training we use an unsupervised loss. We train on smaller problems and test on larger ones showing strong generalization performance with a GNN comprising only around 10k parameters. Our solver achieves significantly faster performance and better dual objectives than its non-learned version, achieving close to optimal objective values of LP relaxations of very large structured prediction problems and on selected combinatorial ones. In particular, we achieve better objective values than specialized approximate solvers for specific problem classes while retaining their efficiency. Our solver has better any-time performance over a large time period compared to a commercial solver.",
+  "problem_description_natural": "The paper addresses the problem of efficiently solving the linear programming (LP) relaxations of binary (0-1) integer linear programs (ILPs). These relaxations provide lower bounds for NP-hard combinatorial optimization problems and are a critical computational bottleneck in traditional ILP solvers. The authors propose a method that combines Lagrange decomposition with graph neural networks to accelerate the dual optimization process. The approach maintains theoretical guarantees such as dual feasibility and monotonic improvement of the dual objective while learning algorithmic parameters from data to improve convergence speed and solution quality.",
+  "problem_type": "LP relaxation of 0-1 Integer Linear Programs (Binary ILPs), Combinatorial Optimization",
+  "datasets": [
+    "Cell tracking",
+    "Graph matching",
+    "Independent set",
+    "QAPLib"
+  ],
+  "performance_metrics": [
+    "relative dual gap",
+    "best objective value (E)",
+    "time taken (t)",
+    "relative dual gap integral (g_I)"
+  ],
+  "lp_model": {
+    "objective": "$\\min_{x \\in \\{0,1\\}^n} \\langle c, x \\rangle$",
+    "constraints": [
+      "$x_{\\mathcal{I}_j} \\in \\mathcal{X}_j \\quad \\forall j \\in [m]$",
+      "where $\\mathcal{X}_j \\subset \\{0,1\\}^{\\mathcal{I}_j}$ is the feasible set for constraint $j$, typically defined by linear constraints $a_j^T x \\leq b_j$ for binary ILPs"
+    ],
+    "variables": [
+      "$x_i \\in \\{0,1\\}$ for $i \\in [n]$, binary decision variables representing the solution to the optimization problem"
+    ]
+  },
+  "raw_latex_model": "$$\\min_{x \\in \\{0,1\\}^n} \\langle c, x \\rangle \\quad \\text{s.t.} \\quad x_{\\mathcal{I}_j} \\in \\mathcal{X}_j \\quad \\forall j \\in [m],$$ where $x_{\\mathcal{I}_j}$ is the restriction to variables in $\\mathcal{I}_j$, $c \\in \\mathbb{R}^n$ is the linear objective vector, and $\\mathcal{X}_j \\subset \\{0,1\\}^{\\mathcal{I}_j}$ are feasible sets for subsets of constraints.",
+  "algorithm_description": "The paper uses a graph neural network (GNN) to predict parameters for a differentiable Lagrange decomposition algorithm. This algorithm optimizes the Lagrangian dual of the LP relaxation of binary integer linear programs, enabling end-to-end training to improve convergence speed and dual objective values in an unsupervised manner."
+}

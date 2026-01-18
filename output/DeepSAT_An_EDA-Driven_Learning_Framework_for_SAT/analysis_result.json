@@ -25,17 +25,18 @@
     "Avg. Acc."
   ],
   "lp_model": {
-    "objective": "\\arg\\max_{\\mathbf{x}} p(\\mathbf{x}|y=1;\\mathcal{G},\\boldsymbol{\\theta})",
+    "objective": "$\\max 0$",
     "constraints": [
-      "p(\\mathbf{x}|y=1;\\mathcal{G},\\boldsymbol{\\theta}) = \\prod_{i=1}^I p(x_i|\\mathbf{x}_{<i}, y=1;\\mathcal{G},\\theta_i)",
-      "p(x_i|\\mathbf{x}_{<i}, y=1;\\mathcal{G},\\theta_i) = \\theta_i^{x_i}(1-\\theta_i)^{1-x_i}",
-      "m_j = \\begin{cases} 0 & \\text{if } v_j \\in \\mathcal{V}_G \\text{ or } x_j \\notin \\mathbf{x}_m \\\\ 1 & \\text{if } x_j \\in \\mathbf{x}_m \\text{ and } x_j = \\text{True}, \\\\ -1 & \\text{if } x_j \\in \\mathbf{x}_m \\text{ and } x_j = \\text{False}. \\end{cases}"
+      "$v_i = x_i$ for $i=1,\\ldots,I$",
+      "For each AND gate $j$ with inputs $a$ and $b$, $v_j = v_a \\land v_b$",
+      "For each NOT gate $j$ with input $a$, $v_j = \\neg v_a$",
+      "$v_o = 1$"
     ],
     "variables": [
-      "x_i \\in \\{0,1\\} \\text{ for } i=1,...,I: \\text{ binary input variables}",
-      "\\theta_i: \\text{ probability parameter for } x_i"
+      "$x_i \\in \\{0,1\\}$: binary decision variable for primary input $i$",
+      "$v_j \\in \\{0,1\\}$: value of node $j$ (for internal nodes, defined by constraints)"
     ]
   },
-  "raw_latex_model": "\\text{Solution } \\mathbf{x}^* = \\arg\\max_{\\mathbf{x}} p(\\mathbf{x}|y=1;\\mathcal{G},\\boldsymbol{\\theta}) \\\\ p(\\mathbf{x}|y=1;\\mathcal{G},\\boldsymbol{\\theta}) = \\prod_{i=1}^I p(x_i|\\mathbf{x}_{<i}, y=1;\\mathcal{G},\\theta_i), \\quad x_i|\\mathbf{x}_{<i} \\sim \\text{Bernoulli}(\\theta_i) \\\\ p(x_i|\\mathbf{x}_{<i}, y=1;\\mathcal{G},\\theta_i) = \\theta_i^{x_i}(1-\\theta_i)^{1-x_i} \\\\ m_j = \\begin{cases} 0 & \\text{if } v_j \\in \\mathcal{V}_G \\text{ or } x_j \\notin \\mathbf{x}_m \\\\ 1 & \\text{if } x_j \\in \\mathbf{x}_m \\text{ and } x_j = \\text{True}, \\\\ -1 & \\text{if } x_j \\in \\mathbf{x}_m \\text{ and } x_j = \\text{False}. \\end{cases}",
-  "algorithm_description": "The solution sampling algorithm in DeepSAT proceeds as follows: 1. Represent the SAT instance as an and-inverter graph (AIG) \\(\\mathcal{G}\\) after pre-processing with logic synthesis. 2. Initialize a mask vector \\(\\mathbf{m}_0\\) by setting the mask for the primary output (PO) to 1 (indicating logic '1') to enforce satisfiability. 3. For each iteration \\(t\\) from 0 to \\(I-1\\), where \\(I\\) is the number of primary inputs (PIs): a. Input \\(\\mathcal{G}\\) and the current mask \\(\\mathbf{m}_t\\) into the trained DeepSAT model to obtain predicted probabilities for all un-masked PIs. b. Select the un-masked PI with the predicted probability closest to 0 or 1 (i.e., highest confidence). c. Update the mask for the selected PI: set to 1 if predicted probability \\(\\geq 0.5\\) (logic '1'), else set to -1 (logic '0'). d. This yields a new mask \\(\\mathbf{m}_{t+1}\\). 4. After \\(I\\) iterations, all PIs are masked, and the mask \\(\\mathbf{m}_I\\) provides a candidate assignment \\(\\hat{\\mathbf{x}}\\). 5. To explore more solutions, a flipping-based strategy is applied: record the order in which PIs are masked, and in subsequent sampling, flip the value of a specific PI following this order to generate additional assignments (up to \\(I+1\\) solutions in the worst case)."
+  "raw_latex_model": "$$\\begin{aligned}\\max & \\ 0 \\\\\\text{s.t. } & v_i = x_i, \\quad i=1,\\ldots,I \\\\& v_j = v_a \\land v_b \\quad \\text{for each AND gate } j \\text{ with inputs } a \\text{ and } b \\\\& v_j = \\neg v_a \\quad \\text{for each NOT gate } j \\text{ with input } a \\\\& v_o = 1 \\\\& x_i \\in \\{0,1\\}, \\quad i=1,\\ldots,I\\end{aligned}$$",
+  "algorithm_description": "DeepSAT is an end-to-end learning framework that formulates SAT solving as a conditional generative procedure. It uses a directed acyclic graph neural network (DAGNN) with polarity prototypes to approximate conditional probabilities of node states, trained with supervision from logic simulation. Solutions are sampled via an auto-regressive procedure that iteratively assigns values to primary inputs based on predicted probabilities."
 }

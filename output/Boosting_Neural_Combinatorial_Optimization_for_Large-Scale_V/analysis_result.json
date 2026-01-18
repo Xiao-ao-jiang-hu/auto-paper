@@ -24,17 +24,18 @@
     "Inference Time"
   ],
   "lp_model": {
-    "objective": "\\pi^* = \\arg\\min_{\\pi \\in \\Omega} c(\\pi|\\mathcal{G})",
+    "objective": "$\\min \\sum_{i,j} c_{ij} x_{ij}$",
     "constraints": [
-      "For TSP: $\\pi$ must be a permutation of all nodes in $\\mathcal{V}$, visiting each exactly once.",
-      "For CVRP: $\\pi$ must satisfy that the total demand on each route does not exceed the vehicle capacity $C$."
+      "$\\sum_{j} x_{ij} = 1, \\quad \\forall i \\in \\{1,\\dots,n\\}$",
+      "$\\sum_{i} x_{ij} = 1, \\quad \\forall j \\in \\{1,\\dots,n\\}$",
+      "$\\sum_{j} x_{0j} = m$ and $\\sum_{i} x_{i0} = m$, where $m$ is the number of vehicles (routes)",
+      "$\\sum_{i \\notin S, j \\in S} x_{ij} \\geq \\left\\lceil \\frac{\\sum_{i \\in S} q_i}{Q} \\right\\rceil, \\quad \\forall S \\subseteq \\{1,\\dots,n\\}$"
     ],
     "variables": [
-      "$\\pi = (\\pi_1, \\pi_2, \\dots, \\pi_n)$: a permutation of nodes representing the tour.",
-      "$\\mathcal{G} = (\\mathcal{V}, \\mathcal{E})$: graph with node set $\\mathcal{V}$ and edge set $\\mathcal{E}$.",
-      "$c(\\pi|\\mathcal{G})$: cost function, e.g., Euclidean length of the tour for TSP and CVRP."
+      "$x_{ij}$: binary variable indicating if edge $(i,j)$ is used in the solution",
+      "$m$: integer variable representing the number of vehicles (routes)"
     ]
   },
-  "raw_latex_model": "\\hat{X} = \\text{Attn}(X, C) = \\text{softmax}\\left(\\frac{X W_Q (C W_K)^\\intercal}{\\sqrt{d}}\\right) \\cdot C W_V",
-  "algorithm_description": "The Self-Improved Training (SIT) algorithm proceeds as follows: 1. Initialize a dataset with VRP instances and their solutions (e.g., from random insertion). 2. Iterate until a time budget: a) Local Reconstruction: For each instance, sample non-overlapping partial solutions of random size up to $l_{max}$, reconstruct them using the Transformer model to generate improved partial solutions, and update the complete solution if better. b) Model Training: Sample partial solutions from the updated dataset, use them as pseudo-labels, and train the Transformer model with the loss function $\\mathcal{L}(\\theta) = \\mathbb{E}_{S^p \\sim \\mathcal{D}}[-\\log p_\\theta(\\hat{\\pi}_t^p \\mid S^p, \\hat{\\pi}_{1:t-1}^p, \\hat{\\pi}_\\omega^p)]$ for $t \\in \\{2, \\dots, \\omega-1\\}$. 3. The trained model can then be used for inference via greedy search or parallel local reconstruction (PRC) to solve large-scale VRPs."
+  "raw_latex_model": "$$\\begin{aligned} &\\min \\sum_{i,j} c_{ij} x_{ij} \\\\ &\\text{s.t.} \\\\ &\\sum_{j} x_{ij} = 1, \\quad \\forall i \\in \\{1,\\dots,n\\} \\\\ &\\sum_{i} x_{ij} = 1, \\quad \\forall j \\in \\{1,\\dots,n\\} \\\\ &\\sum_{j} x_{0j} = m, \\quad \\sum_{i} x_{i0} = m \\\\ &\\sum_{i \\notin S, j \\in S} x_{ij} \\geq \\left\\lceil \\frac{\\sum_{i \\in S} q_i}{Q} \\right\\rceil, \\quad \\forall S \\subseteq \\{1,\\dots,n\\} \\\\ &x_{ij} \\in \\{0,1\\}, \\quad m \\in \\mathbb{Z}^+ \\end{aligned}$$",
+  "algorithm_description": "The paper proposes a neural combinatorial optimization (NCO) method for large-scale vehicle routing problems (VRPs), specifically the Traveling Salesman Problem (TSP) and Capacitated Vehicle Routing Problem (CVRP). It introduces a lightweight cross-attention mechanism with linear computational complexity to replace the conventional quadratic self-attention in Transformer networks, enabling efficient handling of large-scale instances. Additionally, a Self-Improved Training (SIT) algorithm is developed, which allows the model to be trained directly on large-scale VRP instances without labeled data by iteratively reconstructing solutions and using the improved solutions as pseudo-labels for training."
 }

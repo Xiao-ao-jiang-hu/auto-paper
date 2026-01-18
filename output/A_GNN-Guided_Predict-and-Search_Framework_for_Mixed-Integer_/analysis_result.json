@@ -15,15 +15,16 @@
     "relative primal gap"
   ],
   "lp_model": {
-    "objective": "\\min c^{\\top} x",
+    "objective": "$\\min c^{\\top} x$",
     "constraints": [
-      "A x \\leq b",
-      "l \\leq x \\leq u"
+      "$Ax \\leq b$",
+      "$l \\leq x \\leq u$",
+      "$x_i \\in \\{0,1\\}$ for $i=1,\\ldots,n$"
     ],
     "variables": [
-      "x \\in \\mathbb{Z}^q \\times \\mathbb{R}^{n-q}"
+      "$x_i$: binary decision variable for each $i=1,\\ldots,n$"
     ]
   },
-  "raw_latex_model": "$\\min_{x \\in D} c^{\\top} x$, where $D \\equiv \\{x \\in \\mathbb{Z}^q \\times \\mathbb{R}^{n-q} : Ax \\leq b, l \\leq x \\leq u\\}$",
-  "algorithm_description": "The predict-and-search algorithm works as follows: 1. Input the MILP instance M and the predicted marginal probabilities F_θ(M). 2. Sort the components of F_θ(M) to select indices: the k0 smallest probabilities form set I0, and the k1 largest probabilities form set I1. 3. For each index d in I0 ∪ I1, introduce a new binary variable δ_d. 4. If d ∈ I0, add constraint x_d ≤ δ_d; if d ∈ I1, add constraint 1 - x_d ≤ δ_d. 5. Add constraint ∑_{d ∈ I0 ∪ I1} δ_d ≤ Δ, where Δ is the neighborhood radius parameter. 6. Create a modified MILP instance M' by adding these new constraints and variables to M. 7. Solve M' using an MILP solver (e.g., SCIP or Gurobi) to obtain solution x. 8. Output x."
+  "raw_latex_model": "$$\\min_{x} c^{\\top} x \\quad \\text{s.t.} \\quad Ax \\leq b, \\quad l \\leq x \\leq u, \\quad x_i \\in \\{0,1\\}, \\forall i=1,\\ldots,n$$",
+  "algorithm_description": "A predict-and-search framework that uses a Graph Neural Network (GNN) to predict marginal probabilities of each binary variable and then performs a trust region search to find high-quality feasible solutions within a neighborhood of the predicted solution."
 }

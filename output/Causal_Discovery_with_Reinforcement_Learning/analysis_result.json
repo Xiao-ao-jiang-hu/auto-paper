@@ -17,15 +17,15 @@
     "Structural Hamming Distance (SHD)"
   ],
   "lp_model": {
-    "objective": "\\min_{\\mathcal{G}} \\mathcal{S}(\\mathcal{G})",
+    "objective": "$\\min_{A \\in \\{0,1\\}^{d \\times d}} \\mathcal{S}(A)$",
     "constraints": [
-      "h(A) = 0",
-      "where h(A) = \\text{trace}(e^A) - d ensures acyclicity"
+      "$A_{ij} \\in \\{0,1\\}$ for $i,j=1,\\dots,d$",
+      "The graph represented by $A$ must be acyclic (i.e., no directed cycles)."
     ],
     "variables": [
-      "A \\in \\{0,1\\}^{d \\times d} - binary adjacency matrix representing directed graph \\mathcal{G}"
+      "$A_{ij}$: binary variable indicating the presence of an edge from node $i$ to node $j$."
     ]
   },
-  "raw_latex_model": "\\min_{\\mathcal{G}} \\mathcal{S}(\\mathcal{G}), \\text{ subject to } \\mathcal{G} \\in \\text{DAGs}.",
-  "algorithm_description": "Step 1: Initialize neural network parameters for the encoder-decoder model. Step 2: For each training iteration, randomly sample data from the observed dataset to construct an input sequence. Step 3: Use the encoder-decoder model to generate a binary adjacency matrix A representing a candidate graph. Step 4: Compute the reward using the predefined score function S(G), an indicator penalty for cyclic graphs, and a smooth acyclicity penalty h(A). Step 5: Update neural network parameters via an actor-critic reinforcement learning algorithm to maximize the expected reward. Step 6: Periodically update penalty parameters lambda1 and lambda2 based on the current best scores and acyclicity conditions. Step 7: Record all generated graphs and their rewards during training. Step 8: After training, select the graph with the highest reward among all recorded graphs. Step 9: Apply pruning to the selected graph by greedily removing edges if the score does not degrade significantly, to reduce false discoveries."
+  "raw_latex_model": "$$\\min_{A \\in \\{0,1\\}^{d \\times d}} \\mathcal{S}(A) \\quad \\text{subject to} \\quad \\text{the graph represented by } A \\text{ is a DAG.}$$",
+  "algorithm_description": "The paper uses reinforcement learning (actor-critic algorithm) to search for the DAG with the best score. The actor is an encoder-decoder neural network that generates graph adjacency matrices from observed data. The reward function incorporates the score function and two penalty terms for acyclicity. The training objective is to maximize the expected reward, and policy gradient methods are used. The final output is the graph (among all generated during training) that achieves the best reward."
 }

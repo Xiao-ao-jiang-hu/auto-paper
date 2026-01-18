@@ -1,0 +1,33 @@
+{
+  "paper_id": "A_Neural_Column_Generation_Approach_to_the_Vehicle_Routing_P",
+  "title": "A Neural Column Generation Approach to the Vehicle Routing Problem with Two-Dimensional Loading and Last-In-First-Out Constraints",
+  "abstract": "The vehicle routing problem with two-dimensional loading constraints (2L-CVRP) and the last-in-first-out (LIFO) rule presents significant practical and algorithmic challenges. While numerous heuristic approaches have been proposed to address its complexity, stemming from two NP-hard problems: the vehicle routing problem (VRP) and the two-dimensional bin packing problem (2D-BPP), less attention has been paid to developing exact algorithms. Bridging this gap, this article presents an exact algorithm that integrates advanced machine learning techniques, specifically a novel combination of attention and recurrence mechanisms. This integration accelerates the state-of-the-art exact algorithm by a median of 29.79% across various problem instances. Moreover, the proposed algorithm successfully resolves an open instance in the standard test-bed, demonstrating significant improvements brought about by the incorporation of machine learning models.",
+  "problem_description_natural": "The problem involves planning delivery routes for a fleet of homogeneous vehicles to serve a set of customers, where each customer requires delivery of multiple rectangular items. Each vehicle has a fixed two-dimensional loading area (length and width) and a weight capacity. The items must be packed without overlap or rotation into the vehicle’s loading area, and the LIFO (last-in-first-out) unloading constraint must be respected—meaning that items for later customers cannot block access to items for earlier customers during unloading. The goal is to minimize total travel cost while ensuring all customers are visited exactly once and all loading and capacity constraints are satisfied.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "2L-CVRP instances from Iori et al. (2007) families 2-4",
+    "2L-VRPTW instances"
+  ],
+  "performance_metrics": [
+    "Percentage time reduction",
+    "True Positive Rate (TPR)",
+    "True Negative Rate (TNR)",
+    "Number of column generation iterations",
+    "Optimal Objective Value",
+    "Lower Bound",
+    "Primal Bound"
+  ],
+  "lp_model": {
+    "objective": "\\min \\sum_{r \\in \\Omega} c_r \\lambda_r",
+    "constraints": [
+      "\\sum_{r \\in \\Omega} \\lambda_r = |K|",
+      "\\sum_{r \\in \\Omega} a_{i,r} \\lambda_r = 1, \\; \\forall i \\in V_c",
+      "\\lambda_r \\in \\{0,1\\}, \\; \\forall r \\in \\Omega"
+    ],
+    "variables": [
+      "\\lambda_r: binary variable indicating whether route r is selected"
+    ]
+  },
+  "raw_latex_model": "$$\\min \\sum_{r \\in \\Omega} c_r \\lambda_r,\\tag{1}$$\n\n$$\\text{s.t.} \\sum_{r \\in \\Omega} \\lambda_r = |K|,\\tag{2}$$\n\n$$\\sum_{r \\in \\Omega} a_{i,r} \\lambda_r = 1, \\; \\forall i \\in V_c,\\tag{3}$$\n\n$$\\lambda_r \\in \\{0,1\\}, \\; \\forall r \\in \\Omega,\\tag{4}$$",
+  "algorithm_description": "The Neural Column Generation (NCG) algorithm integrates machine learning into the column generation process for the 2L-CVRP with LIFO constraints. The steps are as follows:\n1. Initialize the restricted master problem (RMP) with a subset of feasible routes.\n2. Solve the linear relaxation of RMP to obtain dual variables.\n3. Generate candidate columns using a labeling algorithm that solves the elementary shortest path problem with resource constraints (ESPPRC) without checking loading feasibility.\n4. For each candidate column, use a machine learning model to predict feasibility with respect to 2D bin packing and LIFO constraints. The model employs attention mechanisms for homogeneous items within the same customer and recurrence mechanisms (GRU) for heterogeneous items across customers.\n5. Columns predicted as feasible are added directly to the RMP.\n6. Columns predicted as infeasible are verified by an exact feasibility checker. If found feasible (false negatives), they are added to the RMP.\n7. During RMP solution, check loading feasibility of variables in the optimal basis. If any variable is infeasible (false positives), add cuts to exclude it.\n8. Repeat steps 2-7 until no columns with negative reduced cost are found, indicating optimality of the linear relaxation.\n9. For integer solutions, embed the NCG into a branch-and-price-and-cut framework."
+}

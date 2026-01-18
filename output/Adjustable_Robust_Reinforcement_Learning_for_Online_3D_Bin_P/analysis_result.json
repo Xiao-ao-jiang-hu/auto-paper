@@ -1,0 +1,52 @@
+{
+  "paper_id": "Adjustable_Robust_Reinforcement_Learning_for_Online_3D_Bin_P",
+  "title": "Adjustable Robust Reinforcement Learning for Online 3D Bin Packing",
+  "abstract": "Designing effective policies for the online 3D bin packing problem (3D-BPP) has been a long-standing challenge, primarily due to the unpredictable nature of incoming box sequences and stringent physical constraints. While current deep reinforcement learning (DRL) methods for online 3D-BPP have shown promising results in optimizing average performance over an underlying box sequence distribution, they often fail in real-world settings where some worst-case scenarios can materialize. Standard robust DRL algorithms tend to overly prioritize optimizing the worst-case performance at the expense of performance under normal problem instance distribution. To address these issues, we first introduce a permutation-based attacker to investigate the practical robustness of both DRL-based and heuristic methods proposed for solving online 3D-BPP. Then, we propose an adjustable robust reinforcement learning (AR2L) framework that allows efficient adjustment of robustness weights to achieve the desired balance of the policy's performance in average and worst-case environments. Specifically, we formulate the objective function as a weighted sum of expected and worst-case returns, and derive the lower performance bound by relating to the return under a mixture dynamics. To realize this lower bound, we adopt an iterative procedure that searches for the associated mixture dynamics and improves the corresponding policy. We integrate this procedure into two popular robust adversarial algorithms to develop the exact and approximate AR2L algorithms. Experiments demonstrate that AR2L is versatile in the sense that it improves policy robustness while maintaining an acceptable level of performance for the nominal case.",
+  "problem_description_natural": "The online 3D bin packing problem (3D-BPP) involves packing a sequence of cuboid-shaped items of varying sizes into the minimum number of containers (bins) without knowing future items in advance. Items arrive sequentially on a conveyor, and each must be packed immediately after the previous one is placed, respecting physical constraints such as no overlaps, stability, and staying within bin boundaries. The goal is to maximize space utilization (i.e., pack as much volume as possible) while being robust to adversarial permutations of the item sequence.",
+  "problem_type": "Combinatorial Optimization Problem (COP)",
+  "datasets": [
+    "Discrete 3D-BPP dataset",
+    "Continuous 3D-BPP dataset"
+  ],
+  "performance_metrics": [
+    "Space utilization rate (Uti.)",
+    "Standard deviation of space utilization (Std.)",
+    "Average number of packed items (Num.)"
+  ],
+  "lp_model": {
+    "objective": "\\max_{\\pi \\in \\Pi} \\eta(\\pi, P^o) + \\alpha \\eta(\\pi, P^w)",
+    "constraints": [
+      "P^m = \\otimes_{(s,a)\\in\\mathcal{S}\\times\\mathcal{A}} \\mathcal{P}^m_{s,a}",
+      "\\mathcal{P}^m_{s,a} = \\{P_{s,a}\\in\\Delta(\\mathcal{S}): D_{TV}(P_{s,a}||P^o_{s,a}) + \\alpha D_{TV}(P_{s,a}||P^w_{s,a}) \\leq \\rho'\\}",
+      "d(P^m||P^o) + \\alpha d(P^m||P^w) \\leq \\rho' \\quad \\text{where } d(P^1||P^2) \\triangleq \\max_{s,a} D_{TV}(P^1(\\cdot|s,a)||P^2(\\cdot|s,a))",
+      "\\pi^* = \\arg\\max_{\\pi\\in\\Pi}\\{\\max_{P^m\\in\\mathcal{P}} \\eta(\\pi, P^m): d(P^m||P^o) + \\alpha d(P^m||P^w) \\leq \\rho'\\}",
+      "\\mathcal{T}_a V_a^\\pi(s) = \\mathbb{E}_{a\\sim\\pi}[r(s,a) + \\gamma \\sup_{P^m_{s,a}\\in\\mathcal{P}^m_{s,a}} \\mathbb{E}_{s'\\sim P^m_{s,a}}[V_a^\\pi(s')]]"
+    ],
+    "variables": [
+      "\\pi \\in \\Pi - \\text{packing policy}",
+      "P^o - \\text{nominal environment dynamics}",
+      "P^w - \\text{worst-case environment dynamics}",
+      "P^m - \\text{mixture dynamics}",
+      "\\alpha \\in (0,1] - \\text{robustness weight}",
+      "\\eta(\\cdot) - \\text{return function}",
+      "\\gamma - \\text{discount factor}",
+      "r - \\text{reward}",
+      "\\rho' \\in [0,1+\\alpha] - \\text{uncertainty set radius}",
+      "D_{TV}(\\cdot) - \\text{total variation distance}",
+      "V_a^\\pi - \\text{adjustable robust value function}",
+      "\\mathcal{T}_a - \\text{adjustable robust Bellman operator}",
+      "\\lambda, \\mu_1, \\mu_2, \\mu - \\text{Lagrangian multipliers}"
+    ]
+  },
+  "raw_latex_model": "\\begin{align*}\n&\\pi^* = \\arg\\max_{\\pi\\in\\Pi} \\eta(\\pi, P^o) + \\alpha\\eta(\\pi, P^w) \\\\\n&\\eta(\\pi, P^o) + \\alpha\\eta(\\pi, P^w) \\geq (1+\\alpha)\\eta(\\pi, P^m) - \\frac{2\\gamma|r|_{\\max}}{(1-\\gamma)^2}(d(P^m||P^o) + \\alpha d(P^m||P^w)) \\\\\n&\\pi^* = \\arg\\max_{\\pi\\in\\Pi} \\max_{P^m\\in\\mathcal{P}} \\eta(\\pi, P^m) - (d(P^m||P^o) + \\alpha d(P^m||P^w)) \\\\\n&\\mathcal{P}^m = \\otimes_{(s,a)\\in\\mathcal{S}\\times\\mathcal{A}}\\mathcal{P}^m_{s,a};\\; \\mathcal{P}^m_{s,a} = \\{P_{s,a}\\in\\Delta(\\mathcal{S}): D_{TV}(P_{s,a}||P^o_{s,a}) + \\alpha D_{TV}(P_{s,a}||P^w_{s,a}) \\leq \\rho'\\} \\\\\n&\\mathcal{T}_a V_a^\\pi(s) = \\mathbb{E}_{a \\sim \\pi}[r(s, a) + \\gamma \\sup_{P^m_{s,a} \\in \\mathcal{P}^m_{s,a}} \\mathbb{E}_{s' \\sim P^m_{s,a}}[V_a^\\pi(s')]] \\\\\n&\\mathcal{L}_\\text{mix} = -\\eta(\\pi_\\text{pack}, \\pi_\\text{mix}) + (D_{KL}(\\pi_\\text{mix}||\\mathbb{1}_{\\{x=b_{t+1,1}\\}}) + \\alpha D_{KL}(\\pi_\\text{mix}||\\pi_\\text{perm}))\n\\end{align*}",
+  "algorithm_description": [
+    "Step 1: Formulate the online 3D-BPP as an MDP with state s_t^pack = (C_t, B_t, L_t) and action a_t^pack selecting a position for the first item in observable sequence B_t.",
+    "Step 2: Define the objective as maximizing a weighted sum of expected return under nominal dynamics P^o and worst-case return under adversarial dynamics P^w: max_π η(π, P^o) + αη(π, P^w).",
+    "Step 3: Derive a lower bound for the objective using mixture dynamics P^m, relating it to return under P^m minus weighted deviations from P^o and P^w.",
+    "Step 4: Reformulate as surrogate problem: max_π max_P^m η(π, P^m) - (d(P^m||P^o) + αd(P^m||P^w)).",
+    "Step 5: Define uncertainty set for mixture dynamics with TV distance constraints: P^m_{s,a} = {P_{s,a} : D_TV(P_{s,a}||P^o_{s,a}) + αD_TV(P_{s,a}||P^w_{s,a}) ≤ ρ'}.",
+    "Step 6: For Exact AR2L: Train permutation-based attacker π_perm to generate worst-case sequences, train mixture-dynamics model π_mix using loss L_mix = -η(π_pack, π_mix) + (D_KL(π_mix||1) + αD_KL(π_mix||π_perm)), then train packing policy π_pack on sequences permuted by π_mix.",
+    "Step 7: For Approximate AR2L: Use dual reformulation of adjustable robust Bellman operator to estimate values using samples from nominal and worst-case dynamics without training π_mix: T_a V_a^π(s) = E_{a∼π}[r(s,a) + γ/(1+α) inf_{λ,μ} (E_{s'∼P^o}[V_a^π(s')-μ_1(s')]_+ + αE_{s'∼P^w}[V_a^π(s')-μ_2(s')]_+ + μ + λρ(1+α))].",
+    "Step 8: Iterate between policy evaluation using adjustable robust Bellman operator and policy improvement under mixture dynamics until convergence."
+  ]
+}

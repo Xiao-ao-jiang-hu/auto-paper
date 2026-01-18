@@ -1,0 +1,27 @@
+{
+  "paper_id": "A_Deep_Reinforcement_Learning_Framework_For_Column_Generatio",
+  "title": "A Deep Reinforcement Learning Framework for Column Generation",
+  "abstract": "Column Generation (CG) is an iterative algorithm for solving linear programs (LPs) with an extremely large number of variables (columns). CG is the workhorse for tackling large-scale integer linear programs, which rely on CG to solve LP relaxations within a branch and price algorithm. Two canonical applications are the Cutting Stock Problem (CSP) and Vehicle Routing Problem with Time Windows (VRPTW). In VRPTW, for example, each binary variable represents the decision to include or exclude a route, of which there are exponentially many; CG incrementally grows the subset of columns being used, ultimately converging to an optimal solution. We propose RLCG, the first Reinforcement Learning (RL) approach for CG. Unlike typical column selection rules which myopically select a column based on local information at each iteration, we treat CG as a sequential decision-making problem: the column selected in a given iteration affects subsequent column selections. This perspective lends itself to a Deep Reinforcement Learning approach that uses Graph Neural Networks (GNNs) to represent the variable-constraint structure in the LP of interest. We perform an extensive set of experiments using the publicly available BPPLIB benchmark for CSP and Solomon benchmark for VRPTW. RLCG converges faster and reduces the number of CG iterations by 22.4% for CSP and 40.9% for VRPTW on average compared to a commonly used greedy policy.",
+  "problem_description_natural": "The paper addresses the acceleration of the Column Generation (CG) algorithm, which solves large-scale linear programs with exponentially many variables (columns). In problems like the Cutting Stock Problem (CSP) and the Vehicle Routing Problem with Time Windows (VRPTW), explicitly enumerating all variables is infeasible. CG iteratively adds promising columns (variables) to a Restricted Master Problem (RMP) by solving a sub-problem that identifies columns with negative reduced cost. The goal is to reach an optimal LP solution in as few iterations as possible. The authors propose replacing the standard greedy column selection (which picks the column with the most negative reduced cost) with a reinforcement learning agent that learns to select columns strategically over the sequence of CG iterations to minimize total convergence time.",
+  "problem_type": "Linear Programming (LP) with exponentially many variables, solved via Column Generation; embedded within Branch-and-Price for Integer Linear Programming (ILP)",
+  "datasets": [
+    "BPPLIB",
+    "Solomon benchmark"
+  ],
+  "performance_metrics": [
+    "Number of iterations for CG to converge",
+    "Time in seconds"
+  ],
+  "lp_model": {
+    "objective": "\\min \\sum_{p \\in \\tilde{\\mathcal{P}}} \\lambda_p",
+    "constraints": [
+      "\\sum_{p \\in \\tilde{\\mathcal{P}}} x_{ip} \\lambda_p = d_i \\; \\forall i \\in \\{1, \\cdots, n\\}",
+      "\\lambda_p \\ge 0 \\; \\forall p \\in \\tilde{\\mathcal{P}}"
+    ],
+    "variables": [
+      "\\lambda_p \\geq 0 \\text{ for each pattern } p \\in \\tilde{\\mathcal{P}}, \\text{ where } \\lambda_p \\text{ represents the usage of pattern } p"
+    ]
+  },
+  "raw_latex_model": "\\min_{\\lambda \\in \\mathbb{N}^{|\\tilde{\\mathcal{P}}|}} \\left\\{ \\sum_{p \\in \\tilde{\\mathcal{P}}} \\lambda_p : \\sum_{p \\in \\tilde{\\mathcal{P}}} x_{ip} \\lambda_p = d_i \\; \\forall i \\in \\{1, \\cdots, n\\}, \\lambda_p \\ge 0 \\; \\forall p \\in \\tilde{\\mathcal{P}} \\right\\}.",
+  "algorithm_description": "The standard column generation algorithm for solving the LP relaxation of the Cutting Stock Problem proceeds iteratively as follows: 1. Solve the Restricted Master Problem (RMP) to obtain the primal solution \\(\\lambda^*\\) and dual values \\(\\bar{\\pi}\\). 2. Update the objective function of the Sub-Problem (SP) using the dual values \\(\\bar{\\pi}\\). 3. Solve the SP to find a new pattern \\(x^*\\) with the most negative reduced cost. 4. Check the reduced cost: if \\(1 - \\sum_{i=1}^n \\bar{\\pi}_i x_i^* \\le 0\\), add the corresponding column to the RMP and return to step 1; otherwise, stop as the solution is optimal. This process continues until no columns with negative reduced cost are found, indicating convergence to the optimal LP solution."
+}

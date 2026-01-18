@@ -1,0 +1,34 @@
+{
+  "paper_id": "A_General_Large_Neighborhood_Search_Framework_for_Solving_In",
+  "title": "A General Large Neighborhood Search Framework for Solving Integer Linear Programs",
+  "abstract": "This paper studies a strategy for data-driven algorithm design for large-scale combinatorial optimization problems that can leverage existing state-of-the-art solvers in general purpose ways. The goal is to arrive at new approaches that can reliably outperform existing solvers in wall-clock time. We focus on solving integer linear programs, and ground our approach in the large neighborhood search (LNS) paradigm, which iteratively chooses a subset of variables to optimize while leaving the remainder fixed. The appeal of LNS is that it can easily use any existing solver as a subroutine, and thus can inherit the benefits of carefully engineered heuristic or complete approaches and their software implementations. We show that one can learn a good neighborhood selector using imitation and reinforcement learning techniques. Through an extensive empirical validation in bounded-time optimization, we demonstrate that our LNS framework can significantly outperform compared to state-of-the-art commercial solvers such as Gurobi.",
+  "problem_description_natural": "The paper addresses the challenge of solving large-scale integer linear programs (ILPs) more efficiently in terms of wall-clock time by using a data-driven large neighborhood search (LNS) framework. In this approach, the set of integer variables is partitioned into subsets (a decomposition), and at each iteration, one subset is optimized using an off-the-shelf ILP solver (e.g., Gurobi) while keeping the rest of the variables fixed to their current values. The key innovation is learning how to select or generate effective variable decompositions—either randomly or via learned policies using imitation or reinforcement learning—to guide the LNS process toward faster improvement of feasible solutions. The method does not require modifying the underlying solver and works as a black-box wrapper around existing commercial solvers.",
+  "problem_type": "Integer Linear Programming (ILP)",
+  "datasets": [
+    "Minimum Vertex Cover (MVC) on Barabási-Albert (BA) random graphs with 1000 vertices",
+    "Minimum Vertex Cover (MVC) on Erdős-Rényi (ER) random graphs with 1000 vertices",
+    "Maximum Cut (MAXCUT) on Barabási-Albert (BA) random graphs with 500 vertices",
+    "Maximum Cut (MAXCUT) on Erdős-Rényi (ER) random graphs with 500 vertices",
+    "Combinatorial Auction Test Suite (CATS) Regions with 2000 items and 4000 bids",
+    "Combinatorial Auction Test Suite (CATS) Regions with 4000 items and 8000 bids",
+    "Combinatorial Auction Test Suite (CATS) Arbitrary with 2000 items and 4000 bids",
+    "Combinatorial Auction Test Suite (CATS) Arbitrary with 4000 items and 8000 bids",
+    "Risk-aware path planning with 30 obstacles",
+    "Risk-aware path planning with 40 obstacles"
+  ],
+  "performance_metrics": [
+    "Objective value",
+    "Wall-clock time"
+  ],
+  "lp_model": {
+    "objective": "\\min c^T x",
+    "constraints": [
+      "A x \\leq b"
+    ],
+    "variables": [
+      "x \\in \\mathbb{Z}^n"
+    ]
+  },
+  "raw_latex_model": "",
+  "algorithm_description": "The algorithm is a decomposition-based large neighborhood search (LNS) framework for integer linear programs (ILPs). Step 1: Input an ILP problem P with integer variables X, an initial feasible solution S_X, a decomposition of X into k disjoint subsets X1, X2, ..., Xk, and a solver F (e.g., Gurobi). Step 2: For each subset Xi in the decomposition, fix the variables not in Xi to their current values in S_X, and use solver F to optimize the variables in Xi, updating S_X with the new solution. Step 3: Repeat Step 2 for all subsets, then return the final solution S_X. This process can be iterated multiple times, with decompositions generated randomly or learned via imitation or reinforcement learning."
+}

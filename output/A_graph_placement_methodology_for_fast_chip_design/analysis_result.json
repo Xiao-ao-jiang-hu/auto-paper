@@ -1,0 +1,34 @@
+{
+  "paper_id": "A_graph_placement_methodology_for_fast_chip_design",
+  "title": "A graph placement methodology for fast chip design",
+  "abstract": "Chip floorplanning, the task of designing the physical layout of a computer chip, has resisted automation for over five decades despite extensive research. This paper presents a deep reinforcement learning approach that automatically generates manufacturable chip floorplans in under six hours—significantly faster than the months required by human experts—while achieving performance comparable or superior across key metrics such as power, performance, and area. The method formulates floorplanning as a reinforcement learning problem and uses an edge-based graph convolutional neural network to learn transferable representations of chip netlists. Trained on past designs, the agent improves with experience and was used to design Google’s next-generation AI accelerators.",
+  "problem_description_natural": "The optimization problem involves placing a chip netlist—comprising macros (e.g., memory blocks) and standard cell clusters (e.g., logic gates)—onto a two-dimensional chip canvas such that key performance metrics (wirelength, power consumption, timing, area) are optimized while satisfying hard constraints on density and routing congestion. The placement must respect physical feasibility and manufacturability. The challenge lies in the enormous combinatorial search space (e.g., factorial in the number of components), non-differentiable objectives like congestion, and the need to generalize across diverse chip architectures and canvas sizes.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "TPU chip blocks",
+    "Ariane RISC-V CPU"
+  ],
+  "performance_metrics": [
+    "Wirelength (m)",
+    "Total area (μm²)",
+    "Total power (W)",
+    "Worst Negative Slack (WNS, ps)",
+    "Total Negative Slack (TNS, ns)",
+    "Horizontal Congestion (%)",
+    "Vertical Congestion (%)"
+  ],
+  "lp_model": {
+    "objective": "\\max_{\\theta} J(\\theta, G) = \\frac{1}{K} \\sum_{g \\in G} \\mathbb{E}_{p \\sim \\pi_\\theta} [R_{p,g}]",
+    "constraints": [
+      "Actions are restricted to grid cells where placing the current macro does not violate hard constraints on density or blockages.",
+      "Density in each grid cell must not exceed the maximum density threshold: \\text{density} \\leq \\text{max}_{\\text{density}}.",
+      "Macros cannot overlap."
+    ],
+    "variables": [
+      "Policy parameters \\theta that define the placement policy \\pi_\\theta.",
+      "Placement sequence p for macros and standard cell clusters."
+    ]
+  },
+  "raw_latex_model": "J(\\theta, G) = \\frac{1}{K} \\sum_{g \\in G} E_{g,p=\\pi_\\theta}[R_{p,g}]. \\quad R_{p,g} = -\\text{Wirelength}(p,g) - \\lambda \\text{Congestion}(p,g) - \\gamma \\text{Density}(p,g).",
+  "algorithm_description": "1. Formulate chip floorplanning as a Markov Decision Process (MDP) with states encoding netlist information, node features, current macro, and feasibility mask; actions as valid grid cell placements for the current macro; and rewards as zero except at the final step, where it is a weighted sum of proxy wirelength, congestion, and density.\n2. Use an Edge-Based Graph Neural Network (Edge-GNN) to encode the netlist graph into embeddings for state representation.\n3. Train a policy network using Proximal Policy Optimization (PPO) to maximize cumulative reward by sequentially placing macros.\n4. After all macros are placed, apply a force-directed method to place clusters of standard cells.\n5. Pre-train the policy network on a dataset of chip placements via supervised learning to predict rewards, enabling transfer learning.\n6. Fine-tune the pre-trained policy on new netlists for further optimization.\n7. At inference, generate placements for new chips using the policy network, with optional fine-tuning to meet design criteria."
+}

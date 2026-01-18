@@ -1,0 +1,27 @@
+{
+  "paper_id": "DAN_Decentralized_Attention-based_Neural_Network_to_Solve_th",
+  "title": "DAN: Decentralized Attention-based Neural Network for the MinMax Multiple Traveling Salesman Problem",
+  "abstract": "The multiple traveling salesman problem (mTSP) is a well-known NP-hard problem with numerous real-world applications. In particular, this work addresses MinMax mTSP, where the objective is to minimize the max tour length among all agents. Many robotic deployments require recomputing potentially large mTSP instances frequently, making the natural trade-off between computing time and solution quality of great importance. However, exact and heuristic algorithms become inefficient as the number of cities increases, due to their computational complexity. Encouraged by the recent developments in deep reinforcement learning (dRL), this work approaches the mTSP as a cooperative task and introduces DAN, a decentralized attention-based neural method that aims at tackling this key trade-off. In DAN, agents learn fully decentralized policies to collaboratively construct a tour, by predicting each other’s future decisions. Our model relies on the Transformer architecture and is trained using multi-agent RL with parameter sharing, providing natural scalability to the numbers of agents and cities. Our experimental results on small- to large-scale mTSP instances (50 to 1000 cities and 5 to 20 agents) show that DAN is able to match or outperform state-of-the-art solvers while keeping planning times low. In particular, given the same computation time budget, DAN outperforms all conventional and dRL-based baselines on larger-scale instances (more than 100 cities, more than 5 agents), and exhibits enhanced agent collaboration.",
+  "problem_description_natural": "The MinMax Multiple Traveling Salesman Problem (MinMax mTSP) involves coordinating multiple agents (salesmen) starting from a common depot to visit a set of cities exactly once and return to the depot, with the goal of minimizing the longest tour length (i.e., the makespan) among all agents. The problem is defined on a complete Euclidean graph where edge weights correspond to distances between cities. Each city must be visited by exactly one agent, and all agents begin and end at the depot. The challenge lies in jointly partitioning the cities among agents and sequencing each agent's tour to minimize the maximum individual tour cost.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "TSPLIB"
+  ],
+  "performance_metrics": [
+    "MinMax cost",
+    "Computing time"
+  ],
+  "lp_model": {
+    "objective": "\\min \\max_{i \\in \\{1, \\dots, m\\}} L(\\pi^i), \\text{ where } L(\\pi^i) = \\sum_{j=1}^{n_i-1} c_{\\pi_j^i \\pi_{j+1}^i}",
+    "constraints": [
+      "\\pi_1^i = 1 \\quad \\forall i \\in \\{1, \\dots, m\\}",
+      "\\pi_{n_i}^i = 1 \\quad \\forall i \\in \\{1, \\dots, m\\}",
+      "\\sum_{i=1}^m \\sum_{t=1}^{n_i} \\mathbb{I}(\\pi_t^i = j) = 1 \\quad \\forall j \\in \\{2, \\dots, n\\}"
+    ],
+    "variables": [
+      "\\pi^i: \\text{tour of agent } i, \\text{ an ordered set of cities visited, with } \\pi_t^i \\text{ denoting the city at step } t"
+    ]
+  },
+  "raw_latex_model": "The mTSP is defined on a graph $G = (V, E)$, where $V = \\{1, ..., n\\}$ is a set of $n$ nodes (cities), and $E$ is a set of edges. Node 1 is defined as the depot, where all $m$ agents are initially placed, and the remaining nodes as cities to be visited. The cities must be visited exactly once by any agent. After all cities are visited, all agents return to the depot to finish their tour. A solution to mTSP $\\pi = \\{\\pi^1, ..., \\pi^m\\}$ as a set of agent tours. Each agent tour $\\pi^i = (\\pi_1^i, \\pi_2^i, ..., \\pi_{n_i}^i)$ is an ordered set of the cities visited by this agent, where $\\pi_t^i \\in V$ and $\\pi_1^i = \\pi_{n_i}^i$ is the depot. $n_i$ denotes the number of cities in this agent tour, so $\\sum_{i=1}^m n_i = n + 2m - 1$ since all agent tours involve the depot twice. Denoting the Euclidean distance between cities $i$ and $j$ as $c_{ij}$, the cost of agent $i$’s tour reads: $L(\\pi^i) = \\sum_{j=1}^{n_i-1} c_{\\pi_j^i \\pi_{j+1}^i}$. We consider MinMax ($\\min \\max_{i \\in \\{1, ..., m\\}} L(\\pi^i)$) as the objective.",
+  "algorithm_description": "Algorithm 1: Sequential Decision Making for mTSP\n1. Initialize: Set mask M to zeros (indicating no cities visited), remaining travel time g to zeros for all agents, and tours π^i for each agent starting at the depot (π_1^i = 1).\n2. While not all cities are visited (i.e., sum(M) < n), iterate over all agents i from 1 to m.\n3. For each agent i:\n   a. If the agent's remaining travel time g_i ≤ 0:\n      i. Observe the cities state s_i^c, agents state s_i^a, and global mask M.\n      ii. Use the neural network (DAN) to output a policy p.\n      iii. Select the next city π_t^i from policy p, where t is the next position in the tour.\n      iv. Append π_t^i to tour π^i.\n      v. Update mask M for the selected city to 1 (visited).\n      vi. Set g_i to the Euclidean distance from the previous city to π_t^i.\n   b. Decrease g_i by Δg (the time step).\n4. Once all cities are visited, return the solution π = {π^1, ..., π^m}."
+}

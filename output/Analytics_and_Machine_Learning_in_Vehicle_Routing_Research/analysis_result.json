@@ -1,0 +1,12 @@
+{
+  "paper_id": "Analytics_and_Machine_Learning_in_Vehicle_Routing_Research",
+  "title": "Analytics and Machine Learning in Vehicle Routing Research",
+  "abstract": "The Vehicle Routing Problem (VRP) is one of the most intensively studied combinatorial optimisation problems for which numerous models and algorithms have been proposed. To tackle the complexities, uncertainties and dynamics involved in real-world VRP applications, Machine Learning (ML) methods have been used in combination with analytical approaches to enhance problem formulations and algorithmic performance across different problem solving scenarios. However, the relevant papers are scattered in several traditional research fields with very different, sometimes confusing, terminologies. This paper presents a first, comprehensive review of hybrid methods that combine analytical techniques with ML tools in addressing VRP problems. Specifically, we review the emerging research streams on ML-assisted VRP modelling and ML-assisted VRP optimisation. We conclude that ML can be beneficial in enhancing VRP modelling, and improving the performance of algorithms for both online and offline VRP optimisations. Finally, challenges and future opportunities of VRP research are discussed.",
+  "problem_description_natural": "The Vehicle Routing Problem (VRP) involves determining optimal routes for a fleet of vehicles to serve a set of customers with known or uncertain demands, while minimizing total travel cost (e.g., distance or time) and satisfying constraints such as vehicle capacity, time windows, and dynamic or stochastic elements like uncertain demand, travel times, or customer availability. Real-world complexities, including data uncertainty, dynamic information, and large-scale instances, make it challenging to apply traditional analytical models directly, motivating the integration of machine learning to improve modeling realism and algorithmic efficiency.",
+  "problem_type": "Combinatorial Optimization (NP-hard), with variants formulated as Mixed-Integer Linear Programs (MILP), Stochastic Programs, Robust Optimization, and Chance-Constrained Programs",
+  "datasets": [],
+  "performance_metrics": [],
+  "lp_model": {},
+  "raw_latex_model": "",
+  "algorithm_description": ""
+}

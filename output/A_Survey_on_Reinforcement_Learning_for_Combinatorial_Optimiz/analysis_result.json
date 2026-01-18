@@ -1,0 +1,34 @@
+{
+  "paper_id": "A_Survey_on_Reinforcement_Learning_for_Combinatorial_Optimiz",
+  "title": "A Survey on Reinforcement Learning for Combinatorial Optimization",
+  "abstract": "This paper provides a detailed review of reinforcement learning (RL) applied to combinatorial optimization, with a focus on the Traveling Salesperson Problem (TSP) as a canonical example. It traces the historical development from early approaches like Graves and Whinston’s 1970 algorithm—viewed as a prototype of RL—to modern deep reinforcement learning methods. The authors compare classical and contemporary RL techniques, highlighting how advances in machine learning and computing power have enabled more effective approximations of NP-hard problems. The paper argues that deep reinforcement learning offers a flexible and powerful framework for tackling combinatorial optimization by integrating neural networks with traditional RL algorithms.",
+  "problem_description_natural": "The paper addresses combinatorial optimization problems, particularly the Traveling Salesperson Problem (TSP), which involves finding the shortest possible route that visits each city exactly once and returns to the origin city. TSP is presented as a special case of the more general Quadratic Assignment Problem (QAP), where the goal is to assign facilities to locations to minimize total assignment cost. Both problems are NP-hard, meaning exact solutions are computationally infeasible for large instances, necessitating approximation methods. The paper explores how reinforcement learning—and especially deep reinforcement learning—can be used to generate high-quality approximate solutions without relying on labeled data.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "33-city",
+    "42-city",
+    "57-city",
+    "50-city",
+    "20-city",
+    "100-city"
+  ],
+  "performance_metrics": [
+    "Approximation distance",
+    "Optimal Solution",
+    "Minimum average distance",
+    "Optimality Gap"
+  ],
+  "lp_model": {
+    "objective": "\\min \\sum_{i=1}^{n} \\sum_{j=1}^{n} d_{ij} x_{ij}",
+    "constraints": [
+      "\\sum_{j=1}^{n} x_{ij} = 1 \\quad \\forall i",
+      "\\sum_{i=1}^{n} x_{ij} = 1 \\quad \\forall j",
+      "\\sum_{i \\in S} \\sum_{j \\notin S} x_{ij} \\geq 1 \\quad \\forall S \\subset \\{1,2,...,n\\}, S \\neq \\emptyset"
+    ],
+    "variables": [
+      "x_{ij} \\in \\{0,1\\} \\quad \\forall i,j"
+    ]
+  },
+  "raw_latex_model": "V^{\\pi}(s) = \\sum_{a}\\pi(s,a)\\sum_{s'}\\wp_{ss'}^{a}(\\Re_{ss'}^{a} + \\gamma V^{\\pi}(s'))",
+  "algorithm_description": "Graves and Whinston's Algorithm for TSP (1970): 1. Initialize k=1 and determine sets S1 and R1 based on feasibility. 2. If Rk is empty, go to step 8. 3. Select arbitrary i* from Sk and j* from Rk, set ik = i*, jk = j*, and remove j* from Rk. 4. If k=n, go to step 12. 5. Increment k by 1. 6. Determine Sk and Rk according to specified rules. 7. Repeat from step 2. 8. If k=1, stop. 9. Decrement k by 1. 10. If Rk is empty, go back to step 8. 11. Select arbitrary j* from Rk, set jk = j*, compute lower bound L_φ. If L_φ ≥ current best A, go to step 9; else go to step 4. 12. Record current mapping and go to step 10."
+}

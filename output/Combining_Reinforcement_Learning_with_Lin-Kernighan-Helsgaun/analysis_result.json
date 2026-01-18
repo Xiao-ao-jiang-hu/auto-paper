@@ -1,0 +1,33 @@
+{
+  "paper_id": "Combining_Reinforcement_Learning_with_Lin-Kernighan-Helsgaun",
+  "title": "Combining Reinforcement Learning with Lin-Kernighan-Helsgaun Algorithm for the Traveling Salesman Problem",
+  "abstract": "We address the Traveling Salesman Problem (TSP), a famous NP-hard combinatorial optimization problem. And we propose a variable strategy reinforced approach, denoted as VSR-LKH, which combines three reinforcement learning methods (Q-learning, Sarsa and Monte Carlo) with the well-known TSP algorithm, called Lin-Kernighan-Helsgaun (LKH). VSR-LKH replaces the inflexible traversal operation in LKH, and lets the program learn to make choice at each search step by reinforcement learning. Experimental results on 111 TSP benchmarks from the TSPLIB with up to 85,900 cities demonstrate the excellent performance of the proposed method.",
+  "problem_description_natural": "The Traveling Salesman Problem (TSP) involves finding the shortest possible route that visits each city exactly once and returns to the starting city, given a set of cities and the distances between them. It is a classic NP-hard combinatorial optimization problem with applications in logistics, manufacturing, and other domains requiring efficient routing or sequencing.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "TSPLIB"
+  ],
+  "performance_metrics": [
+    "Average Gap",
+    "Cumulative Gap",
+    "Success Rate",
+    "Best Solution",
+    "Average Solution",
+    "Worst Solution",
+    "Runtime (seconds)",
+    "Number of Trials"
+  ],
+  "lp_model": {
+    "objective": "\\min \\sum_{i=1}^{n} \\sum_{j=1}^{n} d(i,j) x_{ij}",
+    "constraints": [
+      "\\sum_{j=1}^{n} x_{ij} = 1, \\quad \\forall i = 1,\\ldots,n",
+      "\\sum_{i=1}^{n} x_{ij} = 1, \\quad \\forall j = 1,\\ldots,n",
+      "\\sum_{i \\in S} \\sum_{j \\notin S} x_{ij} \\geq 1, \\quad \\forall S \\subset \\{1,\\ldots,n\\}, 2 \\leq |S| \\leq n-1"
+    ],
+    "variables": [
+      "x_{ij} \\in \\{0,1\\}, \\quad \\forall i,j = 1,\\ldots,n, i \\neq j, representing if edge (i,j) is in the tour"
+    ]
+  },
+  "raw_latex_model": "The paper does not provide an explicit LaTeX block for the TSP LP model. The mathematical formulations are given for components like the \\alpha-value, penalties, rewards, and Q-value updates, but not the core TSP optimization problem. The TSP is described textually in the introduction.",
+  "algorithm_description": "The VSR-LKH algorithm combines reinforcement learning with the LKH heuristic for TSP. Steps: 1. Initialize tour and candidate sets using LKH functions. 2. Initialize Q-values for city-candidate pairs using Eq. 5. 3. Set RL parameters (\\epsilon, \\beta, \\lambda, \\gamma, MaxTrials, MaxNum). 4. Initialize reinforcement strategy M (1: Q-learning, 2: Sarsa, 3: Monte Carlo) and counter num. 5. For each trial up to MaxTrials: a. Update \\epsilon by multiplying with \\beta. b. If num \\geq MaxNum, switch strategy M and reset num. c. Start with a current tour. d. Repeat: i. Randomly select an unselected edge as initial edge for k-opt. ii. Initialize sets for edges to be removed and added. iii. In a loop, use \\epsilon-greedy to select next city from candidate set based on Q-values. iv. Check constraints; if satisfied, randomly select next city from neighbors. v. Update Q-value using current RL method (Eq. 6, 7, or 8). vi. Add edges to sets and increment k until stopping criterion met. e. If new edges have lower total length, update current tour. f. If current tour is better than best tour, update best tour and reset num. g. Exit if optimal solution found. 6. Output best tour."
+}

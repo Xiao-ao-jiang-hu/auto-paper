@@ -1,0 +1,42 @@
+{
+  "paper_id": "CktGNN_Circuit_Graph_Neural_Network_for_Electronic_Design_Au",
+  "title": "CktGNN: Circuit Graph Neural Network for Electronic Design Automation",
+  "abstract": "The electronic design automation of analog circuits has been a longstanding challenge in the integrated circuit field due to the huge design space and complex design trade-offs among circuit specifications. In the past decades, intensive research efforts have mostly been paid to automate the transistor sizing with a given circuit topology. By recognizing the graph nature of circuits, this paper presents a Circuit Graph Neural Network (CktGNN) that simultaneously automates the circuit topology generation and device sizing based on the encoder-dependent optimization subroutines. Particularly, CktGNN encodes circuit graphs using a two-level GNN framework (of nested GNN) where circuits are represented as combinations of subgraphs in a known subgraph basis. In this way, it significantly improves design efficiency by reducing the number of subgraphs to perform message passing. Nonetheless, another critical roadblock to advancing learning-assisted circuit design automation is a lack of public benchmarks to perform canonical assessment and reproducible research. To tackle the challenge, we introduce Open Circuit Benchmark (OCB), an open-sourced dataset that contains 10K distinct operational amplifiers with carefully-extracted circuit specifications. OCB is also equipped with communicative circuit generation and evaluation capabilities such that it can help to generalize CktGNN to design various analog circuits by producing corresponding datasets. Experiments on OCB show the extraordinary advantages of CktGNN through representation-based optimization frameworks over other recent powerful GNN baselines and human experts’ manual designs. Our work paves the way toward a learning-based open-sourced design automation for analog circuits.",
+  "problem_description_natural": "The paper addresses the joint optimization problem of analog circuit design, which involves simultaneously generating valid circuit topologies (i.e., selecting and connecting electronic components like transistors, resistors, and capacitors into a functional directed acyclic graph structure) and sizing the device parameters (e.g., widths, lengths, resistance values) to meet target performance specifications such as gain, bandwidth, and power consumption. This is a highly complex, combinatorial, and continuous optimization problem due to the enormous design space of possible topologies and parameter combinations, coupled with non-linear performance constraints derived from circuit physics simulations.",
+  "problem_type": "combinatorial optimization with continuous parameters",
+  "datasets": [
+    "Open Circuit Benchmark (OCB)"
+  ],
+  "performance_metrics": [
+    "Gain RMSE",
+    "Gain Pearson’s r",
+    "BW RMSE",
+    "BW Pearson’s r",
+    "PM RMSE",
+    "PM Pearson’s r",
+    "FoM RMSE",
+    "FoM Pearson’s r",
+    "Recon Acc",
+    "Valid DAGs (%)",
+    "Valid circuits (%)",
+    "Novel circuits (%)",
+    "BO (FoM)"
+  ],
+  "lp_model": {
+    "objective": "Learn circuit representations by minimizing the reconstruction loss in the VAE framework, though not explicitly stated in LaTeX. The core mathematical operation is message passing: \\( h_v^{t+1} = \\mathcal{U}(h_v^t, \\mathcal{A}(\\{h_u^t | (u,v) \\in E\\})) \\).",
+    "constraints": [
+      "The input graph \\( \\mathcal{G} = (V, E) \\) is a directed acyclic graph (DAG).",
+      "Subgraph basis \\( \\mathbb{B} = \\{g_1, g_2, ..., g_K\\} \\) is ordered with a total order \\( o \\).",
+      "For the graph transformation, each subgraph \\( g_{v'} \\in \\mathbb{B} \\) has only one node to be the head (tail) of a directed edge whose tail (head) is outside the subgraph, as per Theorem 3.2."
+    ],
+    "variables": [
+      "\\( h_v^t \\) - representation of node \\( v \\) at time stamp \\( t \\)",
+      "\\( z_{v'} \\) - hidden representation of node \\( v' \\) in the transformed DAG",
+      "\\( a_v^{t+1} \\) - aggregated message for node \\( v \\) at time \\( t+1 \\)",
+      "\\( x_{v'}' \\) - one-hot encoding of subgraph type for node \\( v' \\)",
+      "\\( h_{v'} \\) - subgraph representation learned by inner GNNs"
+    ]
+  },
+  "raw_latex_model": "From Section 3.1: \\( a_v^{t+1} = \\mathcal{A}(\\{h_u^t | (u,v) \\in E\\}) \\quad h_v^{t+1} = \\mathcal{U}(h_v^t, a_v^{t+1}) \\). From Section 3.2: \\( a_{v'} = \\mathcal{A}(\\{z_{u'} | u' \\in \\mathcal{N}(v')\\}) = \\sum\\nolimits_{u' \\in \\mathcal{N}(v')} g(z_{u'}) \\otimes m(z_{u'}), \\) and \\( z_{v'} = \\mathcal{U}(\\text{concat}(x_{v'}', h_{v'}), a_{v'}) \\).",
+  "algorithm_description": "The CktGNN algorithm operates as follows: 1. Transform the input circuit graph into a DAG using a pre-designed ordered subgraph basis \\( \\mathbb{B} \\), where nodes in the transformed graph represent non-overlapping subgraphs from the basis. 2. For each node in the transformed DAG, apply an inner GNN (with undirected message passing) to learn a representation for the corresponding subgraph. 3. Perform directed message passing in the outer GNN."
+}

@@ -1,0 +1,34 @@
+{
+  "paper_id": "Combinatorial_Optimization_and_Reasoning_with_Graph_Neural_N",
+  "title": "Combinatorial Optimization and Reasoning with Graph Neural Networks",
+  "abstract": "Combinatorial optimization is a well-established area in operations research and computer science. Until recently, its methods have focused on solving problem instances in isolation, ignoring that they often stem from related data distributions in practice. However, recent years have seen a surge of interest in using machine learning, especially graph neural networks (GNNs), as a key building block for combinatorial tasks, either directly as solvers or by enhancing exact solvers. The inductive bias of GNNs effectively encodes combinatorial and relational input due to their invariance to permutations and awareness of input sparsity. This paper presents a conceptual review of recent key advancements in this emerging field, aiming at optimization and machine learning researchers.",
+  "problem_description_natural": "The paper addresses the challenge of solving combinatorial optimization (CO) problems—such as the Traveling Salesperson Problem (TSP), vehicle routing, scheduling, and chip placement—by leveraging machine learning, particularly graph neural networks (GNNs). These problems involve selecting an optimal subset from a finite set under constraints, typically over graph-structured data. Traditional approaches solve each instance in isolation, but real-world scenarios often involve repeated instances with shared patterns (e.g., daily routing in the same city with varying traffic). The goal is to exploit these patterns using data-driven methods to improve solution speed, quality, or generalization, while handling challenges like permutation invariance, sparsity, scalability, and limited labeled data.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "TSPLIB",
+    "MIPLIB",
+    "Generated ER Graphs",
+    "GIFT cipher SAT instances",
+    "Random SAT instances"
+  ],
+  "performance_metrics": [
+    "Optimality Gap",
+    "Solving Time",
+    "Number of Branch-and-Bound Nodes",
+    "Feasibility Rate",
+    "Objective Value"
+  ],
+  "lp_model": {
+    "objective": "\\min \\sum_{i=1}^{n} \\sum_{j \\neq i, j=1}^{n} w_{ij} x_{ij}",
+    "constraints": [
+      "\\sum_{i=1, i \\neq j}^{n} x_{ij} = 1 \\quad \\forall j \\in [n]",
+      "\\sum_{j=1, j \\neq i}^{n} x_{ij} = 1 \\quad \\forall i \\in [n]",
+      "\\sum_{i \\in Q} \\sum_{j \\notin Q} x_{ij} \\geq 1 \\quad \\forall Q \\subsetneq [n], |Q| \\geq 2"
+    ],
+    "variables": [
+      "x_{ij} \\in \\{0,1\\} \\quad \\text{for } i,j \\in [n], i \\neq j"
+    ]
+  },
+  "raw_latex_model": "\\begin{aligned}\n& \\min \\sum_{i=1}^{n} \\sum_{j \\neq i, j=1}^{n} w_{ij} x_{ij} \\\\\n& \\text{subject to } \\sum_{i=1, i \\neq j}^{n} x_{ij} = 1 \\quad \\quad \\quad \\quad \\quad \\quad j \\in [n], \\\\\n& \\quad \\quad \\quad \\quad \\sum_{j=1, j \\neq i}^{n} x_{ij} = 1 \\quad \\quad \\quad \\quad \\quad \\quad i \\in [n], \\\\\n& \\quad \\quad \\quad \\quad \\sum_{i \\in Q} \\sum_{j \\notin Q} x_{ij} \\geq 1 \\quad \\quad \\quad \\forall Q \\subsetneq [n], |Q| \\geq 2.\n\\end{aligned}",
+  "algorithm_description": "The branch-and-bound algorithm for integer linear programming is an exact method that solves problems by recursively dividing the feasible set and using linear programming relaxations to prune suboptimal regions. The steps are:\n1. Initialize with the original integer linear program (ILP) as the root node.\n2. Solve the linear programming (LP) relaxation of the current node to obtain a lower bound.\n3. If the LP solution is integer feasible, compare it with the current best solution and update if better.\n4. If the LP solution has fractional variables, select one such variable to branch on (e.g., based on strong branching or learned policies).\n5. Create two child nodes by adding constraints that fix the selected variable to 0 and 1, respectively.\n6. Recursively apply steps 2-5 to each child node.\n7. Prune nodes where the LP relaxation bound is worse than the best known solution, as they cannot contain an optimal solution.\n8. Continue until all nodes are pruned or solved, thereby proving optimality or infeasibility."
+}

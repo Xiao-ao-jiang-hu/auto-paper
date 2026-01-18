@@ -1,0 +1,36 @@
+{
+  "paper_id": "BayesDAG_Gradient-Based_Posterior_Inference_for_Causal_Disco",
+  "title": "BayesDAG: Gradient-Based Posterior Inference for Causal Discovery",
+  "abstract": "Bayesian causal discovery aims to infer the posterior distribution over causal models from observed data, quantifying epistemic uncertainty and benefiting downstream tasks. However, computational challenges arise due to joint inference over combinatorial space of Directed Acyclic Graphs (DAGs) and nonlinear functions. Despite recent progress towards efficient posterior inference over DAGs, existing methods are either limited to variational inference on node permutation matrices for linear causal models, leading to compromised inference accuracy, or continuous relaxation of adjacency matrices constrained by a DAG regularizer, which cannot ensure resulting graphs are DAGs. In this work, we introduce a scalable Bayesian causal discovery framework based on a combination of stochastic gradient Markov Chain Monte Carlo (SG-MCMC) and Variational Inference (VI) that overcomes these limitations. Our approach directly samples DAGs from the posterior without requiring any DAG regularization, simultaneously draws function parameter samples and is applicable to both linear and nonlinear causal models. To enable our approach, we derive a novel equivalence to the permutation-based DAG learning, which opens up possibilities of using any relaxed gradient estimator defined over permutations. To our knowledge, this is the first framework applying gradient-based MCMC sampling for causal discovery. Empirical evaluation on synthetic and real-world datasets demonstrate our approach’s effectiveness compared to state-of-the-art baselines.",
+  "problem_description_natural": "The optimization problem involves performing Bayesian inference over the joint space of discrete Directed Acyclic Graphs (DAGs) and continuous parameters of potentially nonlinear structural causal models (SCMs). The goal is to approximate the intractable posterior distribution p(G, Θ | D), where G is a binary adjacency matrix representing a DAG, Θ denotes SCM function parameters, and D is observed data. The challenge stems from the combinatorial explosion of possible DAGs and the non-convex, discontinuous nature of the DAG constraint. The authors reformulate this as inference in an augmented continuous-discrete space (W, p), where W is a binary edge mask and p is a vector of node potentials that implicitly defines a topological ordering. They then establish equivalence between this formulation and permutation-based DAG learning, enabling the use of differentiable relaxations (e.g., Sinkhorn operator) for gradient-based posterior sampling via SG-MCMC and VI.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "Generated ER Graphs",
+    "Generated SF Graphs",
+    "SynTReN",
+    "Sachs Protein Cells Dataset"
+  ],
+  "performance_metrics": [
+    "Maximum Mean Discrepancy (MMD)",
+    "CPDAG Structural Hamming Distance (SHD)",
+    "Expected SHD (E-SHD)",
+    "Edge F1",
+    "Negative Log-Likelihood (NLL)"
+  ],
+  "lp_model": {
+    "objective": "\\text{maximize } \\text{ELBO}(\\phi) = \\mathbb{E}_{q_\\phi(\\boldsymbol{W} | \\boldsymbol{p})} \\left[ \\log p(\\mathcal{D}, \\boldsymbol{p}, \\boldsymbol{\\Theta} | \\boldsymbol{W}) \\right] - D_{\\text{KL}} \\left[ q_\\phi(\\boldsymbol{W} | \\boldsymbol{p}) \\| p(\\boldsymbol{W}) \\right]",
+    "constraints": [
+      "\\boldsymbol{G} = \\tau(\\boldsymbol{W}, \\boldsymbol{p}) \\text{ where } \\tau(\\boldsymbol{W}, \\boldsymbol{p}) = \\boldsymbol{W} \\odot \\text{Step}(\\text{grad}\\,\\boldsymbol{p}) \\text{ ensures DAG structure}",
+      "\\boldsymbol{W} \\in \\{0,1\\}^{d\\times d}, \\boldsymbol{p} \\in \\mathbb{R}^d, \\boldsymbol{\\Theta} \\in \\mathbb{R}^m \\text{ (parameters domain)}",
+      "Prior distributions: p(\\boldsymbol{W}, \\boldsymbol{p}, \\boldsymbol{\\Theta}) \\propto \\mathcal{N}(\\boldsymbol{\\Theta}; \\boldsymbol{0}, \\boldsymbol{I}) \\mathcal{N}(\\boldsymbol{p}; \\boldsymbol{0}, \\alpha \\boldsymbol{I}) \\mathcal{N}(\\boldsymbol{W}; \\boldsymbol{0}, \\boldsymbol{I}) \\exp(-\\lambda_s \\| \\tau(\\boldsymbol{W}, \\boldsymbol{p}) \\|_F^2)"
+    ],
+    "variables": [
+      "\\boldsymbol{W}: binary matrix representing edge existence mask",
+      "\\boldsymbol{p}: node potential vector defining topological ordering",
+      "\\boldsymbol{\\Theta}: parameters of neural networks in the structural causal model",
+      "\\phi: parameters of variational network \\mu_\\phi for approximating posterior of \\boldsymbol{W}"
+    ]
+  },
+  "raw_latex_model": "Likelihood: p(\\boldsymbol{x} | \\boldsymbol{G}) = \\prod_{i=1}^d p_{\\epsilon_i}(x_i - f_i(\\boldsymbol{x}_{\\text{Pa}_G^i})) \\\\ Prior: p(\\boldsymbol{W}, \\boldsymbol{p}, \\boldsymbol{\\Theta}) \\propto \\mathcal{N}(\\boldsymbol{\\Theta}; \\boldsymbol{0}, \\boldsymbol{I}) \\mathcal{N}(\\boldsymbol{p}; \\boldsymbol{0}, \\alpha \\boldsymbol{I}) \\mathcal{N}(\\boldsymbol{W}; \\boldsymbol{0}, \\boldsymbol{I}) \\exp(-\\lambda_s \\| \\tau(\\boldsymbol{W}, \\boldsymbol{p}) \\|_F^2)",
+  "algorithm_description": "Algorithm 1: BayesDAG SG-MCMC+VI Inference\\n1. Input: dataset \\mathcal{D}, priors p(\\boldsymbol{p}, \\boldsymbol{W}) and p(\\boldsymbol{\\Theta}), SG-MCMC sampler, hyperparameters \\Psi, variational network \\mu_\\phi, training iterations T.\\n2. Initialize parameters \\boldsymbol{\\Theta}^{(0)}, \\boldsymbol{p}^{(0)}, and variational parameters \\phi.\\n3. For t = 1 to T:\\n   a. Sample \\boldsymbol{W}^{(t-1)} from variational posterior q_\\phi(\\boldsymbol{W} | \\boldsymbol{p}^{(t-1)}).\\n   b. Compute gradients \\nabla_{\\boldsymbol{p},\\boldsymbol{\\Theta}} U using Equations (12) and (13) with current \\boldsymbol{\\Theta}^{(t-1)}, \\boldsymbol{p}^{(t-1)}, \\boldsymbol{W}^{(t-1)}.\\n   c. Update \\boldsymbol{\\Theta}^{(t)}, \\boldsymbol{p}^{(t)} using SG-MCMC sampler with gradients \\nabla_{\\boldsymbol{p},\\boldsymbol{\\Theta}} U and hyperparameters \\Psi.\\n   d. If storing condition met, store samples \\boldsymbol{p}^{(t)}, \\boldsymbol{\\Theta}^{(t)}.\\n   e. Update \\phi by maximizing ELBO (Equation (15)) using current \\boldsymbol{p}^{(t)}, \\boldsymbol{\\Theta}^{(t)}.\\n4. Output: samples \\{\\boldsymbol{\\Theta}, \\boldsymbol{p}\\} and variational posterior q_\\phi."
+}

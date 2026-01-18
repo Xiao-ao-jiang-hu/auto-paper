@@ -1,0 +1,33 @@
+{
+  "paper_id": "BQ-NCO_Bisimulation_Quotienting_for_Efficient_Neural_Combina",
+  "title": "BQ-NCO: Bisimulation Quotienting for Efficient Neural Combinatorial Optimization",
+  "abstract": "Despite the success of neural-based combinatorial optimization methods for end-to-end heuristic learning, out-of-distribution generalization remains a challenge. In this paper, we present a novel formulation of Combinatorial Optimization Problems (COPs) as Markov Decision Processes (MDPs) that effectively leverages common symmetries of COPs to improve out-of-distribution robustness. Starting from a direct MDP formulation of a constructive method, we introduce a generic way to reduce the state space, based on Bisimulation Quotienting (BQ) in MDPs. Then, for COPs with a recursive nature, we specialize the bisimulation and show how the reduced state exploits the symmetries of these problems and facilitates MDP solving. Our approach is principled and we prove that an optimal policy for the proposed BQ-MDP actually solves the associated COPs. We illustrate our approach on five classical problems: the Euclidean and Asymmetric Traveling Salesman, Capacitated Vehicle Routing, Orienteering and Knapsack Problems. Furthermore, for each problem, we introduce a simple attention-based policy network for the BQ-MDPs, which we train by imitation of (near) optimal solutions of small instances from a single distribution. We obtain new state-of-the-art results for the five COPs on both synthetic and realistic benchmarks. Notably, in contrast to most existing neural approaches, our learned policies show excellent generalization performance to much larger instances than seen during training, without any additional search procedure.",
+  "problem_description_natural": "The paper addresses a range of classical Combinatorial Optimization Problems (COPs), including the Euclidean and Asymmetric Traveling Salesman Problems (TSP/ATSP), the Capacitated Vehicle Routing Problem (CVRP), the Orienteering Problem (OP), and the Knapsack Problem (KP). These problems involve selecting or sequencing discrete elements (e.g., cities, items, or routes) to minimize cost or maximize reward under constraints such as capacity limits, visitation requirements, or resource budgets. The authors frame the solution process as a sequential decision-making problem using Markov Decision Processes (MDPs), where partial solutions are incrementally constructed. Their key insight is that many COPs exhibit recursive structure and symmetries—meaning different partial solutions can lead to equivalent remaining subproblems—and they exploit this via bisimulation quotienting to define a more compact and generalizable MDP representation.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "TSPLIB",
+    "CVRPLIB",
+    "Generated Euclidean TSP instances",
+    "Generated Asymmetric TSP instances",
+    "Generated CVRP instances",
+    "Generated Orienteering Problem instances",
+    "Generated Knapsack Problem instances"
+  ],
+  "performance_metrics": [
+    "Optimality Gap",
+    "Inference Time"
+  ],
+  "lp_model": {
+    "objective": "\\min_{x \\in X} f(x)",
+    "constraints": [
+      "x \\in X",
+      "X \\subset \\mathcal{X}",
+      "X \\neq \\emptyset"
+    ],
+    "variables": [
+      "x: a feasible solution in X"
+    ]
+  },
+  "raw_latex_model": "\\min_{x \\in X} f(x)",
+  "algorithm_description": "1. Define a solution space (\\mathcal{X}, \\circ, \\epsilon, \\mathcal{Z}) for the combinatorial optimization problem (COP), where \\mathcal{X} is the set of partial solutions, \\circ is a composition operator, \\epsilon is the neutral element, and \\mathcal{Z} is the set of steps.\n2. Given a COP instance (f, X), derive the direct Markov Decision Process (MDP) \\mathcal{M}_{(f,X)} with states as partial solutions in \\bar{X}, actions in \\mathcal{Z} \\cup \\{\\epsilon\\}, and deterministic transitions defined by equation (2).\n3. Apply bisimulation quotienting to reduce the state space: define a mapping \\Phi_{(f,X)}(x) = (f * x, X * x) to the tail subproblem, leading to the bisimulation quotiented (BQ)-MDP \\mathcal{M} with states as instances in \\mathcal{F}_{\\mathcal{X}} and transitions defined by equation (3).\n4. For recursive COPs (e.g., TSP, CVRP, OP, KP), the bisimulation maps partial solutions to induced instances of the same problem, exploiting symmetries.\n5. Design a policy network for the BQ-MDP, such as a transformer-based architecture that takes the current instance as input and outputs action probabilities. For Euclidean TSP, use node coordinates with origin/destination encodings; for asymmetric TSP, incorporate cost matrices via graph convolutions.\n6. Train the policy by imitation learning using a cross-entropy loss on expert trajectories generated from (near) optimal solutions of small instances. Sample sub-paths or subsequences to augment the dataset.\n7. At inference, use the trained policy to construct solutions greedily (single rollout) or with beam search for improved performance, optionally accelerating with linear attention models like PerceiverIO."
+}

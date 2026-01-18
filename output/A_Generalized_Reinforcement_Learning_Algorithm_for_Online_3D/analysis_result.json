@@ -1,0 +1,37 @@
+{
+  "paper_id": "A_Generalized_Reinforcement_Learning_Algorithm_for_Online_3D",
+  "title": "A Generalized Reinforcement Learning Algorithm for Online 3D Bin-Packing",
+  "abstract": "We propose a Deep Reinforcement Learning (Deep RL) algorithm for solving the online 3D bin packing problem for an arbitrary number of bins and any bin size. The focus is on producing decisions that can be physically implemented by a robotic loading arm, a laboratory prototype used for testing the concept. The problem considered in this paper is novel in two ways. First, unlike the traditional 3D bin packing problem, we assume that the entire set of objects to be packed is not known a priori. Instead, a fixed number of upcoming objects is visible to the loading system, and they must be loaded in the order of arrival. Second, the goal is not to move objects from one point to another via a feasible path, but to find a location and orientation for each object that maximises the overall packing efficiency of the bin(s). Finally, the learnt model is designed to work with problem instances of arbitrary size without retraining. Simulation results show that the RL-based method outperforms state-of-the-art online bin packing heuristics in terms of empirical competitive ratio and volume efficiency.",
+  "problem_description_natural": "The paper addresses the real-time 3D bin packing problem (RT-3D-BPP), where cuboidal parcels arrive sequentially on a conveyor belt and must be packed into containers by a robotic arm under physical constraints. The full sequence of parcels is unknown in advance; only a fixed number of upcoming parcels are visible. Each parcel must be placed immediately upon arrival, without reshuffling previously placed items. The robot can only rotate parcels in 90-degree increments around the vertical axis and has placement accuracy limited to 1 cm. The objective is to minimize the number of bins used (measured via empirical competitive ratio) and maximize volume utilization, while respecting constraints such as bottom-up placement, flat supporting surfaces, and container dimensions. The solution must generalize across arbitrary bin sizes and parcel distributions without retraining.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "Synthetically generated box datasets with 10-container instances",
+    "Synthetically generated box datasets with smaller box dimensions",
+    "Synthetically generated box datasets with 3-container instances"
+  ],
+  "performance_metrics": [
+    "Empirical competitive ratio",
+    "Volume efficiency (packing fraction)",
+    "Average packing efficiency",
+    "Best packing efficiency frequency",
+    "Time per box (inference time)"
+  ],
+  "lp_model": {
+    "objective": "\\min T_{used} \\quad \\text{or equivalently, maximize packing efficiency } \\frac{V_{packed}}{T_{used} \\cdot L \\cdot B \\cdot H}",
+    "constraints": [
+      "\\forall \\text{ box } b \\text{ with dimensions } (l_b, b_b, h_b) \\text{ placed at location } (i,j) \\text{ with orientation } o \\in \\{0^\\circ, 90^\\circ\\}, \\text{ the occupied area } O = \\{(x,y) | i \\leq x < i+l, j \\leq y < j+b\\} \\text{ must satisfy } 0 \\leq i \\leq L-l, 0 \\leq j \\leq B-b",
+      "\\forall (x,y) \\in O, \\text{ the current height } h_{x,y} \\text{ must be equal to a constant } h_{\\text{base}} \\text{ (flat surface constraint)}",
+      "h_{\\text{base}} + h_b \\leq H \\quad \\text{(height constraint)}",
+      "\\text{Boxes cannot be reshuffled or placed below existing parcels}",
+      "\\text{Only upcoming } n \\text{ boxes are known to the agent}",
+      "\\text{Placement accuracy is 1 cm, with dimensions rounded up}"
+    ],
+    "variables": [
+      "T_{used}: \\text{number of containers used}",
+      "h_{i,j}: \\text{height at grid cell } (i,j) \\text{ in the container(s)}",
+      "\\text{Placement decisions: location } (i,j) \\text{ and orientation } o \\text{ for each box}"
+    ]
+  },
+  "raw_latex_model": "Stability score for WallE heuristic: $S = -\\alpha_1 G_{\\text{var}} + \\alpha_2 G_{\\text{high}} + \\alpha_3 G_{\\text{flush}} - \\alpha_4 (i+j) - \\alpha_5 h_{i,j}$ \\\\ Terminal reward for RL: $\\zeta = \\frac{V_{packed}}{T_{used} \\cdot L \\cdot B \\cdot H} - \\tau$ \\\\ Step reward: $r_t = \\rho^{N-t} \\zeta$ \\\\ Q-learning update: $Q(s_t, a_t) = (1 - \\gamma) r_t + \\gamma Q(s_{t+1}, a_{t+1})$",
+  "algorithm_description": "The PackMan algorithm for online 3D bin-packing using Deep Reinforcement Learning involves the following steps: 1. For each incoming box, generate a shortlist of feasible placement options using selective search: only consider locations where a corner of the box coincides with a corner of the container or with corners of existing boxes. 2. For each option in the shortlist, compute the potential future state of the container if the box were placed there with a specific orientation. 3. Use a Deep Q-Network (DQN) to evaluate the Q-value for each potential future state. The DQN takes inputs including pooled representations of the container state, border information of the proposed location, and a one-hot encoding of the location's receptive field. 4. Select the option with the highest Q-value. 5. Place the box in the chosen location and orientation. 6. Update the container state by modifying the grid heights accordingly. 7. Repeat steps 1-6 for the next box until all boxes are packed or a maximum number of containers is reached. If no feasible location is found for a box, open a new container. The algorithm is trained using experience replay, a target network, and rewards based on terminal packing efficiency."
+}

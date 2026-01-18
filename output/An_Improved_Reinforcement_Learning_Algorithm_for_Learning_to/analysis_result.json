@@ -1,0 +1,29 @@
+{
+  "paper_id": "An_Improved_Reinforcement_Learning_Algorithm_for_Learning_to",
+  "title": "An Improved Reinforcement Learning Algorithm for Learning to Branch",
+  "abstract": "Most combinatorial optimization problems can be formulated as mixed integer linear programming (MILP), in which branch-and-bound (B&B) is a general and widely used method. Recently, learning to branch has become a hot research topic in the intersection of machine learning and combinatorial optimization. In this paper, we propose a novel reinforcement learning-based B&B algorithm. Similar to offline reinforcement learning, we initially train on the demonstration data to accelerate learning massively. With the improvement of the training effect, the agent starts to interact with the environment with its learned policy gradually. It is critical to improve the performance of the algorithm by determining the mixing ratio between demonstration and self-generated data. Thus, we propose a prioritized storage mechanism to control this ratio automatically. In order to improve the robustness of the training process, a superior network is additionally introduced based on Double DQN, which always serves as a Q-network with competitive performance. We evaluate the performance of the proposed algorithm over three public research benchmarks and compare it against strong baselines, including three classical heuristics and one state-of-the-art imitation learning-based branching algorithm. The results show that the proposed algorithm achieves the best performance among compared algorithms and possesses the potential to improve B&B algorithm performance continuously.",
+  "problem_description_natural": "The paper addresses the problem of variable selection in the branch-and-bound (B&B) algorithm for solving mixed integer linear programming (MILP) problems. Efficient branching—choosing which fractional variable to split on at each node of the B&B tree—is crucial for reducing the total number of nodes explored and thus speeding up the solution process. Traditional methods rely on handcrafted heuristics like Strong Branching or Pseudocost Branching, which either require heavy computation or extensive manual tuning. The authors propose a reinforcement learning approach that leverages expert demonstration data early in training and gradually incorporates self-generated experience, using a novel architecture with a superior Q-network and a prioritized replay mechanism to stabilize and accelerate learning.",
+  "problem_type": "MILP",
+  "datasets": [
+    "Balanced Item Placement (BIP)",
+    "Workload Apportionment (WA)",
+    "Anonymous Problem (AP)"
+  ],
+  "performance_metrics": [
+    "Dual Integral",
+    "Scores",
+    "Wins"
+  ],
+  "lp_model": {
+    "objective": "\\min \\mathbf{c}^T \\mathbf{x}",
+    "constraints": [
+      "\\mathbf{A} \\mathbf{x} \\leq \\mathbf{b}",
+      "\\mathbf{l} \\leq \\mathbf{x} \\leq \\mathbf{u}"
+    ],
+    "variables": [
+      "\\mathbf{x} \\in \\mathbb{Z}^p \\times \\mathbb{R}^{n-p}: mixed integer variable vector with p integer variables and n-p real variables"
+    ]
+  },
+  "raw_latex_model": "\\arg \\min_{\\mathbf{x}} \\left\\{ \\mathbf{c}^T \\mathbf{x} \\mid \\mathbf{A} \\mathbf{x} \\leq \\mathbf{b}, \\mathbf{l} \\leq \\mathbf{x} \\leq \\mathbf{u}, \\mathbf{x} \\in \\mathbb{Z}^p \\times \\mathbb{R}^{n-p} \\right\\}",
+  "algorithm_description": "1. Initialize the replay buffer with demonstration data from expert branching rules (e.g., Strong Branching).\n2. Initialize three Q-networks (online, target, superior) with random weights and set hyperparameters (learning rate, discount factor, exploration rate, update frequencies).\n3. For each training step:\n   a. Select an action using an ε-greedy policy based on the online Q-network.\n   b. Execute the action in the environment (solver) and observe the next state and reward.\n   c. Store the transition (state, action, reward, next state) in a temporary buffer.\n   d. Sample a mini-batch from the replay buffer and compute the loss using target and superior networks, then update the online network via gradient descent.\n   e. Periodically update the target network by copying weights from the online network.\n   f. Periodically evaluate the policy by computing cumulative reward on a validation set.\n   g. If cumulative reward exceeds a threshold, add transitions from the temporary buffer to the replay buffer, overwriting old self-generated data if full.\n   h. If cumulative reward is better than the best recorded, update the superior network with the current online network weights.\n4. Repeat training for a specified number of epochs or until convergence."
+}

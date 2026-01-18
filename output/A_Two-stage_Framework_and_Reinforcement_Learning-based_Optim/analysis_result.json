@@ -1,0 +1,42 @@
+{
+  "paper_id": "A_Two-stage_Framework_and_Reinforcement_Learning-based_Optim",
+  "title": "A Two-stage Framework and Reinforcement Learning-based Optimization Algorithms for Complex Scheduling Problems",
+  "abstract": "There hardly exists a general solver that is efficient for scheduling problems due to their diversity and complexity. In this study, we develop a two-stage framework, in which reinforcement learning (RL) and traditional operations research (OR) algorithms are combined together to efficiently deal with complex scheduling problems. The scheduling problem is solved in two stages, including a finite Markov decision process (MDP) and a mixed-integer programming process, respectively. This offers a novel and general paradigm that combines RL with OR approaches to solving scheduling problems, which leverages the respective strengths of RL and OR: The MDP narrows down the search space of the original problem through an RL method, while the mixed-integer programming process is settled by an OR algorithm. These two stages are performed iteratively and interactively until the termination criterion has been met. Under this idea, two implementation versions of the combination methods of RL and OR are put forward. The agile Earth observation satellite scheduling problem is selected as an example to demonstrate the effectiveness of the proposed scheduling framework and methods. The convergence and generalization capability of the methods are verified by the performance of training scenarios, while the efficiency and accuracy are tested in 50 untrained scenarios. The results show that the proposed algorithms could stably and efficiently obtain satisfactory scheduling schemes for agile Earth observation satellite scheduling problems. In addition, it can be found that RL-based optimization algorithms have stronger scalability than non-learning algorithms. This work reveals the advantage of combining reinforcement learning methods with heuristic methods or mathematical programming methods for solving complex combinatorial optimization problems.",
+  "problem_description_natural": "The paper addresses complex scheduling problems that involve assigning tasks to resources and determining their execution start and end times to optimize an objective function (e.g., maximizing profit) while satisfying constraints such as executable time windows, resource capacities, and task durations. Specifically, the problem includes two levels of decisions: (1) which resource should execute each task, and (2) when each task should be executed. The problem is decomposed into three interrelated sub-problems: assignment (task-to-resource allocation), sequencing (ordering of tasks per resource), and timing (scheduling exact start/end times). The authors focus on a class of real-world scheduling problems exemplified by the agile Earth observation satellite scheduling problem, where tasks (imaging requests) must be assigned to satellites (resources) and scheduled within feasible time windows under capacity and visibility constraints.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "H_20",
+    "H_50",
+    "C_100",
+    "C_200",
+    "C_400"
+  ],
+  "performance_metrics": [
+    "Total Profit",
+    "Profit Margin",
+    "Running Time",
+    "Convergence",
+    "Generalization Capability"
+  ],
+  "lp_model": {
+    "objective": "\\max \\sum_{\\{i|r_i > 0\\}} p^{r_i}_i",
+    "constraints": [
+      "\\text{card}(\\{r_i \\mid r_i > 0\\}) \\leq 1",
+      "\\sum_{\\{i|r_i = j\\}} Storage(i,j) \\leq Maxstorage(j)",
+      "\\sum_{\\{i|r_i = j\\}} Energy(i,j) \\leq MaxEnergy(j)",
+      "ws^{r_i}_i - es_i \\leq 0",
+      "es_i + d^{r_i}_i - we^{r_i}_i \\leq 0",
+      "(es_{i_0} - es_{i_1})(es_{i_0} - ee_{i_1}) > 0 \\quad \\forall i_0 \\neq i_1, r_{i_0} = r_{i_1}",
+      "(ee_{i_0} - es_{i_1})(ee_{i_0} - ee_{i_1}) > 0 \\quad \\forall i_0 \\neq i_1, r_{i_0} = r_{i_1}",
+      "|es_{i_0} - ee_{i_1}| \\geq MST(i_0, i_1) \\quad \\forall i_0 \\neq i_1, r_{i_0} = r_{i_1}",
+      "i = 1, 2, \\ldots, n",
+      "j = 1, 2, \\ldots, m"
+    ],
+    "variables": [
+      "r_i: resource assignment for task i, with r_i = -1 if unscheduled, or j if scheduled on resource j",
+      "es_i: execution start time for task i"
+    ]
+  },
+  "raw_latex_model": "\\max \\sum_{\\{i|r_i > 0\\}} p^{r_i}_i \\tag{22}\nsubject to\n\\text{card}(\\{r_i \\mid r_i > 0\\}) \\leq 1 \\tag{23}\n\\sum_{\\{i|r_i = j\\}} Storage(i,j) \\leq Maxstorage(j) \\tag{24}\n\\sum_{\\{i|r_i = j\\}} Energy(i,j) \\leq MaxEnergy(j) \\tag{25}\nws^{r_i}_i - es_i \\leq 0 \\tag{26}\nes_i + d^{r_i}_i - we^{r_i}_i \\leq 0 \\tag{27}\n(es_{i_0} - es_{i_1})(es_{i_0} - ee_{i_1}) > 0 \\quad \\forall i_0 \\neq i_1, r_{i_0} = r_{i_1} \\tag{28}\n(ee_{i_0} - es_{i_1})(ee_{i_0} - ee_{i_1}) > 0 \\quad \\forall i_0 \\neq i_1, r_{i_0} = r_{i_1} \\tag{29}\n|es_{i_0} - ee_{i_1}| \\geq MST(i_0, i_1) \\quad \\forall i_0 \\neq i_1, r_{i_0} = r_{i_1} \\tag{30}\ni = 1, 2, \\ldots, n \\tag{31}\nj = 1, 2, \\ldots, m \\tag{32}",
+  "algorithm_description": "The algorithm is a two-stage framework combining reinforcement learning (RL) and operations research (OR) algorithms. Step 1: Initialize a deep Q-network (DQN) for value function approximation in the prior stage. Step 2: In the training phase, iterate until convergence: a. For the prior stage (assignment problem), use DQN to select an action (assign a task to a resource or terminate) based on the current state, balancing exploration and exploitation. b. For the rear stage (sequencing and timing problem), use an OR algorithm (either constructive heuristic HADRT or dynamic programming DP) to schedule the assigned tasks on each resource, satisfying constraints. c. Compute the reward as the change in the objective function value. d. Update the DQN using the reward and next state. Step 3: After training, in the testing phase, use the trained DQN to assign tasks, then apply the OR algorithm for final scheduling to obtain the solution."
+}

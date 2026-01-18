@@ -1,0 +1,33 @@
+{
+  "paper_id": "Attend2Pack_Bin_Packing_through_Deep_Reinforcement_Learning_",
+  "title": "Attend2Pack: Bin Packing through Deep Reinforcement Learning with Attention",
+  "abstract": "This paper seeks to tackle the bin packing problem (BPP) through a learning perspective. Building on self-attention-based encoding and deep reinforcement learning algorithms, we propose a new end-to-end learning model for this task of interest. By decomposing the combinatorial action space, as well as utilizing a new training technique denoted as prioritized oversampling, which is a general scheme to speed up on-policy learning, we achieve state-of-the-art performance in a range of experimental settings. Moreover, although the proposed approach attend2pack targets offline-BPP, we strip our method down to the strict online-BPP setting where it is also able to achieve state-of-the-art performance. With a set of ablation studies as well as comparisons against a range of previous works, we hope to offer as a valid baseline approach to this field of study.",
+  "problem_description_natural": "The bin packing problem (BPP) involves packing a set of items (boxes) into one or more bins (containers) such that the number of bins used is minimized or, in the single-bin variant studied here, the volume utilization of the bin is maximized. The paper focuses on the 3D single container loading problem (SCLP), a form of offline BPP where all item dimensions are known in advance. The goal is to pack all N boxes into a single bin of fixed width and height but variable effective length, maximizing the utility defined as the ratio of total item volume to the volume of the minimal bounding container that encloses the packed items. Constraints include no overlap between items and physical feasibility (e.g., each box must be supported from below and placed in contact with other boxes or container walls). Boxes can be rotated in 6 possible orientations, and placement decisions must respect geometric constraints.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "Cut 10x10x10 into 10 boxes",
+    "Cut 10x10x10 into 20 boxes",
+    "Cut 10x10x10 into 30 boxes",
+    "Cut 10x10x10 into 50 boxes",
+    "Random [2..5] edges, 24 boxes, bin 10x10x10"
+  ],
+  "performance_metrics": [
+    "utility (r_u)",
+    "ranked reward (r_RR)",
+    "average number of packed boxes"
+  ],
+  "lp_model": {
+    "objective": "\\max r_u(C_\\pi) = \\frac{\\sum_{n=1}^N l^n w^n h^n}{L_{C_\\pi} W H}",
+    "constraints": [
+      "No overlap between any two boxes: for all boxes i and j, their placements do not intersect.",
+      "Each box must be placed within the bin boundaries: for each box n, after orientation o, its coordinates (x^n, y^n, z^n) satisfy 0 \\leq x^n \\leq L - l^n_o, 0 \\leq y^n \\leq W - w^n_o, 0 \\leq z^n \\leq H - h^n_o, where l^n_o, w^n_o, h^n_o are dimensions after orientation.",
+      "Each box must be in contact with at least one other box or the bin wall during placement: for each box n, there exists at least one point of contact with another box or the rear wall (x=0)."
+    ],
+    "variables": [
+      "Sequence actions s_t for t=1 to N, where s_t \\in \\{1,\\dots,N\\} \\setminus s_{1:t-1} selects the next box index.",
+      "Placement actions p_t = (o^{s_t}, y^{s_t}) for t=1 to N, where o^{s_t} \\in \\{1,\\dots,6\\} is the orientation and y^{s_t} \\in \\{0,\\dots,W-1\\} is the width coordinate, with x^{s_t} and z^{s_t} determined as the nearest feasible points to ensure contact and no overlap."
+    ]
+  },
+  "raw_latex_model": "r_u(C_\\pi) = \\frac{\\sum_{n=1}^N l^n w^n h^n}{L_{C_\\pi} W H}",
+  "algorithm_description": "1. Input: Receive a set of N boxes with dimensions (l^n, w^n, h^n) and bin dimensions (L, W, H). 2. Encoding: Compute fixed box embeddings using self-attention layers on normalized box dimensions. At each time step, compute a frontier embedding via a convolutional network from the current packing state (front-view of loaded structure). 3. Sequence Decoding: At time step t, the sequence policy (pointer network) selects the next box s_t from unpacked boxes based on the mean of leftover box embeddings and frontier embedding. 4. Placement Decoding: For the selected box s_t, the placement policy (parametric network) selects orientation o^{s_t} and width coordinate y^{s_t}. The length coordinate x^{s_t} and height coordinate z^{s_t} are automatically determined as the nearest feasible points where the box contacts another box or the wall without overlap. 5. Update: Place the box, update the frontier, and repeat from step 3 until all boxes are packed. 6. Reward: After packing all boxes, compute the utility r_u as the terminal reward. 7. Training: Optimize using REINFORCE policy gradient with a greedy rollout baseline. The loss minimizes expected cost c = 1 - r_u. 8. Prioritized Oversampling (optional): During training, collect batches with poor performance and re-learn on them to improve sequence selection, using a separate optimizer and scaling losses to stabilize training."
+}

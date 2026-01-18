@@ -1,0 +1,30 @@
+{
+  "paper_id": "An_Efficient_Graph_Convolutional_Network_Technique_for_the_T",
+  "title": "An Efficient Graph Convolutional Network Technique for the Travelling Salesman Problem",
+  "abstract": "This paper introduces a new learning-based approach for approximately solving the Travelling Salesman Problem on 2D Euclidean graphs. We use deep Graph Convolutional Networks to build efficient TSP graph representations and output tours in a non-autoregressive manner via highly parallelized beam search. Our approach outperforms all recently proposed autoregressive deep learning techniques in terms of solution quality, inference speed and sample efficiency for problem instances of fixed graph sizes. In particular, we reduce the average optimality gap from 0.52% to 0.01% for 50 nodes, and from 2.26% to 1.39% for 100 nodes. Finally, despite improving upon other learning-based approaches for TSP, our approach falls short of standard Operations Research solvers.",
+  "problem_description_natural": "The Travelling Salesman Problem (TSP) asks for the shortest possible route that visits each city exactly once and returns to the origin city, given a list of cities and the distances between each pair. Formally, given a graph with nodes representing cities in a 2D Euclidean space, the goal is to find a permutation (tour) of the nodes that minimizes the total tour length, defined as the sum of Euclidean distances between consecutive cities in the tour, including the return edge from the last city back to the first.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "TSP20",
+    "TSP50",
+    "TSP100"
+  ],
+  "performance_metrics": [
+    "Predicted tour length",
+    "Optimality gap",
+    "Evaluation time"
+  ],
+  "lp_model": {
+    "objective": "\\min_{\\pi} L(\\pi|s) = \\|\\mathbf{x}_{\\pi(n)} - \\mathbf{x}_{\\pi(1)}\\|_2 + \\sum_{i=1}^{n-1} \\|\\mathbf{x}_{\\pi(i)} - \\mathbf{x}_{\\pi(i+1)}\\|_2",
+    "constraints": [
+      "Each node must have exactly 2 incident edges in the tour: \\sum_{j} x_{ij} = 2 \\quad \\forall i \\in \\{1,...,n\\}",
+      "Subtour elimination: \\sum_{i,j \\in S} x_{ij} \\leq |S| - 1 \\quad \\forall S \\subset \\{1,...,n\\}, 2 \\leq |S| \\leq n-1",
+      "Binary edge variables: x_{ij} \\in \\{0,1\\} \\quad \\forall i,j \\in \\{1,...,n\\}, i \\neq j"
+    ],
+    "variables": [
+      "x_{ij} - Binary variable indicating whether edge between node i and node j is included in the tour"
+    ]
+  },
+  "raw_latex_model": "\\begin{align}\n& \\text{TSP Formulation:} \\\\\n& L(\\hat{\\pi}|s) = \\|\\mathbf{x}_{\\hat{\\pi}(n)} - \\mathbf{x}_{\\hat{\\pi}(1)}\\|_2 + \\sum_{i=1}^{n-1} \\|\\mathbf{x}_{\\hat{\\pi}(i)} - \\mathbf{x}_{\\hat{\\pi}(i+1)}\\|_2 \\\\\n\\end{align}\n\n\\begin{align}\n& \\text{Input Layer:} \\\\\n& \\alpha_i = A_1 x_i + b_1 \\\\\n& \\beta_{ij} = A_2 d_{ij} + b_2 \\parallel A_3 \\delta_{ij}^{\\text{k-NN}} \\\\\n\\end{align}\n\n\\begin{align}\n& \\text{Graph Convolution Layer:} \\\\\n& x_i^{\\ell+1} = x_i^\\ell + \\text{ReLU}\\left(\\text{BN}\\left(W_1^\\ell x_i^\\ell + \\sum_{j \\sim i} \\eta_{ij}^\\ell \\odot W_2^\\ell x_j^\\ell\\right)\\right) \\\\\n& \\eta_{ij}^\\ell = \\frac{\\sigma(e_{ij}^\\ell)}{\\sum_{j' \\sim i} \\sigma(e_{ij'}^\\ell) + \\varepsilon} \\\\\n& e_{ij}^{\\ell+1} = e_{ij}^\\ell + \\text{ReLU}\\left(\\text{BN}\\left(W_3^\\ell e_{ij}^\\ell + W_4^\\ell x_i^\\ell + W_5^\\ell x_j^\\ell\\right)\\right) \\\\\n\\end{align}\n\n\\begin{align}\n& \\text{MLP Classifier:} \\\\\n& p_{ij}^{\\text{TSP}} = \\text{MLP}(e_{ij}^L) \\\\\n\\end{align}",
+  "algorithm_description": "The algorithm consists of three main phases: data preparation, model training, and inference.\n\n**Phase 1: Data Preparation**\n1. Generate training dataset: Sample n node locations uniformly at random in unit square [0,1]² for problem sizes n ∈ {20, 50, 100}\n2. Generate optimal solutions: Use Concorde TSP solver to compute optimal tours for each instance\n3. Create one million training pairs (graph, optimal tour) per problem size\n4. Convert optimal tours to adjacency matrices for supervised learning\n\n**Phase 2: Model Training**\n1. Initialize graph ConvNet with l_conv = 30 layers, hidden dimension h = 300, and k = 20 nearest neighbors\n2. For each training epoch (until convergence):\n   a. Randomly sample 10,000 instances from training set\n   b. Divide into mini-batches of 20 instances each\n   c. Forward pass: Compute node embeddings α_i and edge embeddings β_ij using input layer\n   d. Apply 30 graph convolution layers with anisotropic diffusion (Eq. 4-5) to get edge representations e_ij^L\n   e. Compute edge probabilities p_ij^TSP using MLP classifier (Eq. 6)\n   f. Calculate weighted binary cross-entropy loss against ground-truth adjacency matrix\n   g. Backpropagate gradients using Adam optimizer (initial lr = 0.001)\n   h. Apply learning rate decay: divide by 1.01 if validation loss doesn't improve by 1% every 5 epochs\n\n**Phase 3: Inference (Beam Search Decoding)**\n1. Given test graph, forward pass through trained model to obtain edge probability heat-map p_ij^TSP\n2. Initialize beam with starting node (node 1)\n3. For each step until complete tour formed:\n   a. Expand b most probable edges from each partial tour in current beam\n   b. Mask out already-visited nodes to maintain validity\n   c. Keep top-b partial tours based on cumulative probability p(π') = ∏ p_ij^TSP\n4. Select final tour using one of three strategies:\n   - Greedy: Highest probability tour\n   - Beam search: Highest probability among b complete tours\n   - Beam search + shortest tour: Shortest length among b complete tours\n5. Return predicted TSP tour permutation π̂"
+}

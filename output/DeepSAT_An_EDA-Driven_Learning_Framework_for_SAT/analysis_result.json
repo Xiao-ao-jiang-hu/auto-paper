@@ -1,0 +1,41 @@
+{
+  "paper_id": "DeepSAT_An_EDA-Driven_Learning_Framework_for_SAT",
+  "title": "On EDA-Driven Learning for SAT Solving",
+  "abstract": "We present DeepSAT, a novel end-to-end learning framework for the Boolean satisfiability (SAT) problem. Unlike existing solutions trained on random SAT instances with relatively weak supervision, we propose applying the knowledge of the well-developed electronic design automation (EDA) field for SAT solving. Specifically, we first resort to logic synthesis algorithms to pre-process SAT instances into optimized and-inverter graphs (AIGs). By doing so, the distribution diversity among various SAT instances can be dramatically reduced, which facilitates improving the generalization capability of the learned model. Next, we regard the distribution of SAT solutions being a product of conditional Bernoulli distributions. Based on this observation, we approximate the SAT solving procedure with a conditional generative model, leveraging a novel directed acyclic graph neural network (DAGNN) with two polarity prototypes for conditional SAT modeling. To effectively train the generative model, with the help of logic simulation tools, we obtain the probabilities of nodes in the AIG being logic ‘1’ as rich supervision. We conduct comprehensive experiments on various SAT problems. Our results show that, DeepSAT achieves significant accuracy improvements over state-of-the-art learning-based SAT solutions, especially when generalized to SAT instances that are relatively large or with diverse distributions.",
+  "problem_description_natural": "The paper addresses the Boolean satisfiability (SAT) problem, which involves determining whether there exists an assignment of binary values to input variables such that a given Boolean formula evaluates to true (logic ‘1’). The authors aim to develop a deep learning-based solver that generalizes well across diverse SAT instance distributions by leveraging techniques from electronic design automation (EDA), specifically logic synthesis and logic simulation. They reformulate SAT solving as a conditional generative modeling task over the joint Bernoulli distribution of input variables, using rich supervision derived from simulated signal probabilities in optimized circuit representations (AIGs). The goal is to predict satisfying assignments directly through a learned model rather than relying on traditional heuristic search.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "SR(3-10)",
+    "SR(10)",
+    "SR(20)",
+    "SR(40)",
+    "SR(60)",
+    "SR(80)",
+    "graph k-coloring",
+    "vertex k-cover",
+    "k-clique-detection",
+    "dominating k-set"
+  ],
+  "performance_metrics": [
+    "Problems Solved",
+    "Coloring Acc.",
+    "Domset Acc.",
+    "Clique Acc.",
+    "Vertex Acc.",
+    "Avg. Acc."
+  ],
+  "lp_model": {
+    "objective": "\\arg\\max_{\\mathbf{x}} p(\\mathbf{x}|y=1;\\mathcal{G},\\boldsymbol{\\theta})",
+    "constraints": [
+      "p(\\mathbf{x}|y=1;\\mathcal{G},\\boldsymbol{\\theta}) = \\prod_{i=1}^I p(x_i|\\mathbf{x}_{<i}, y=1;\\mathcal{G},\\theta_i)",
+      "p(x_i|\\mathbf{x}_{<i}, y=1;\\mathcal{G},\\theta_i) = \\theta_i^{x_i}(1-\\theta_i)^{1-x_i}",
+      "m_j = \\begin{cases} 0 & \\text{if } v_j \\in \\mathcal{V}_G \\text{ or } x_j \\notin \\mathbf{x}_m \\\\ 1 & \\text{if } x_j \\in \\mathbf{x}_m \\text{ and } x_j = \\text{True}, \\\\ -1 & \\text{if } x_j \\in \\mathbf{x}_m \\text{ and } x_j = \\text{False}. \\end{cases}"
+    ],
+    "variables": [
+      "x_i \\in \\{0,1\\} \\text{ for } i=1,...,I: \\text{ binary input variables}",
+      "\\theta_i: \\text{ probability parameter for } x_i"
+    ]
+  },
+  "raw_latex_model": "\\text{Solution } \\mathbf{x}^* = \\arg\\max_{\\mathbf{x}} p(\\mathbf{x}|y=1;\\mathcal{G},\\boldsymbol{\\theta}) \\\\ p(\\mathbf{x}|y=1;\\mathcal{G},\\boldsymbol{\\theta}) = \\prod_{i=1}^I p(x_i|\\mathbf{x}_{<i}, y=1;\\mathcal{G},\\theta_i), \\quad x_i|\\mathbf{x}_{<i} \\sim \\text{Bernoulli}(\\theta_i) \\\\ p(x_i|\\mathbf{x}_{<i}, y=1;\\mathcal{G},\\theta_i) = \\theta_i^{x_i}(1-\\theta_i)^{1-x_i} \\\\ m_j = \\begin{cases} 0 & \\text{if } v_j \\in \\mathcal{V}_G \\text{ or } x_j \\notin \\mathbf{x}_m \\\\ 1 & \\text{if } x_j \\in \\mathbf{x}_m \\text{ and } x_j = \\text{True}, \\\\ -1 & \\text{if } x_j \\in \\mathbf{x}_m \\text{ and } x_j = \\text{False}. \\end{cases}",
+  "algorithm_description": "The solution sampling algorithm in DeepSAT proceeds as follows: 1. Represent the SAT instance as an and-inverter graph (AIG) \\(\\mathcal{G}\\) after pre-processing with logic synthesis. 2. Initialize a mask vector \\(\\mathbf{m}_0\\) by setting the mask for the primary output (PO) to 1 (indicating logic '1') to enforce satisfiability. 3. For each iteration \\(t\\) from 0 to \\(I-1\\), where \\(I\\) is the number of primary inputs (PIs): a. Input \\(\\mathcal{G}\\) and the current mask \\(\\mathbf{m}_t\\) into the trained DeepSAT model to obtain predicted probabilities for all un-masked PIs. b. Select the un-masked PI with the predicted probability closest to 0 or 1 (i.e., highest confidence). c. Update the mask for the selected PI: set to 1 if predicted probability \\(\\geq 0.5\\) (logic '1'), else set to -1 (logic '0'). d. This yields a new mask \\(\\mathbf{m}_{t+1}\\). 4. After \\(I\\) iterations, all PIs are masked, and the mask \\(\\mathbf{m}_I\\) provides a candidate assignment \\(\\hat{\\mathbf{x}}\\). 5. To explore more solutions, a flipping-based strategy is applied: record the order in which PIs are masked, and in subsequent sampling, flip the value of a specific PI following this order to generate additional assignments (up to \\(I+1\\) solutions in the worst case)."
+}

@@ -1,0 +1,28 @@
+{
+  "paper_id": "DAGs_with_NO_TEARS_Continuous_Optimization_for_Structure_Lea",
+  "title": "DAGs with NO TEARS: Continuous Optimization for Structure Learning",
+  "abstract": "Estimating the structure of directed acyclic graphs (DAGs, also known as Bayesian networks) is a challenging problem since the search space of DAGs is combinatorial and scales superexponentially with the number of nodes. Existing approaches rely on various local heuristics for enforcing the acyclicity constraint. In this paper, we introduce a fundamentally different strategy: We formulate the structure learning problem as a purely continuous optimization problem over real matrices that avoids this combinatorial constraint entirely. This is achieved by a novel characterization of acyclicity that is not only smooth but also exact. The resulting problem can be efficiently solved by standard numerical algorithms, which also makes implementation effortless. The proposed method outperforms existing ones, without imposing any structural assumptions on the graph such as bounded treewidth or in-degree.",
+  "problem_description_natural": "The paper addresses the problem of learning the structure of a directed acyclic graph (DAG) from observational data by minimizing a score function—specifically, a regularized least-squares loss—subject to the constraint that the learned graph must be acyclic. Traditionally, this is a combinatorial optimization problem due to the discrete nature of the acyclicity constraint. The authors reformulate it as a continuous optimization problem over the space of real-valued weighted adjacency matrices W ∈ ℝ^{d×d}, replacing the combinatorial DAG constraint with a smooth equality constraint h(W) = 0, where h is a novel function that exactly characterizes acyclicity (i.e., h(W) = 0 if and only if the graph induced by W is acyclic). The resulting problem is a nonconvex, equality-constrained continuous optimization problem that can be solved using standard numerical solvers like L-BFGS with augmented Lagrangian methods.",
+  "problem_type": "continuous nonconvex optimization with smooth equality constraints",
+  "datasets": [
+    "Generated ER Graphs",
+    "Generated SF Graphs",
+    "Sachs et al. (2005) protein signaling dataset"
+  ],
+  "performance_metrics": [
+    "Structural Hamming Distance (SHD)",
+    "FDR",
+    "TPR"
+  ],
+  "lp_model": {
+    "objective": "\\min_{W \\in \\mathbb{R}^{d \\times d}} F(W) = \\frac{1}{2n} \\| \\mathbf{X} - \\mathbf{X}W \\|_F^2 + \\lambda \\|W\\|_1",
+    "constraints": [
+      "h(W) = \\operatorname{tr} \\left( e^{W \\circ W} \\right) - d = 0"
+    ],
+    "variables": [
+      "W \\in \\mathbb{R}^{d \\times d} - weighted adjacency matrix representing the directed graph structure"
+    ]
+  },
+  "raw_latex_model": "\\text{(ECP)} \\quad \\begin{aligned} & \\min_{W \\in \\mathbb{R}^{d \\times d}} \\quad F(W) \\\\ & \\text{subject to} \\quad h(W) = 0. \\end{aligned} \\text{ where } F(W) = \\frac{1}{2n} \\| \\mathbf{X} - \\mathbf{X}W \\|_F^2 + \\lambda \\|W\\|_1 \\text{ and } h(W) = \\operatorname{tr} \\left( e^{W \\circ W} \\right) - d.",
+  "algorithm_description": "The NOTEARS algorithm solves the equality-constrained program using an augmented Lagrangian method with proximal quasi-Newton for subproblems. Steps: 1. Initialize with parameters: initial guess (W_0, α_0), progress rate c ∈ (0,1), tolerance ε > 0, threshold ω > 0. 2. For t = 0,1,2,...: a. Solve the primal subproblem: W_{t+1} ← argmin_W L^ρ(W, α_t), where L^ρ(W, α) = F(W) + (ρ/2)|h(W)|^2 + α h(W), using a proximal quasi-Newton method (Algorithm 2) to handle the ℓ1-regularization. Adjust ρ such that h(W_{t+1}) < c h(W_t). b. Perform dual ascent: α_{t+1} ← α_t + ρ h(W_{t+1}). c. If h(W_{t+1}) < ε, set W̃_ECP = W_{t+1} and break. 3. Apply thresholding: return the final estimate Ŵ = W̃_ECP ∘ 1(|W̃_ECP| > ω), which sets entries with absolute value less than ω to zero."
+}

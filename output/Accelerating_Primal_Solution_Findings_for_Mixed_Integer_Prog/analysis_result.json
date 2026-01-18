@@ -1,0 +1,37 @@
+{
+  "paper_id": "Accelerating_Primal_Solution_Findings_for_Mixed_Integer_Prog",
+  "title": "Accelerating Primal Solution Findings for Mixed Integer Programs Based on Solution Prediction",
+  "abstract": "Mixed Integer Programming (MIP) is one of the most widely used modeling techniques for combinatorial optimization problems. In many applications, a similar MIP model is solved on a regular basis, maintaining remarkable similarities in model structures and solution appearances but differing in formulation coefficients. This offers the opportunity for machine learning methods to explore the correlations between model structures and the resulting solution values. To address this issue, we propose to represent an MIP instance using a tripartite graph, based on which a Graph Convolutional Network (GCN) is constructed to predict solution values for binary variables. The predicted solutions are used to generate a local branching type cut which can be either treated as a global (invalid) inequality in the formulation resulting in a heuristic approach to solve the MIP, or as a root branching rule resulting in an exact approach. Computational evaluations on 8 distinct types of MIP problems show that the proposed framework improves the primal solution finding performance significantly on a state-of-the-art open-source MIP solver.",
+  "problem_description_natural": "The paper addresses the challenge of repeatedly solving structurally similar Mixed Integer Programming (MIP) instances that arise in real-world combinatorial optimization applications such as production scheduling, vehicle routing, facility location, and airline crew scheduling. Although these instances share similar model structures and solution patterns, they differ in coefficients (e.g., costs, capacities, demands). The authors aim to leverage machine learning—specifically a Graph Convolutional Network (GCN)—to predict the values of binary decision variables in the optimal (or near-optimal) solution by learning from historical instances. The key innovation is using a tripartite graph representation of the MIP (with nodes for variables, constraints, and the objective) to capture implicit relationships among components, enabling better prediction of stable (i.e., consistently valued) binary variables. These predictions are then used to guide the MIP solver via local branching cuts or root branching rules, accelerating the search for high-quality primal solutions.",
+  "problem_type": "Mixed Integer Linear Programming (MILP)",
+  "datasets": [
+    "MIPLIB 2017",
+    "Fixed Charge Network Flow",
+    "Capacitated Facility Location",
+    "Generalized Assignment",
+    "Maximal Independent Set",
+    "Multidimensional Knapsack",
+    "Set Covering",
+    "Traveling Salesman Problem",
+    "Vehicle Routing Problem"
+  ],
+  "performance_metrics": [
+    "Average Precision",
+    "Primal Gap",
+    "Optimality Gap"
+  ],
+  "lp_model": {
+    "objective": "\\min \\quad c^T x",
+    "constraints": [
+      "A x \\leq b",
+      "x_j \\in \\{0, 1\\}, \\forall j \\in \\mathcal{B}",
+      "x_j \\in \\mathbb{Z}, \\forall j \\in \\mathcal{Q}",
+      "x_j \\geq 0, \\forall j \\in \\mathcal{P}"
+    ],
+    "variables": [
+      "Decision variables indexed by set \\mathcal{U} := \\{1, \\dots, n\\} partitioned into: \\mathcal{B} (binary variables), \\mathcal{Q} (general integer variables), and \\mathcal{P} (continuous variables)"
+    ]
+  },
+  "raw_latex_model": "\\begin{aligned}\n\\min \\quad & c^T x \\\\\n\\text{s.t.} \\quad & A x \\leq b, \\\\\n& x_j \\in \\{0, 1\\}, \\forall j \\in \\mathcal{B}, \\\\\n& x_j \\in \\mathbb{Z}, \\forall j \\in \\mathcal{Q}, \\quad x_j \\geq 0, \\forall j \\in \\mathcal{P},\n\\end{aligned}",
+  "algorithm_description": "The Graph Convolutional Network forward propagation algorithm for MIP solution prediction consists of three stages: (1) Embedding: Transform input features of variable nodes, constraint nodes, and the objective node into 64-dimensional vectors using fully-connected layers. (2) Graph Attention Transitions: Perform T iterations of information propagation through the tripartite graph. In each iteration: Step 1 updates the objective node by aggregating representations from all variable nodes using attention-weighted summation. Step 2 updates each constraint node using objective node information and aggregated information from neighboring variable nodes. Step 3 updates the objective node again by aggregating information from all constraint nodes. Step 4 updates each variable node using objective node information and aggregated information from neighboring constraint nodes. Attention coefficients are computed for each edge to weight neighbor importance based on node and edge features. (3) Prediction: After T iterations, concatenate each variable node's initial and final embeddings, then apply two fully-connected layers with sigmoid activation to predict the probability that the binary variable takes value 1 in the optimal solution."
+}

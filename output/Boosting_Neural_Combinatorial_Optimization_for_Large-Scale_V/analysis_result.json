@@ -1,0 +1,40 @@
+{
+  "paper_id": "Boosting_Neural_Combinatorial_Optimization_for_Large-Scale_V",
+  "title": "BOOSTING NEURAL COMBINATORIAL OPTIMIZATION FOR LARGE-SCALE VEHICLE ROUTING PROBLEMS",
+  "abstract": "Neural Combinatorial Optimization (NCO) methods have exhibited promising performance in solving Vehicle Routing Problems (VRPs). However, most NCO methods rely on the conventional self-attention mechanism that induces excessive computational complexity, thereby struggling to contend with large-scale VRPs and hindering their practical applicability. In this paper, we propose a lightweight cross-attention mechanism with linear complexity, by which a Transformer network is developed to learn efficient and favorable solutions for large-scale VRPs. We also propose a Self-Improved Training (SIT) algorithm that enables direct model training on large-scale VRP instances, bypassing extensive computational overhead for attaining labels. By iterating solution reconstruction, the Transformer network itself can generate improved partial solutions as pseudo-labels to guide the model training. Experimental results on the Travelling Salesman Problem (TSP) and the Capacitated Vehicle Routing Problem (CVRP) with up to 100K nodes indicate that our method consistently achieves superior performance for synthetic and real-world benchmarks, significantly boosting the scalability of NCO methods.",
+  "problem_description_natural": "The paper addresses large-scale Vehicle Routing Problems (VRPs), specifically the Traveling Salesman Problem (TSP) and the Capacitated Vehicle Routing Problem (CVRP). These problems involve finding optimal or near-optimal tours that visit a set of nodes (e.g., cities or delivery locations) exactly once while minimizing total travel distance. In CVRP, additional constraints include vehicle capacity limits and the requirement to start and end routes at a central depot. The challenge lies in efficiently solving these NP-hard combinatorial optimization problems when the number of nodes scales up to tens of thousands or even 100,000, where traditional and existing neural methods become computationally infeasible due to quadratic complexity in attention mechanisms and difficulties in obtaining training labels.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "TSP1K",
+    "TSP5K",
+    "TSP10K",
+    "TSP50K",
+    "TSP100K",
+    "CVRP1K",
+    "CVRP5K",
+    "CVRP10K",
+    "CVRP50K",
+    "CVRP100K",
+    "TSPLIB",
+    "CVRPLIB"
+  ],
+  "performance_metrics": [
+    "Objective Value",
+    "Optimality Gap",
+    "Inference Time"
+  ],
+  "lp_model": {
+    "objective": "\\pi^* = \\arg\\min_{\\pi \\in \\Omega} c(\\pi|\\mathcal{G})",
+    "constraints": [
+      "For TSP: $\\pi$ must be a permutation of all nodes in $\\mathcal{V}$, visiting each exactly once.",
+      "For CVRP: $\\pi$ must satisfy that the total demand on each route does not exceed the vehicle capacity $C$."
+    ],
+    "variables": [
+      "$\\pi = (\\pi_1, \\pi_2, \\dots, \\pi_n)$: a permutation of nodes representing the tour.",
+      "$\\mathcal{G} = (\\mathcal{V}, \\mathcal{E})$: graph with node set $\\mathcal{V}$ and edge set $\\mathcal{E}$.",
+      "$c(\\pi|\\mathcal{G})$: cost function, e.g., Euclidean length of the tour for TSP and CVRP."
+    ]
+  },
+  "raw_latex_model": "\\hat{X} = \\text{Attn}(X, C) = \\text{softmax}\\left(\\frac{X W_Q (C W_K)^\\intercal}{\\sqrt{d}}\\right) \\cdot C W_V",
+  "algorithm_description": "The Self-Improved Training (SIT) algorithm proceeds as follows: 1. Initialize a dataset with VRP instances and their solutions (e.g., from random insertion). 2. Iterate until a time budget: a) Local Reconstruction: For each instance, sample non-overlapping partial solutions of random size up to $l_{max}$, reconstruct them using the Transformer model to generate improved partial solutions, and update the complete solution if better. b) Model Training: Sample partial solutions from the updated dataset, use them as pseudo-labels, and train the Transformer model with the loss function $\\mathcal{L}(\\theta) = \\mathbb{E}_{S^p \\sim \\mathcal{D}}[-\\log p_\\theta(\\hat{\\pi}_t^p \\mid S^p, \\hat{\\pi}_{1:t-1}^p, \\hat{\\pi}_\\omega^p)]$ for $t \\in \\{2, \\dots, \\omega-1\\}$. 3. The trained model can then be used for inference via greedy search or parallel local reconstruction (PRC) to solve large-scale VRPs."
+}

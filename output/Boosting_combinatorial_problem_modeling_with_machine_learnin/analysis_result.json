@@ -1,0 +1,20 @@
+{
+  "paper_id": "Boosting_combinatorial_problem_modeling_with_machine_learnin",
+  "title": "Boosting Combinatorial Problem Modeling with Machine Learning",
+  "abstract": "This survey explores how Machine Learning (ML) techniques can enhance the modeling phase of combinatorial optimization problems. Traditionally reliant on expert knowledge, modeling can be augmented or partially automated using data-driven ML methods to learn constraints, objective functions, or even entire problem models. The paper reviews recent approaches that either express learned components in native constraint languages, embed trained ML models (e.g., neural networks, decision trees) into optimization frameworks, or use ML models as stand-alone problem representations. It also discusses active learning during solving and connections to related fields like black-box optimization and system identification.",
+  "problem_description_natural": "The paper addresses the challenge of constructing accurate and efficient combinatorial optimization models—typically defined by variables, constraints, and an objective function—by leveraging Machine Learning to automate or refine parts of the modeling process. Instead of relying solely on domain and optimization experts to manually formulate models, the surveyed methods use data (e.g., historical solutions, user feedback, or simulation outputs) to learn model components such as feasibility constraints or objective functions. This is especially valuable when expert formulation is difficult, time-consuming, or when data reveals patterns not easily captured symbolically.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [],
+  "performance_metrics": [],
+  "lp_model": {
+    "objective": "\\min z = x_0",
+    "constraints": [
+      "\\pi_i(\\vec{x}) \\quad \\forall i \\in I"
+    ],
+    "variables": [
+      "\\vec{x} \\in D_{\\vec{x}}"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned}& \\min z = x_0 \\\\& \\text{subject to: } \\pi_i(\\vec{x}) \\quad \\forall i \\in I \\\\& \\vec{x} \\in D_{\\vec{x}}\\end{aligned}$$",
+  "algorithm_description": "The constraint acquisition algorithm involves learning constraints from examples to build a combinatorial model. Key steps include: 1. Define a bias set of potential constraints. 2. Collect examples passively from data or actively by generating candidate solutions and querying a constraint checker. 3. Evaluate constraints in the bias against examples; add constraints compatible with all positive examples (and possibly inconsistent with negative examples) to the model. 4. In active learning, iteratively generate new examples to refine the model until convergence. 5. Simplify the model by removing redundant constraints. This process is used in systems like CONACQ, QUACQ, and model seeker, with variations such as using partial examples or matching global constraints."
+}

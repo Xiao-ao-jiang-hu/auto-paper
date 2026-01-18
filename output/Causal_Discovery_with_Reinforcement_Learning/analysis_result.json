@@ -1,0 +1,31 @@
+{
+  "paper_id": "Causal_Discovery_with_Reinforcement_Learning",
+  "title": "Causal Discovery with Reinforcement Learning",
+  "abstract": "Discovering causal structure among a set of variables is a fundamental problem in many empirical sciences. Traditional score-based causal discovery methods rely on various local heuristics to search for a Directed Acyclic Graph (DAG) according to a predefined score function. While these methods, e.g., greedy equivalence search, may have attractive results with infinite samples and certain model assumptions, they are less satisfactory in practice due to finite data and possible violation of assumptions. Motivated by recent advances in neural combinatorial optimization, we propose to use Reinforcement Learning (RL) to search for the DAG with the best scoring. Our encoder-decoder model takes observable data as input and generates graph adjacency matrices that are used to compute rewards. The reward incorporates both the predefined score function and two penalty terms for enforcing acyclicity. In contrast with typical RL applications where the goal is to learn a policy, we use RL as a search strategy and our final output would be the graph, among all graphs generated during training, that achieves the best reward. We conduct experiments on both synthetic and real datasets, and show that the proposed approach not only has an improved search ability but also allows a flexible score function under the acyclicity constraint.",
+  "problem_description_natural": "The paper addresses the problem of finding the Directed Acyclic Graph (DAG) that best explains observed data according to a predefined score function (e.g., BIC). This involves optimizing over the space of all possible DAGs, which is combinatorially large and constrained by acyclicity. The authors formulate this as a search problem where the objective is to minimize a score function subject to the graph being acyclic. Instead of using traditional local search heuristics, they employ Reinforcement Learning with an encoder-decoder neural network to generate candidate graphs and use a reward signal—combining the negative score, a hard penalty for cyclic graphs, and a soft differentiable acyclicity penalty based on the matrix exponential—to guide the search toward high-scoring DAGs.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "LiNGAM",
+    "Linear-Gaussian",
+    "Nonlinear Quadratic",
+    "Gaussian Process (RBF kernel)",
+    "Sachs"
+  ],
+  "performance_metrics": [
+    "False Discovery Rate (FDR)",
+    "True Positive Rate (TPR)",
+    "Structural Hamming Distance (SHD)"
+  ],
+  "lp_model": {
+    "objective": "\\min_{\\mathcal{G}} \\mathcal{S}(\\mathcal{G})",
+    "constraints": [
+      "h(A) = 0",
+      "where h(A) = \\text{trace}(e^A) - d ensures acyclicity"
+    ],
+    "variables": [
+      "A \\in \\{0,1\\}^{d \\times d} - binary adjacency matrix representing directed graph \\mathcal{G}"
+    ]
+  },
+  "raw_latex_model": "\\min_{\\mathcal{G}} \\mathcal{S}(\\mathcal{G}), \\text{ subject to } \\mathcal{G} \\in \\text{DAGs}.",
+  "algorithm_description": "Step 1: Initialize neural network parameters for the encoder-decoder model. Step 2: For each training iteration, randomly sample data from the observed dataset to construct an input sequence. Step 3: Use the encoder-decoder model to generate a binary adjacency matrix A representing a candidate graph. Step 4: Compute the reward using the predefined score function S(G), an indicator penalty for cyclic graphs, and a smooth acyclicity penalty h(A). Step 5: Update neural network parameters via an actor-critic reinforcement learning algorithm to maximize the expected reward. Step 6: Periodically update penalty parameters lambda1 and lambda2 based on the current best scores and acyclicity conditions. Step 7: Record all generated graphs and their rewards during training. Step 8: After training, select the graph with the highest reward among all recorded graphs. Step 9: Apply pruning to the selected graph by greedily removing edges if the score does not degrade significantly, to reduce false discoveries."
+}

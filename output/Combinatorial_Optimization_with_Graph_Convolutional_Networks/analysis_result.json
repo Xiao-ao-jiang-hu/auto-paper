@@ -1,0 +1,46 @@
+{
+  "paper_id": "Combinatorial_Optimization_with_Graph_Convolutional_Networks",
+  "title": "Combinatorial Optimization with Graph Convolutional Networks and Guided Tree Search",
+  "abstract": "We present a learning-based approach to computing solutions for certain NP-hard problems. Our approach combines deep learning techniques with useful algorithmic elements from classic heuristics. The central component is a graph convolutional network that is trained to estimate the likelihood, for each vertex in a graph, of whether this vertex is part of the optimal solution. The network is designed and trained to synthesize a diverse set of solutions, which enables rapid exploration of the solution space via tree search. The presented approach is evaluated on four canonical NP-hard problems and five datasets, which include benchmark satisfiability problems and real social network graphs with up to a hundred thousand nodes. Experimental results demonstrate that the presented approach substantially outperforms recent deep learning work, and performs on par with highly optimized state-of-the-art heuristic solvers for some NP-hard problems. Experiments indicate that our approach generalizes across datasets, and scales to graphs that are orders of magnitude larger than those used during training.",
+  "problem_description_natural": "The paper addresses four canonical NP-hard combinatorial optimization problems: Satisfiability (SAT), Maximal Independent Set (MIS), Minimum Vertex Cover (MVC), and Maximal Clique (MC). All these problems are formulated on graphs, and the goal is to find an optimal subset of vertices satisfying specific constraints—e.g., for MIS, the largest set of vertices with no edges between them; for MVC, the smallest set of vertices touching all edges; for MC, the largest fully connected subset; and for SAT, a satisfying assignment to Boolean variables in a conjunctive normal form formula. The authors convert all problems into equivalent MIS instances and use a graph convolutional network to guide a tree search that explores diverse candidate solutions, followed by local search refinement.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "SATLIB",
+    "SAT Competition 2017",
+    "BUAA-MC",
+    "SNAP Social Networks",
+    "Citation networks",
+    "ego-Facebook",
+    "ego-Gplus",
+    "ego-Twitter",
+    "soc-Epinions1",
+    "soc-Slashdot0811",
+    "soc-Slashdot0922",
+    "wiki-Vote",
+    "wiki-RfA",
+    "bitcoin-otc",
+    "bitcoin-alpha",
+    "Citeseer",
+    "Cora",
+    "Pubmed"
+  ],
+  "performance_metrics": [
+    "Fraction of solved SAT instances",
+    "Fraction of solved MC problems",
+    "Average independent set size (MIS)",
+    "Size of Maximal Clique (MC)",
+    "Size of Minimum Vertex Cover (MVC)",
+    "Runtime (seconds)"
+  ],
+  "lp_model": {
+    "objective": "\\max \\sum_{i=1}^{N} x_i",
+    "constraints": [
+      "x_i + x_j \\leq 1 \\quad \\forall (i,j) \\in E"
+    ],
+    "variables": [
+      "x_i \\in \\{0,1\\} \\quad \\forall i = 1,\\ldots,N"
+    ]
+  },
+  "raw_latex_model": "\\begin{aligned} &\\max \\sum_{i=1}^{N} x_i \\\\ &\\text{subject to} \\\\ &x_i + x_j \\leq 1, \\quad \\forall (i,j) \\in E \\\\ &x_i \\in \\{0,1\\}, \\quad \\forall i = 1,\\ldots,N \\end{aligned}",
+  "algorithm_description": "1. Preprocess the input graph using reduction techniques (e.g., pendant vertices, vertex folding) to obtain a smaller equivalent graph.\n2. Feed the reduced graph into a trained graph convolutional network (GCN) with a diversity loss, which generates M probability maps indicating vertex likelihoods for being in the optimal independent set.\n3. Initialize a queue with the reduced graph.\n4. While within a time budget:\n   a. Randomly select an incomplete graph from the queue.\n   b. For each probability map (m=1 to M):\n      i. Sort vertices in descending order based on the likelihood map.\n      ii. Iterate through the sorted list: if a vertex is unlabelled, label it as 1 and all its neighbors as 0; skip if already labelled.\n      iii. If the graph is completely labelled, record this as a candidate solution.\n      iv. Otherwise, remove labelled vertices to form a residual graph and add it to the queue.\n5. Apply local search (e.g., 2-improvement) to refine candidate solutions.\n6. Output the best solution found after refinement."
+}

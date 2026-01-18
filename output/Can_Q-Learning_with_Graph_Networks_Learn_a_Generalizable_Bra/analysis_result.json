@@ -1,0 +1,48 @@
+{
+  "paper_id": "Can_Q-Learning_with_Graph_Networks_Learn_a_Generalizable_Bra",
+  "title": "Can $Q$-Learning with Graph Networks Learn a Generalizable Branching Heuristic for a SAT Solver?",
+  "abstract": "We present Graph-$Q$-SAT, a branching heuristic for a Boolean SAT solver trained with value-based reinforcement learning (RL) using Graph Neural Networks for function approximation. Solvers using Graph-$Q$-SAT are complete SAT solvers that either provide a satisfying assignment or proof of unsatisfiability, which is required for many SAT applications. The branching heuristics commonly used in SAT solvers make poor decisions during their warm-up period, whereas Graph-$Q$-SAT is trained to examine the structure of the particular problem instance to make better decisions early in the search. Training Graph-$Q$-SAT is data efficient and does not require elaborate dataset preparation or feature engineering. We train Graph-$Q$-SAT using RL interfacing with MiniSat solver and show that Graph-$Q$-SAT can reduce the number of iterations required to solve SAT problems by 2-3X. Furthermore, it generalizes to unsatisfiable SAT instances, as well as to problems with 5X more variables than it was trained on. We show that for larger problems, reductions in the number of iterations lead to wall clock time reductions, the ultimate goal when designing heuristics. We also show positive zero-shot transfer behavior when testing Graph-$Q$-SAT on a task family different from that used for training. While more work is needed to apply Graph-$Q$-SAT to reduce wall clock time in modern SAT solving settings, it is a compelling proof-of-concept showing that RL equipped with Graph Neural Networks can learn a generalizable branching heuristic for SAT search.",
+  "problem_description_natural": "The paper addresses the problem of improving the branching heuristic in Conflict-Driven Clause Learning (CDCL) Boolean Satisfiability (SAT) solvers. The standard heuristic, VSIDS, performs poorly during an initial 'warm-up' phase because it relies on conflict statistics that have not yet accumulated. The authors propose replacing this heuristic with a learned policy—Graph-Q-SAT—that uses reinforcement learning with a Graph Neural Network (GNN) to select the next variable to branch on, based on the current structure of the SAT instance represented as a bipartite graph of variables and clauses. The goal is to minimize the number of branching decisions (iterations) required to solve a SAT instance, thereby reducing overall solving time while maintaining solver completeness (i.e., always returning a correct answer).",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "SATLIB",
+    "SAT-50-218",
+    "SAT-100-430",
+    "SAT-250-1065",
+    "unSAT-50-218",
+    "unSAT-100-430",
+    "unSAT-250-1065",
+    "flat-30-60",
+    "flat-50-115",
+    "flat-75-180",
+    "flat-100-239",
+    "flat-125-301",
+    "flat-150-360",
+    "flat-175-417",
+    "flat-200-479"
+  ],
+  "performance_metrics": [
+    "Median Relative Iteration Reduction (MRIR)",
+    "number of iterations",
+    "wall clock time",
+    "average number of propagations per step"
+  ],
+  "lp_model": {
+    "objective": "\\min_{\\theta} \\mathbb{E} \\left[ \\left( Q_{\\theta}(s, a) - \\left( r + \\gamma \\max_{a'} Q_{\\bar{\\theta}}(s', a') \\right) \\right)^2 \\right]",
+    "constraints": [
+      "\\langle \\mathcal{S}, \\mathcal{A}, \\mathcal{R}, \\mathcal{T}, \\gamma, \\rho \\rangle",
+      "s' \\sim \\mathcal{T}(s, a, \\cdot)",
+      "r = \\mathcal{R}(s, a, s')",
+      "\\gamma \\in [0,1)"
+    ],
+    "variables": [
+      "s \\in \\mathcal{S} - \\text{state}",
+      "a \\in \\mathcal{A} - \\text{action}",
+      "r \\in \\mathbb{R} - \\text{reward}",
+      "\\theta - \\text{parameters of the Q-network}",
+      "\\bar{\\theta} - \\text{parameters of the target network}"
+    ]
+  },
+  "raw_latex_model": "Q^*(s, a) = \\mathbb{E}_{\\pi,\\mathcal{T},\\rho}[\\mathcal{R}(s, a, s') + \\gamma \\max_{a'} Q^*(s', a')] \\quad \\text{and} \\quad L(\\theta) = (Q_\\theta(s, a) - r - \\gamma \\max_{a'} Q_{\\bar{\\theta}}(s', a'))^2",
+  "algorithm_description": "Graph-Q-SAT is a reinforcement learning-based branching heuristic for SAT solvers. The algorithm proceeds as follows: 1. Represent the current SAT state as a bipartite graph with variable and clause nodes, using edge labels for literal polarities. 2. Process the graph through a Graph Neural Network (GNN) to compute Q-values for each possible variable assignment (true or false). 3. Select the variable and assignment with the highest Q-value as the branching decision. 4. Execute the decision in the MiniSat environment, which performs CDCL steps, updates the state, and returns a reward (negative for non-terminal steps, zero for terminal). 5. Store the experience (state, action, reward, next state) in a replay buffer. 6. Train the Q-network using DQN by sampling minibatches from the replay buffer and minimizing the temporal difference error. 7. Periodically update the target network by copying weights from the main network. 8. During testing, use the trained model to make decisions for a capped number of initial iterations, then switch to the VSIDS heuristic. The model is trained on SAT problem distributions and evaluated for generalization across sizes and satisfiability types."
+}

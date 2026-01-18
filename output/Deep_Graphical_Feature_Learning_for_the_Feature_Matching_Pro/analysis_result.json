@@ -1,0 +1,29 @@
+{
+  "paper_id": "Deep_Graphical_Feature_Learning_for_the_Feature_Matching_Pro",
+  "title": "Deep Graphical Feature Learning for the Feature Matching Problem",
+  "abstract": "The feature matching problem is a fundamental problem in various areas of computer vision including image registration, tracking and motion analysis. Rich local representation is a key part of efficient feature matching methods. However, when the local features are limited to the coordinate of key points, it becomes challenging to extract rich local representations. Traditional approaches use pairwise or higher order handcrafted geometric features to get robust matching; this requires solving NP-hard assignment problems. In this paper, we address this problem by proposing a graph neural network model to transform coordinates of feature points into local features. With our local features, the traditional NP-hard assignment problems are replaced with a simple assignment problem which can be solved efficiently. Promising results on both synthetic and real datasets demonstrate the effectiveness of the proposed method.",
+  "problem_description_natural": "The paper addresses the geometric feature matching problem where only point coordinates are available as input features. Traditional methods rely on higher-order geometric features (e.g., edge lengths, angles) which lead to Quadratic or Higher Order Assignment Problems that are NP-hard. The authors propose learning rich local features from point coordinates using a graph neural network (specifically, a Compositional Message Passing Neural Network), thereby reducing the matching problem to a Linear Assignment Problem solvable efficiently via the Hungarian/Munkres algorithm.",
+  "problem_type": "Graph Matching",
+  "datasets": [
+    "Synthetic Dataset",
+    "CMU House Dataset",
+    "PF-Pascal"
+  ],
+  "performance_metrics": [
+    "Matching Accuracy",
+    "Running Time"
+  ],
+  "lp_model": {
+    "objective": "\\max \\sum_{i=1}^n \\sum_{j=1}^n \\mathbf{f}_i^T \\mathbf{g}_j \\, x_{ij}",
+    "constraints": [
+      "\\sum_{j=1}^n x_{ij} = 1, \\quad \\forall i = 1,\\ldots,n",
+      "\\sum_{i=1}^n x_{ij} = 1, \\quad \\forall j = 1,\\ldots,n",
+      "x_{ij} \\in \\{0,1\\}, \\quad \\forall i,j = 1,\\ldots,n"
+    ],
+    "variables": [
+      "x_{ij} \\in \\{0,1\\} - binary assignment variable indicating if feature point i from set \\mathcal{F} is matched to feature point j from set \\mathcal{G}"
+    ]
+  },
+  "raw_latex_model": "From equation (6): \\argmax_{\\pi \\in \\Pi(n)} \\sum_i S_1(\\mathbf{f}_{\\pi(i)}, \\mathbf{g}_i), where after feature extraction, S_1 is the inner product similarity, i.e., S_1(\\mathbf{f}, \\mathbf{g}) = \\mathbf{f}^T \\mathbf{g} for normalized features.",
+  "algorithm_description": "1. Input two sets of feature points \\mathcal{F} and \\mathcal{G}. 2. For each set, construct a graph by connecting k-nearest neighbors (k=8 in the paper). 3. Pass the graphs through the Compositional Message Passing Neural Network (CMPNN) to extract rich local features. The CMPNN uses multiple layers with residual connections and global pooling. 4. Normalize the output features to unit vectors. 5. Compute the similarity matrix between features from \\mathcal{F} and \\mathcal{G} using inner product. 6. Solve the linear assignment problem by applying the Hungarian/Munkres algorithm to the similarity matrix to find the optimal one-to-one matching. 7. Output the matching pairs as a permutation \\pi."
+}

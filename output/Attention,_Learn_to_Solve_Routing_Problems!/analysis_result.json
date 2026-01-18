@@ -1,0 +1,34 @@
+{
+  "paper_id": "Attention,_Learn_to_Solve_Routing_Problems!",
+  "title": "Attention, Learn to Solve Routing Problems!",
+  "abstract": "The recently presented idea to learn heuristics for combinatorial optimization problems is promising as it can save costly development. However, to push this idea towards practical implementation, we need better models and better ways of training. We contribute in both directions: we propose a model based on attention layers with benefits over the Pointer Network and we show how to train this model using REINFORCE with a simple baseline based on a deterministic greedy rollout, which we find is more efficient than using a value function. We significantly improve over recent learned heuristics for the Travelling Salesman Problem (TSP), getting close to optimal results for problems up to 100 nodes. With the same hyperparameters, we learn strong heuristics for two variants of the Vehicle Routing Problem (VRP), the Orienteering Problem (OP) and (a stochastic variant of) the Prize Collecting TSP (PCTSP), outperforming a wide range of baselines and getting results close to highly optimized and specialized algorithms.",
+  "problem_description_natural": "The paper addresses several routing problems in combinatorial optimization, primarily focusing on the Travelling Salesman Problem (TSP), where the goal is to find the shortest possible tour that visits each node exactly once and returns to the starting point. It also tackles two variants of the Vehicle Routing Problem (VRP), the Orienteering Problem (OP), and a stochastic variant of the Prize Collecting TSP (PCTSP). In these problems, the objective is to construct routes that optimize certain criteria—such as minimizing total distance or maximizing collected rewards—while respecting problem-specific constraints like vehicle capacity, time limits, or node visitation rules.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "Generated Euclidean TSP instances",
+    "Nazari et al. VRP datasets",
+    "Fischetti et al. OP prize distributions",
+    "Balas PCTSP instances"
+  ],
+  "performance_metrics": [
+    "Optimality Gap",
+    "Tour Length",
+    "Total Prize Collected",
+    "Total Cost (tour length + penalties)"
+  ],
+  "lp_model": {
+    "objective": "\\min \\sum_{i=1}^{n} \\sum_{j=1}^{n} d_{ij} x_{ij}",
+    "constraints": [
+      "\\sum_{j=1}^{n} x_{ij} = 1 \\quad \\forall i = 1, \\ldots, n",
+      "\\sum_{i=1}^{n} x_{ij} = 1 \\quad \\forall j = 1, \\ldots, n",
+      "x_{ij} \\in \\{0,1\\} \\quad \\forall i,j",
+      "\\text{Subtour elimination constraints, e.g., } u_i - u_j + n x_{ij} \\leq n-1 \\quad \\forall i,j = 2, \\ldots, n, i \\neq j \\text{ (MTZ formulation)}"
+    ],
+    "variables": [
+      "x_{ij} \\text{ binary variables indicating if edge from node } i \\text{ to } j \\text{ is in the tour}",
+      "u_i \\text{ continuous variables for subtour elimination (for } i \\geq 2 \\text{)}"
+    ]
+  },
+  "raw_latex_model": "\\mathcal{L}(\\theta|s) = \\mathbb{E}_{p_\\theta(\\pi|s)}[L(\\pi)] \\quad \\text{and} \\quad \\nabla \\mathcal{L}(\\theta|s) = \\mathbb{E}_{p_\\theta(\\pi|s)}\\left[\\left(L(\\pi) - b(s)\\right) \\nabla \\log p_\\theta(\\pi|s)\\right]",
+  "algorithm_description": "Algorithm 1: REINFORCE with Greedy Rollout Baseline\n1. Input: number of epochs E, steps per epoch T, batch size B, significance level α.\n2. Initialize policy parameters θ and baseline policy parameters θ^BL ← θ.\n3. For epoch = 1 to E:\n   a. For step = 1 to T:\n      i. Sample a batch of problem instances s_i for i = 1,...,B.\n      ii. Sample solutions π_i from the current policy p_θ using stochastic rollouts.\n      iii. Compute greedy solutions π_i^BL from the baseline policy p_θ^BL using deterministic greedy rollouts.\n      iv. Compute the gradient: ∇ℒ = Σ_{i=1}^B (L(π_i) - L(π_i^BL)) ∇_θ log p_θ(π_i).\n      v. Update θ using the Adam optimizer.\n   b. At the end of the epoch, compare the current policy p_θ with the baseline policy p_θ^BL on a validation set using a one-sided paired t-test with significance α.\n   c. If the current policy is significantly better, update θ^BL ← θ.\n4. Output the trained policy parameters θ."
+}

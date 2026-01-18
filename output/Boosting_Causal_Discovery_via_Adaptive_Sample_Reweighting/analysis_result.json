@@ -1,0 +1,35 @@
+{
+  "paper_id": "Boosting_Causal_Discovery_via_Adaptive_Sample_Reweighting",
+  "title": "BOOSTING DIFFERENTIABLE CAUSAL DISCOVERY VIA ADAPTIVE SAMPLE REWEIGHTING",
+  "abstract": "Under stringent model type and variable distribution assumptions, differentiable score-based causal discovery methods learn a directed acyclic graph (DAG) from observational data by evaluating candidate graphs over an average score function. Despite great success in low-dimensional linear systems, it has been observed that these approaches overly exploit easier-to-fit samples, thus inevitably learning spurious edges. Worse still, the common homogeneity assumption can be easily violated, due to the widespread existence of heterogeneous data in the real world, resulting in performance vulnerability when noise distributions vary. We propose a simple yet effective model-agnostic framework to boost causal discovery performance by dynamically learning the adaptive weights for the Reweighted Score function, ReScore for short, where the weights tailor quantitatively to the importance degree of each sample. Intuitively, we leverage the bilevel optimization scheme to alternately train a standard DAG learner and reweight samples — that is, upweight the samples the learner fails to fit and downweight the samples that the learner easily extracts the spurious information from. Extensive experiments on both synthetic and real-world datasets are carried out to validate the effectiveness of ReScore. We observe consistent and significant boosts in structure learning performance. Furthermore, we visualize that ReScore concurrently mitigates the influence of spurious edges and generalizes to heterogeneous data. Finally, we perform the theoretical analysis to guarantee the structure identifiability and the weight adaptive properties of ReScore in linear systems.",
+  "problem_description_natural": "The paper addresses limitations in current differentiable score-based causal discovery methods, which use an average score over all samples and assume homogeneous noise distributions. These methods tend to overfit easy samples and fail on heterogeneous data, leading to spurious causal edges. To resolve this, the authors propose ReScore, a bilevel optimization framework that adaptively reweights samples during training: the inner loop learns sample weights that maximize the reweighted score (emphasizing hard-to-fit, informative samples), while the outer loop minimizes this reweighted score plus a DAG constraint to update the causal graph. The goal is to improve causal structure learning by focusing on samples that better reveal true causal relationships and are robust to distribution shifts.",
+  "problem_type": "bilevel optimization",
+  "datasets": [
+    "ER1",
+    "ER2",
+    "ER4",
+    "SF1",
+    "SF2",
+    "SF4",
+    "Sachs"
+  ],
+  "performance_metrics": [
+    "True Positive Rate (TPR)",
+    "False Discovery Rate (FDR)",
+    "Structural Hamming Distance (SHD)",
+    "Structural Intervention Distance (SID)"
+  ],
+  "lp_model": {
+    "objective": "\\min_{\\mathcal{G}} S_{\\mathbf{w}^*}(\\mathcal{G}; \\mathbf{X}) + \\mathcal{P}_{DAG}(\\mathcal{G})",
+    "constraints": [
+      "\\mathbf{w}^* \\in \\arg\\max_{\\mathbf{w} \\in \\mathbb{C}(\\tau)} S_{\\mathbf{w}}(\\mathcal{G}; \\mathbf{X})",
+      "\\mathbf{w} \\in \\mathbb{C}(\\tau) := \\{\\mathbf{w} : 0 < \\frac{\\tau}{n} \\leq w_1, \\dots, w_n \\leq \\frac{1}{\\tau n}, \\sum_{i=1}^{n} w_i = 1\\}"
+    ],
+    "variables": [
+      "\\mathcal{G} - the directed acyclic graph (DAG) representing causal structure, often parameterized by an adjacency matrix",
+      "\\mathbf{w} - the sample reweighting vector of length n, where w_i is the weight for the i-th observational sample \\mathbf{x}_i"
+    ]
+  },
+  "raw_latex_model": "\\begin{aligned}\n\\min_{\\mathcal{G}} \\ & S_{\\mathbf{w}^*}(\\mathcal{G}; \\mathbf{X}) + \\mathcal{P}_{DAG}(\\mathcal{G}), \\\\\n\\text{s.t.} \\ & \\mathbf{w}^* \\in \\arg\\max_{\\mathbf{w} \\in \\mathbb{C}(\\tau)} S_{\\mathbf{w}}(\\mathcal{G}; \\mathbf{X}),\n\\end{aligned}",
+  "algorithm_description": "ReScore is a bilevel optimization framework that alternates between learning adaptive sample weights and optimizing the DAG learner. The steps are as follows:\n1. Initialize the DAG learner (e.g., with a random or pre-trained causal graph).\n2. Repeat for a specified number of outer iterations (or until convergence):\n   a. Inner Loop (Weight Update): Fix the current DAG learner \\mathcal{G}. Compute the loss l(\\mathbf{x}_i, f(\\mathbf{x}_i)) for each sample i. Then, solve the inner optimization problem to update the sample weights \\mathbf{w} by maximizing the reweighted score function S_{\\mathbf{w}}(\\mathcal{G}; \\mathbf{X}) = \\sum_{i=1}^{n} w_i l(\\mathbf{x}_i, f(\\mathbf{x}_i)) + \\lambda\\mathcal{R}_{\\text{sparse}}(\\mathcal{G}) subject to the constraints \\mathbf{w} \\in \\mathbb{C}(\\tau). This typically involves gradient-based methods or closed-form solutions depending on the loss function.\n   b. Outer Loop (DAG Update): Fix the updated weights \\mathbf{w}^* from the inner loop. Then, update the DAG learner \\mathcal{G} by minimizing the outer objective S_{\\mathbf{w}^*}(\\mathcal{G}; \\mathbf{X}) + \\mathcal{P}_{DAG}(\\mathcal{G}), where \\mathcal{P}_{DAG}(\\mathcal{G}) enforces the DAG constraint (e.g., via augmented Lagrangian). This is done using standard differentiable optimization techniques (e.g., stochastic gradient descent).\n3. Output the final DAG \\mathcal{G} after training. The adaptive weights \\mathbf{w} are learned dynamically to upweight informative samples and downweight easy-to-fit samples, thereby boosting causal discovery performance."
+}

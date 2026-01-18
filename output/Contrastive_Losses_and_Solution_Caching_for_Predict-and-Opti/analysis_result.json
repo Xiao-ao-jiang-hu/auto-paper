@@ -1,0 +1,26 @@
+{
+  "paper_id": "Contrastive_Losses_and_Solution_Caching_for_Predict-and-Opti",
+  "title": "Contrastive Losses and Solution Caching for Predict-and-Optimize",
+  "abstract": "Many decision-making processes involve solving a combinatorial optimization problem with uncertain input that can be estimated from historic data. Recently, problems in this class have been successfully addressed via end-to-end learning approaches, which rely on solving one optimization problem for each training instance at every epoch. In this context, we provide two distinct contributions. First, we use a Noise Contrastive approach to motivate a family of surrogate loss functions, based on viewing non-optimal solutions as negative examples. Second, we address a major bottleneck of all predict-and-optimize approaches, i.e. the need to frequently recompute optimal solutions at training time. This is done via a solver-agnostic solution caching scheme, and by replacing optimization calls with a lookup in the solution cache. The method is formally based on an inner approximation of the feasible space and, combined with a cache lookup strategy, provides a controllable trade-off between training time and accuracy of the loss approximation. We empirically show that even a very slow growth rate is enough to match the quality of state-of-the-art methods, at a fraction of the computational cost.",
+  "problem_description_natural": "The paper addresses the predict-and-optimize setting where uncertain parameters of a combinatorial optimization problem must be predicted from historical features so that the resulting decisions (i.e., solutions to the optimization problem using predicted parameters) perform well with respect to the true (unknown) parameters. The goal is to minimize regret—the difference in objective value between the solution obtained using predicted parameters and the true optimal solution under actual parameters. A key challenge is the computational cost of repeatedly solving NP-hard combinatorial optimization problems during training to compute gradients or subgradients for model updates.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "Ifrim et al. energy price data (2011-2013)",
+    "CSPLib Energy-cost Aware Scheduling",
+    "CORA citation network"
+  ],
+  "performance_metrics": [
+    "Regret"
+  ],
+  "lp_model": {
+    "objective": "\\min_{v \\in V} f(v, c)",
+    "constraints": [
+      "v \\in V"
+    ],
+    "variables": [
+      "v \\in V: decision variable vector representing a feasible solution"
+    ]
+  },
+  "raw_latex_model": "v^*(c) = \\argmin_{v \\in V} f(v, c)",
+  "algorithm_description": "1. Initialize model parameters ω and solution cache S with true optimal solutions from training data.\n2. For each epoch and each training instance (x, c):\n   a. Compute predicted cost vector ĉ = m(ω, x).\n   b. Optionally transform ĉ to č using transformation t (e.g., for specific loss functions).\n   c. With probability p_solve, call the solver to find optimal solution v for č and add it to cache S if new.\n   d. Otherwise, find v by argmin over cache S for cost č.\n   e. Compute gradient of loss function L^v with respect to č, and update ω via backpropagation.\n3. Repeat for specified number of epochs."
+}

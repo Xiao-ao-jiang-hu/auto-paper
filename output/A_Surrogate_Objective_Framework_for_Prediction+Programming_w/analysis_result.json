@@ -1,0 +1,28 @@
+{
+  "paper_id": "A_Surrogate_Objective_Framework_for_Prediction+Programming_w",
+  "title": "A Surrogate Objective Framework for Prediction+Optimization with Soft Constraints",
+  "abstract": "Prediction+optimization is a common real-world paradigm where we have to predict problem parameters before solving the optimization problem. However, the criteria by which the prediction model is trained are often inconsistent with the goal of the downstream optimization problem. Recently, decision-focused prediction approaches, such as SPO+ and direct optimization, have been proposed to fill this gap. However, they cannot directly handle the soft constraints with the max operator required in many real-world objectives. This paper proposes a novel analytically differentiable surrogate objective framework for real-world linear and semi-definite negative quadratic programming problems with soft linear and non-negative hard constraints. This framework gives the theoretical bounds on constraints’ multipliers, and derives the closed-form solution with respect to predictive parameters and thus gradients for any variable in the problem. We evaluate our method in three applications extended with soft constraints: synthetic linear programming, portfolio optimization, and resource provisioning, demonstrating that our method outperforms traditional two-staged methods and other decision-focused approaches.",
+  "problem_description_natural": "The paper addresses prediction+optimization problems where the optimization objective includes soft constraints of the form max(Cx - d, 0), representing penalties for violating certain thresholds (e.g., over-provisioning resources or regulatory violations). The core challenge is that the max operator is non-differentiable, making it incompatible with gradient-based decision-focused learning methods like SPO+ or OptNet. The authors consider linear programming and semi-definite negative quadratic programming problems with both hard constraints (e.g., Ax ≤ b, Bx = c, x ≥ 0) and soft constraints. They assume non-negativity of hard constraint parameters (A, b, B, c ≥ 0), which is typical in real-world settings like logistics, portfolio optimization, and resource provisioning. The goal is to train a prediction model (e.g., a neural network) that forecasts context-dependent parameters (such as θ or C) in a way that directly optimizes the downstream decision performance, rather than minimizing generic prediction errors like MSE.",
+  "problem_type": "Linear Programming (LP) and Quadratic Programming (QP) with soft constraints",
+  "datasets": [
+    "Synthetic linear programming dataset",
+    "SP500 (2004-2017) via Quandl API",
+    "ERCOT energy dataset (2013-2018)"
+  ],
+  "performance_metrics": [
+    "Regret"
+  ],
+  "lp_model": {
+    "objective": "\\max_x g(\\theta, x) - \\alpha^T \\max(Cx - d, 0)",
+    "constraints": [
+      "Ax \\leq b",
+      "Bx = c",
+      "x \\geq 0"
+    ],
+    "variables": [
+      "x \\in \\mathbb{R}^n (decision variable)"
+    ]
+  },
+  "raw_latex_model": "$$ \\max_x g(\\theta, x) - \\alpha^T \\max(z, 0), \\; z = Cx - d, \\; \\text{s.t.} \\; Ax \\leq b, Bx = c, x \\geq 0 $$",
+  "algorithm_description": "1. Soften Hard Constraints: Convert all hard constraints (inequalities, equalities, non-negativity) into soft constraints by adding penalty terms with bounded multipliers β, as derived in Section 3.1. 2. Surrogate Function: Replace the non-differentiable max operator with a differentiable piecewise surrogate function S(z) defined in Eq.7. 3. Numerical Solution: For each training batch, solve the optimization problem numerically using a solver (e.g., Gurobi) to find the optimal point and determine active constraints, resulting in diagonal matrices M and U. 4. Analytical Gradient Computation: Use the surrogate function to derive the closed-form solution for x from Eq.8 and compute the Jacobian ∂x/∂θ using Eq.9. 5. Model Update: Backpropagate gradients to update the prediction model parameters ψ via stochastic gradient descent."
+}

@@ -1,0 +1,32 @@
+{
+  "paper_id": "DeepACO_Neural-enhanced_Ant_Systems_for_Combinatorial_Optimi",
+  "title": "DeepACO: Neural-enhanced Ant Systems for Combinatorial Optimization",
+  "abstract": "Ant Colony Optimization (ACO) is a meta-heuristic algorithm that has been successfully applied to various Combinatorial Optimization Problems (COPs). Traditionally, customizing ACO for a specific problem requires the expert design of knowledge-driven heuristics. In this paper, we propose DeepACO, a generic framework that leverages deep reinforcement learning to automate heuristic designs. DeepACO serves to strengthen the heuristic measures of existing ACO algorithms and dispense with laborious manual design in future ACO applications. As a neural-enhanced meta-heuristic, DeepACO consistently outperforms its ACO counterparts on eight COPs using a single neural model and a single set of hyperparameters. As a Neural Combinatorial Optimization method, DeepACO performs better than or on par with problem-specific methods on canonical routing problems.",
+  "problem_description_natural": "The paper addresses the challenge of manually designing effective heuristic measures for Ant Colony Optimization (ACO) when applied to Combinatorial Optimization Problems (COPs). Traditional ACO relies on problem-specific heuristics crafted by experts, which is time-consuming, inflexible, and difficult for less-studied problems. DeepACO automates this process by using a graph neural network trained via deep reinforcement learning to generate heuristic measures from problem instances. These learned heuristics guide both solution construction and an enhanced local search procedure, improving performance across a wide range of COPs—including routing, assignment, scheduling, and subset selection—without requiring manual tuning per problem.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "TSPLIB"
+  ],
+  "performance_metrics": [
+    "Objective Value",
+    "Optimality Gap (%)"
+  ],
+  "lp_model": {
+    "objective": "\\min_{\\boldsymbol{\\theta}} \\mathcal{L}(\\boldsymbol{\\theta}|\\rho) = \\mathbb{E}_{\\boldsymbol{s}\\sim P_{\\boldsymbol{\\eta}_{\\boldsymbol{\\theta}}}(\\cdot|\\rho)}[f(\\boldsymbol{s}) + W f(NLS(\\boldsymbol{s}, f, +\\infty))]",
+    "constraints": [
+      "P_{\\boldsymbol{\\eta}_{\\boldsymbol{\\theta}}}(\\boldsymbol{s}|\\rho) = \\prod_{t=1}^{n} P_{\\boldsymbol{\\eta}_{\\boldsymbol{\\theta}}}(s_t|\\boldsymbol{s}_{<t},\\rho)",
+      "P_{\\boldsymbol{\\eta}_{\\boldsymbol{\\theta}}}(s_t|\\boldsymbol{s}_{<t},\\rho) = \\frac{\\tau_{ij}^\\alpha \\cdot \\eta_{ij;\\boldsymbol{\\theta}}^\\beta}{\\sum_{c_{il} \\in \\mathbf{N}(\\mathbf{s}_{<t})} \\tau_{il}^\\alpha \\cdot \\eta_{il;\\boldsymbol{\\theta}}^\\beta} \\text{ if } c_{ij} \\in \\mathbf{N}(\\mathbf{s}_{<t}), \\text{ otherwise } 0",
+      "\\mathbf{N}(\\mathbf{s}_{<t}) \\text{ is the set of feasible solution components given partial solution } \\mathbf{s}_{<t}",
+      "\\alpha \\text{ and } \\beta \\text{ are control parameters, typically set to 1}"
+    ],
+    "variables": [
+      "\\boldsymbol{\\theta} - parameters of the heuristic learner (neural network)",
+      "\\tau_{ij} - pheromone trail for solution component c_{ij}",
+      "\\eta_{ij;\\boldsymbol{\\theta}} - heuristic measure from neural network for component c_{ij}",
+      "\\boldsymbol{s} - solution sequence of decision variables, with s_t denoting the decision at step t",
+      "\\boldsymbol{\\rho} - COP instance"
+    ]
+  },
+  "raw_latex_model": "$$\nP(s_t | \\mathbf{s}_{<t}, \\boldsymbol{\\rho}) =\n\\begin{cases}\n\\frac{\\tau_{ij}^\\alpha \\cdot \\eta_{ij}^\\beta}{\\sum_{c_{il} \\in \\mathbf{N}(\\mathbf{s}_{<t})} \\tau_{il}^\\alpha \\cdot \\eta_{il}^\\beta} & \\text{if } c_{ij} \\in \\mathbf{N}(\\mathbf{s}_{<t}), \\\\\n0 & \\text{otherwise}.\n\\end{cases}\n$$\n\n$$\nP(\\mathbf{s} | \\boldsymbol{\\rho}) = \\prod_{t=1}^{n} P(s_t | \\mathbf{s}_{<t}, \\boldsymbol{\\rho}).\n$$\n\n$$\nP_{\\boldsymbol{\\eta}_{\\boldsymbol{\\theta}}}(\\boldsymbol{s}|\\rho) = \\prod_{t=1}^{n} P_{\\boldsymbol{\\eta}_{\\boldsymbol{\\theta}}}(s_t|\\boldsymbol{s}_{<t},\\rho).\n$$\n\n$$\n\\text{minimize} \\quad \\mathcal{L}(\\boldsymbol{\\theta}|\\rho) = \\mathbb{E}_{\\boldsymbol{s}\\sim P_{\\boldsymbol{\\eta}_{\\boldsymbol{\\theta}}}(\\cdot|\\rho)}[f(\\boldsymbol{s}) + W f(NLS(\\boldsymbol{s}, f, +\\infty))],\n$$",
+  "algorithm_description": "DeepACO is a neural-enhanced Ant Colony Optimization (ACO) framework that automates heuristic design for combinatorial optimization problems (COPs). The algorithm involves the following steps:\n\n1. **Heuristic Learner Training**: Train a graph neural network (GNN) with parameters θ to map COP instances ρ to heuristic measures η_θ. This is done by minimizing the expected objective value ℒ(θ|ρ) from Eq. (4), which includes both the objective of constructed solutions f(s) and NLS-refined solutions, using reinforcement learning (e.g., REINFORCE gradient estimator in Eq. 5).\n\n2. **Inference with ACO**: For a new instance ρ, use the trained heuristic learner to generate heuristic measures η_θ. Then, run ACO (e.g., Ant System, Elitist AS, or MAX-MIN AS) with solution construction biased by η_θ and pheromone trails τ, following the probability distribution in Eq. (3). Solutions are constructed step-by-step using Eq. (1) with η replaced by η_θ.\n\n3. **Optional Local Search with Neural-guided Perturbation (NLS)**: Apply Algorithm 1 to refine solutions. NLS interleaves local search (LS) for objective minimization with neural-guided perturbation based on heuristic measures η_θ to escape local optima. Specifically, it alternates between: (a) running LS to minimize f(s) until local optimum, and (b) perturbing the solution with LS to maximize cumulative heuristic measures for T_p moves, then repeating LS for minimization.\n\n4. **Pheromone Update**: Update pheromone trails τ based on the quality of constructed solutions, following ACO rules (e.g., evaporation and reinforcement).\n\n5. **Iteration**: Repeat steps 2-4 for a fixed number of iterations or until convergence, with the option to use extended designs (multihead decoder, top-k entropy loss, imitation loss) for better exploration-exploitation balance.\n\nDeepACO thus enhances ACO by learning heuristic measures from data, reducing reliance on expert knowledge, and improving performance across various COPs."
+}

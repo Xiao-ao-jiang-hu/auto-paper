@@ -17,7 +17,28 @@ class CodeGrounder:
             tree.append(f"{indent}{os.path.basename(root)}/")
             subindent = " " * 4 * (level + 1)
             for f in files:
-                if f.endswith((".py", ".cpp", ".h", ".java")):  # User can filter
+                # Expanded list of relevant extensions for ML/Optimization research
+                if f.endswith(
+                    (
+                        ".py",
+                        ".ipynb",
+                        ".cpp",
+                        ".c",
+                        ".cc",
+                        ".h",
+                        ".hpp",
+                        ".java",
+                        ".jl",
+                        ".R",
+                        ".m",
+                        ".cu",
+                        ".rs",
+                        ".go",
+                        ".ts",
+                        ".js",
+                        ".sh",
+                    )
+                ):
                     tree.append(f"{subindent}{f}")
         return "\n".join(tree)
 
@@ -28,8 +49,16 @@ class CodeGrounder:
         except:
             return "Error reading file."
 
+    def _get_readme_content(self, repo_path: str) -> str:
+        """Attempts to find and read a README file in the repo root."""
+        for f in os.listdir(repo_path):
+            if f.lower().startswith("readme"):
+                return self._read_file_content(os.path.join(repo_path, f))
+        return "No README found."
+
     def find_code(self, repo_path: str, paper_data: PaperStructure) -> CodeMapping:
         repo_tree = self._get_repo_structure(repo_path)
+        readme_content = self._get_readme_content(repo_path)[:10000]  # First 10k chars
 
         # Safeguard: Handle missing/empty LP model gracefully
         lp_vars = paper_data.get("lp_model", {}).get("variables", [])
@@ -44,9 +73,18 @@ class CodeGrounder:
         
         Repository Structure:
         {repo_tree}
+
+        Repository README:
+        {readme_content}
         
-        Task: Identify the TOP 7 file paths in this repo that most likely contain the implementation of the core algorithm or the LP model construction.
-        Return ONLY a JSON list of strings. Example: ["src/solver.py", "include/model.h"]
+        Task: Identify the TOP 15 file paths in this repo that are relevant to the core algorithm, LP model, OR provide essential dependencies/definitions.
+        INCLUDE:
+        - Core implementation files (solvers, models, algorithms).
+        - Data structure definitions used by the algorithm (graph nodes, edges, matrices).
+        - Key utility files (config loaders, data parsers) if they seem critical.
+        
+        Be generous in your selection. If a file looks like it defines the problem or model, include it.
+        Return ONLY a JSON list of strings. Example: ["src/solver.py", "include/model.h", "utils/graph.py"]
         """
 
         response_1 = self.clients.get_instruction_completion(
@@ -86,6 +124,10 @@ class CodeGrounder:
 
             grounding_prompt = f"""
             File: {rel_path}
+
+            Repo README Context (Reference):
+            {readme_content[:2000]}...
+
             Content:
             {content}
             
@@ -167,18 +209,63 @@ class CodeGrounder:
             return None
 
         # Execute Parallel Analysis
-        with concurrent.futures.ThreadPoolExecutor(
-            max_workers=CODE_GROUNDING_PARALLELISM
-        ) as executor:
-            futures = [executor.submit(analyze_single_file, f) for f in files]
+        all_matches = []
+        try:
+            with concurrent.futures.ThreadPoolExecutor(
+                max_workers=CODE_GROUNDING_PARALLELISM
+            ) as executor:
+                futures = [executor.submit(analyze_single_file, f) for f in files]
 
-            for future in concurrent.futures.as_completed(futures):
-                result = future.result()
-                if result:
-                    # Heuristic: Prefer the one with longest description or just first match
-                    # For now, return the first valid match found
-                    print(f"  > Match found in: {result['file_path']}")
-                    return result
+                for future in concurrent.futures.as_completed(futures):
+                    result = future.result()
+                    if result:
+                        print(f"  > Match found in: {result['file_path']}")
+                        all_matches.append(result)
+        except KeyboardInterrupt:
+            print(
+                "    !!! KeyboardInterrupt in Grounding Phase. Shutting down pool... !!!"
+            )
+            executor.shutdown(wait=False, cancel_futures=True)
+            raise
+
+        # Merge results if multiple matches found
+        if all_matches:
+            # Sort by file path for stability
+            all_matches.sort(key=lambda x: x["file_path"])
+
+            # Combine logic
+            combined_file_path = ", ".join([m["file_path"] for m in all_matches])
+            combined_function = ", ".join(
+                [m["function_name"] for m in all_matches if m["function_name"]]
+            )
+
+            combined_snippet = ""
+            for m in all_matches:
+                combined_snippet += (
+                    f"\n\n# ==========================================\n"
+                )
+                combined_snippet += f"# File: {m['file_path']}\n"
+                combined_snippet += f"# Function/Context: {m['function_name']}\n"
+                combined_snippet += f"# ==========================================\n"
+                combined_snippet += m["code_snippet"]
+
+            combined_description = "Combined Analysis:\n" + "\n".join(
+                [f"- [{m['file_path']}]: {m['description']}" for m in all_matches]
+            )
+
+            # Flatten dependencies
+            combined_deps = set()
+            for m in all_matches:
+                for d in m.get("dependencies", []):
+                    combined_deps.add(d)
+
+            return CodeMapping(
+                file_path=combined_file_path,
+                function_name=combined_function,
+                code_snippet=combined_snippet,
+                description=combined_description,
+                dependencies=list(combined_deps),
+            )
 
         # Fallback if no match found in individual files
         return CodeMapping(

@@ -5,3 +5,4 @@ __pycache__
 .env
 chroma_db
 API_KEY
+processing_errors.log

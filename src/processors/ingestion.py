@@ -31,10 +31,11 @@ class PaperIngestion:
         4. Content: Do not summarize. Transcribe full text exactly.
         """
 
+        from ..config import OCR_PARALLELISM
         import concurrent.futures
 
         print(
-            f"  > Processing {len(image_paths)} pages concurrently (parallelism=3)..."
+            f"  > Processing {len(image_paths)} pages concurrently (parallelism={OCR_PARALLELISM})..."
         )
 
         # Placeholder for ordered results
@@ -64,18 +65,30 @@ class PaperIngestion:
                 print(f"    ! Error on Page {idx+1}: {e}")
             return idx, None
 
-        with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
-            # Submit all tasks
-            futures = [
-                executor.submit(process_single_page, idx, img_path)
-                for idx, img_path in enumerate(image_paths)
-            ]
+        try:
+            with concurrent.futures.ThreadPoolExecutor(
+                max_workers=OCR_PARALLELISM
+            ) as executor:
+                # Submit all tasks
+                futures = [
+                    executor.submit(process_single_page, idx, img_path)
+                    for idx, img_path in enumerate(image_paths)
+                ]
 
-            # Wait for completion and gather results
-            for future in concurrent.futures.as_completed(futures):
-                idx, content = future.result()
-                if content:
-                    ordered_pages[idx] = content
+                # Wait for completion and gather results
+                # Using wait allows better interrupt handling than simple iteration if structured correctly,
+                # but as_completed loop is standard.
+                # To handle KeyboardInterrupt immediately, we need to catch it outside.
+                for future in concurrent.futures.as_completed(futures):
+                    idx, content = future.result()
+                    if content:
+                        ordered_pages[idx] = content
+        except KeyboardInterrupt:
+            print(
+                "    !!! KeyboardInterrupt in Ingestion Phase. Shutting down pool... !!!"
+            )
+            executor.shutdown(wait=False, cancel_futures=True)
+            raise
 
         full_markdown = [p for p in ordered_pages if p is not None]
         return "\n\n".join(full_markdown)

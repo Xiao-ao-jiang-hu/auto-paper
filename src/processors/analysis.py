@@ -8,6 +8,78 @@ class PaperAnalyzer:
     def __init__(self, clients: LLMClients):
         self.clients = clients
 
+    def _extract_basic_info(self, paper_markdown: str) -> dict:
+        prompt = f"""
+        Paper Text:
+        {paper_markdown[:20000]} 
+        
+        Task: Extract valid JSON with:
+        - title
+        - abstract (summary)
+        - problem_description_natural (What is the optimization problem?)
+        - problem_type (MILP, LP, Graph Matching, combinatorial optimization, etc.)
+        
+        Output valid JSON:
+        {{
+            "title": "Paper Title",
+            "abstract": "Summary...",
+            "problem_description_natural": "Detailed description...",
+            "problem_type": "Type..."
+        }}
+        """
+        response = self.clients.get_instruction_completion(
+            "You are a research assistant. Output JSON.", prompt
+        )
+        return self._parse_with_repair(response) or {}
+
+    def _extract_datasets(self, paper_markdown: str) -> dict:
+        prompt = f"""
+        Paper Text:
+        {paper_markdown}
+        
+        Task: Identify and extract specific details about the Datasets and Experiments.
+        
+        Requirements:
+        1. "datasets": List of EXACT, specific dataset names used. 
+           - Good: "TSPLIB", "MIPLIB 2017", "PascalVOC 2012", "Cora", "Citeseer".
+           - Avoid generic terms if possible (e.g. use "Generated ER Graphs" instead of just "Synthethic").
+        2. "performance_metrics": List of metrics (e.g. "Optimality Gap", "Top-1 Accuracy").
+        
+        Output valid JSON:
+        {{
+            "datasets": ["Name1", "Name2"],
+            "performance_metrics": ["Metric1", "Metric2"]
+        }}
+        """
+        # Using Reasoning model or high-quality instruction model for precision
+        response = self.clients.get_instruction_completion(
+            "You are a Data Scientist. Be precise with dataset names.", prompt
+        )
+        return self._parse_with_repair(response) or {}
+
+    def _extract_math_model(self, paper_markdown: str) -> dict:
+        prompt = f"""
+        Paper Text:
+        {paper_markdown} 
+        
+        Task: Extract the Mathematical Formulation (Subject To, Objective Function) and Algorithm description.
+        Output valid JSON:
+        {{
+            "lp_model": {{
+                "objective": "Latex String (e.g. \\min x^T K x)",
+                "constraints": ["Latex String 1", ...],
+                "variables": ["Latex String - Description"]
+            }},
+            "raw_latex_model": "Original latex block",
+            "algorithm_description": "Step-by-step text description of the algorithm"
+        }}
+        """
+        # Use Reasoning model for Math
+        response = self.clients.get_reasoning_completion(
+            "You are an OR Expert.", prompt
+        )
+        return self._parse_with_repair(response) or {}
+
     def analyze_markdown(self, paper_markdown: str, paper_id: str) -> PaperStructure:
         print(f"[{paper_id}] Starting Analysis Phase...")
 
@@ -24,7 +96,11 @@ class PaperAnalyzer:
         Task: 
         1. Identify the main body of the paper (Abstract, Intro, Method, Experiments, Conclusion).
         2. REMOVE the "References" section entirely.
-        3. REMOVE "Appendix" sections ONLY IF they contain purely supplementary proofs or raw tables. If the Appendix contains core algorithmic details or pseudo-code, KEEP IT.
+        3. REMOVE "Appendix" sections ONLY IF they contain purely supplementary proofs or raw tables. 
+        
+        CRITICAL EXCEPTIONS - DO NOT REMOVE:
+        - If the Appendix contains core algorithmic details or pseudo-code, KEEP IT.
+        - If the Appendix contains details about DATASETS, EXPERIMENTAL SETUP, or BENCHMARKS, KEEP IT.
         
         Return the FULL CLEANED MARKDOWN text. Do not summarize. Maintain original structure.
         
@@ -52,53 +128,36 @@ class PaperAnalyzer:
         except Exception as e:
             print(f"    ! Preprocessing warning: {e}")
 
-        # --- Step 1: Basic Info Extraction ---
-        print(f"  > [Step 1/3] Extracting Basic Info & Datasets...")
+        # --- Step 1: Parallel Extraction ---
+        print(f"  > [Step 1] Extracting Info in Parallel (Basic, Datasets, Math)...")
 
-        basic_info_prompt = f"""
-        Paper Text:
-        {paper_markdown}
-        
-        Task: Extract valid JSON with:
-        - title
-        - abstract (summary)
-        - problem_description_natural (What is the optimization problem?)
-        - problem_type (MILP, LP, Graph Matching, etc.)
-        - datasets (List of strings, e.g. ["PascalVOC", "Willow Object"])
-        - performance_metrics (List of strings, e.g. ["Accuracy", "F1-Score"])
-        
-        Output JSON Only.
-        """
+        import concurrent.futures
 
-        response_1 = self.clients.get_instruction_completion(
-            "You are a weak listener. Output JSON.", basic_info_prompt
-        )
-        basic_data = self._parse_with_repair(response_1) or {}
+        results = {}
 
-        # --- Step 2: Mathematical Model Extraction ---
-        print(f"  > [Step 2/3] Extracting Mathematical Model & Algorithm...")
-        math_prompt = f"""
-        Paper Text:
-        {paper_markdown} 
-        
-        Task: Extract the Mathematical Formulation (Subject To, Objective Function).
-        Output valid JSON:
-        {{
-            "lp_model": {{
-                "objective": "Latex String (e.g. \\min x^T K x)",
-                "constraints": ["Latex String 1", ...],
-                "variables": ["Latex String - Description"]
-            }},
-            "raw_latex_model": "Original latex block",
-            "algorithm_description": "Step-by-step text description of the algorithm"
-        }}
-        """
+        with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
+            try:
+                future_basic = executor.submit(self._extract_basic_info, paper_markdown)
+                future_data = executor.submit(self._extract_datasets, paper_markdown)
+                future_math = executor.submit(self._extract_math_model, paper_markdown)
 
-        # Use Reasoning model for Math
-        response_math = self.clients.get_reasoning_completion(
-            "You are an OR Expert.", math_prompt
-        )
-        math_data = self._parse_with_repair(response_math) or {}
+                # Wait for all with explicit timeout check to allow interrupt
+                futures = [future_basic, future_data, future_math]
+                for f in concurrent.futures.as_completed(futures):
+                    # Blocking call but allows signal interrupt if handled at OS level,
+                    # but Python's thread pool wait masks SIGINT.
+                    # We rely on parent process handling, but let's wrap results carefully.
+                    pass
+
+                basic_data = future_basic.result()
+                dataset_data = future_data.result()
+                math_data = future_math.result()
+            except KeyboardInterrupt:
+                print(
+                    "    !!! KeyboardInterrupt in Analysis Phase. Shutting down pool... !!!"
+                )
+                executor.shutdown(wait=False, cancel_futures=True)
+                raise
 
         # --- Combine & Return ---
         print(f"  > Analysis Complete. Merging results.")
@@ -116,8 +175,8 @@ class PaperAnalyzer:
                 "problem_description_natural", ""
             ),
             problem_type=basic_data.get("problem_type", "Unknown"),
-            datasets=basic_data.get("datasets", []),
-            performance_metrics=basic_data.get("performance_metrics", []),
+            datasets=dataset_data.get("datasets", []),
+            performance_metrics=dataset_data.get("performance_metrics", []),
             lp_model=LPFormulation(**lp_model_data),
             raw_latex_model=math_data.get("raw_latex_model", ""),
             algorithm_description=math_data.get("algorithm_description", ""),

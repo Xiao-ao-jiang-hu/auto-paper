@@ -24,7 +24,7 @@ def get_valid_papers(data_dir):
         print(f"Data directory not found: {data_dir}")
         return []
 
-    for item in os.listdir(data_dir)[1:3]:
+    for item in os.listdir(data_dir):
         paper_path = os.path.join(data_dir, item)
         if not os.path.isdir(paper_path):
             continue
@@ -65,6 +65,10 @@ def process_paper(paper):
             repo_path=paper["repo_path"],
             paper_id=paper["id"],
         )
+    except KeyboardInterrupt:
+        print("\n\n!!! User interrupted process (Ctrl+C). Exiting IMMEDIATELY... !!!")
+        # sys.exit() waits for non-daemon threads. os._exit() kills the process immediately.
+        os._exit(1)
     except Exception as e:
         print(f"Exception running workflow: {e}")
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -95,14 +99,7 @@ def main():
 
     print(f"Found {len(valid_papers)} valid papers.")
 
-    # Select random batch
-    selected_papers = random.sample(valid_papers, min(BATCH_SIZE, len(valid_papers)))
-
-    print(f"Selected {len(selected_papers)} papers for processing:")
-    for p in selected_papers:
-        print(f" - {p['id']}")
-
-    for paper in selected_papers:
+    for paper in valid_papers:
         process_paper(paper)
 
 

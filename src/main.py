@@ -33,9 +33,18 @@ def run_workflow(paper_images, repo_path, paper_id):
     if paper_images:
         paper_processor = PaperProcessor(clients)
 
-        # Check if markdown is already cached to skip OCR
+        # Check if analysis result is already cached
+        cached_analysis_path = os.path.join(output_dir, "analysis_result.json")
         cached_md_path = os.path.join(output_dir, "paper_content.md")
-        if os.path.exists(cached_md_path):
+
+        if (
+            os.path.exists(cached_analysis_path)
+            and os.path.getsize(cached_analysis_path) > 100
+        ):
+            print(f"[{paper_id}] Found cached Analysis result. Loading...")
+            with open(cached_analysis_path, "r", encoding="utf-8") as f:
+                paper_structure = json.load(f)
+        elif os.path.exists(cached_md_path):
             print(f"[{paper_id}] Found cached OCR result. Loading...")
             with open(cached_md_path, "r", encoding="utf-8") as f:
                 paper_markdown = f.read()
@@ -43,13 +52,16 @@ def run_workflow(paper_images, repo_path, paper_id):
             paper_structure = paper_processor.analyzer.analyze_markdown(
                 paper_markdown, paper_id
             )
+            # Save analysis result to cache future runs
+            with open(cached_analysis_path, "w", encoding="utf-8") as f:
+                json.dump(paper_structure, f, indent=2, ensure_ascii=False)
         else:
             paper_structure, paper_markdown = paper_processor.process(
                 paper_images, paper_id, output_dir=output_dir
             )
 
-        print(f"Paper Analyzed: {paper_structure['title']}")
-        print(f"Problem Type: {paper_structure['problem_type']}")
+        print(f"Paper Analyzed: {paper_structure.get('title', 'Unknown')}")
+        print(f"Problem Type: {paper_structure.get('problem_type', 'Unknown')}")
     else:
         print("No paper images provided.")
         return
@@ -58,14 +70,22 @@ def run_workflow(paper_images, repo_path, paper_id):
     print("--- Group 2: Code Processing ---")
     code_mapping = None
     if repo_path:
-        code_processor = CodeProcessor(clients)
-        code_mapping = code_processor.process(
-            repo_path, paper_structure, output_dir=output_dir
-        )
+        # Check if code mapping is already cached
+        cached_code_path = os.path.join(output_dir, "code_mapping.json")
 
-        print(f"Code Found in: {code_mapping['file_path']}")
-        print(f"Function: {code_mapping['function_name']}")
-        print(f"Snippet Preview: {code_mapping['code_snippet'][:50]}...")
+        if os.path.exists(cached_code_path) and os.path.getsize(cached_code_path) > 100:
+            print(f"[{paper_id}] Found cached Code Mapping result. Loading...")
+            with open(cached_code_path, "r", encoding="utf-8") as f:
+                code_mapping = json.load(f)
+        else:
+            code_processor = CodeProcessor(clients)
+            code_mapping = code_processor.process(
+                repo_path, paper_structure, output_dir=output_dir
+            )
+
+        print(f"Code Found in: {code_mapping.get('file_path', 'N/A')}")
+        print(f"Function: {code_mapping.get('function_name', 'N/A')}")
+        print(f"Snippet Preview: {code_mapping.get('code_snippet', '')[:50]}...")
     else:
         print("No repo path provided, skipping code grounding.")
 

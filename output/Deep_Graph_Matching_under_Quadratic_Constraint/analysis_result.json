@@ -1,0 +1,28 @@
+{
+  "paper_id": "Deep_Graph_Matching_under_Quadratic_Constraint",
+  "title": "Deep Graph Matching under Quadratic Constraint",
+  "abstract": "Recently, deep learning based methods have demonstrated promising results on the graph matching problem, by relying on the descriptive capability of deep features extracted on graph nodes. However, one main limitation with existing deep graph matching (DGM) methods lies in their ignorance of explicit constraint of graph structures, which may lead the model to be trapped into local minimum in training. In this paper, we propose to explicitly formulate pairwise graph structures as a quadratic constraint incorporated into the DGM framework. The quadratic constraint minimizes the pairwise structural discrepancy between graphs, which can reduce the ambiguities brought by only using the extracted CNN features. Moreover, we present a differentiable implementation to the quadratic constrained-optimization such that it is compatible with the unconstrained deep learning optimizer. To give more precise and proper supervision, a well-designed false matching loss against class imbalance is proposed, which can better penalize the false negatives and false positives with less overfitting. Exhaustive experiments demonstrate that our method achieves competitive performance on real-world datasets.",
+  "problem_description_natural": "The paper addresses the graph matching problem, which seeks an optimal one-to-one node correspondence between two graphs. Traditional formulations cast this as a quadratic assignment problem (QAP), specifically the Koopmans-Beckmann form, which minimizes the Frobenius norm of the difference between adjacency matrices after alignment, while also maximizing node affinity. The authors extend this by incorporating deep features and explicitly enforcing a quadratic constraint that minimizes the structural (adjacency) discrepancy between graphs using feature-weighted adjacency matrices. The optimization involves minimizing ||A_D - X B_D X^T||_F^2 - tr(K_p^T X), where A_D and B_D are deep-feature-weighted adjacency matrices, K_p is the learned node affinity matrix, and X is the correspondence matrix constrained to be doubly stochastic during training (relaxed) and a permutation matrix during inference. A differentiable Frank-Wolfe-based algorithm is used to solve this non-convex quadratic constrained optimization in a way compatible with gradient-based deep learning training.",
+  "problem_type": "Graph Matching",
+  "datasets": [
+    "Pascal VOC Keypoints",
+    "Willow Object Class"
+  ],
+  "performance_metrics": [
+    "accuracy",
+    "F1 score"
+  ],
+  "lp_model": {
+    "objective": "\\min_{\\mathbf{X}} \\| \\mathbf{A}_D - \\mathbf{X} \\mathbf{B}_D \\mathbf{X}^T \\|_F^2 - \\text{tr}(\\mathbf{X}_u^T \\mathbf{X})",
+    "constraints": [
+      "\\mathbf{X} \\in [0,1]^{n \\times m}",
+      "\\mathbf{X} \\mathbf{1}_m = \\mathbf{1}_n",
+      "\\mathbf{X}^T \\mathbf{1}_n \\leq \\mathbf{1}_m"
+    ],
+    "variables": [
+      "\\mathbf{X} \\in \\mathbb{R}^{n \\times m} - correspondence matrix between graph nodes"
+    ]
+  },
+  "raw_latex_model": "\\min_{\\mathbf{X}} g(\\mathbf{X}) = \\min_{\\mathbf{X}} ||\\mathbf{A}_D - \\mathbf{X} \\mathbf{B}_D \\mathbf{X}^T||_F^2 - \\text{tr}(\\mathbf{X}_u^T \\mathbf{X}) \\quad \\text{s.t.} \\quad \\mathbf{X} \\in [0,1]^{n_A \\times n_B}, \\mathbf{X}\\mathbf{1}_{n_B} = \\mathbf{1}, \\mathbf{X}^T\\mathbf{1}_{n_A} \\leq \\mathbf{1}_{n_A}",
+  "algorithm_description": "The algorithm for deep graph matching under quadratic constraint proceeds as follows: 1. Extract and align CNN features (from VGG16 layers relu4_2 and relu5_1) with graph node coordinates to form initial node attributes, augmented with normalized 2D coordinates as unary geometric prior. 2. Construct deep feature weighted adjacency matrices using a linear kernel on node attributes. 3. In the training stage, for each epoch: a. Refine node attributes via GCN or SplineCNN layers. b. Update adjacency matrices and compute node affinity matrix using a learnable metric. c. Initialize the correspondence matrix \\mathbf{X} with the node affinity matrix. d. Perform quadratic constrained-optimization using a differentiable Frank-Wolfe algorithm: i. Compute the gradient \\nabla g(\\mathbf{X}) as per Eq. (12). ii. Solve \\mathbf{y} = \\arg\\min_{\\mathbf{y}} \\nabla g(\\mathbf{X})^T \\mathbf{y}. iii. Project \\mathbf{y} to the set of doubly stochastic matrices via Sinkhorn normalization to obtain \\mathbf{s}. iv. Update \\mathbf{X} as \\bar{\\mathbf{X}} = \\mathbf{X} - \\epsilon_k (\\mathbf{X} - \\mathbf{s}) with step size \\epsilon_k, then project \\bar{\\mathbf{X}} back using Sinkhorn. v. Repeat for a fixed number of inner and outer iterations. e. Compute the false matching loss between the optimized \\mathbf{X} and ground truth, and update model parameters via backpropagation. 4. In the inference stage, follow similar steps but use the Hungarian algorithm for projection to obtain a discrete permutation matrix, iterating until convergence."
+}

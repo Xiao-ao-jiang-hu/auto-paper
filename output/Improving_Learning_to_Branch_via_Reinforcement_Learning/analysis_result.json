@@ -1,0 +1,31 @@
+{
+  "paper_id": "Improving_Learning_to_Branch_via_Reinforcement_Learning",
+  "title": "Improving Learning to Branch via Reinforcement Learning",
+  "abstract": "This paper proposes a reinforcement learning (RL) approach to learn effective variable selection policies for Mixed Integer Programming (MIP) solvers using the Branch and Bound (B&B) framework. The authors argue that imitating strong branching—a common expert heuristic—is suboptimal due to its myopic nature. Instead, they model variable selection as a Markov Decision Process and introduce a novel primal-dual policy network inspired by LP relaxation structure. To encourage exploration and reduce variance, they employ a novelty search evolutionary strategy (NS-ES) with a new set-based representation of the B&B process based on leaf polytopes and optimal transport distance. Experiments on set covering, maximum independent set, and capacitated facility location problems show that their method outperforms both classical heuristics and imitation learning baselines.",
+  "problem_description_natural": "The optimization problem addressed is Mixed Integer Programming (MIP), which involves minimizing a linear objective function subject to linear constraints and integrality requirements on a subset of variables. The paper focuses on improving the variable selection step within the Branch and Bound algorithm—a core component of MIP solvers—by learning a policy that reduces the number of nodes explored during the search, thereby speeding up solution time. The learned policy aims to make non-myopic decisions that lead to faster pruning of the search tree.",
+  "problem_type": "MILP",
+  "datasets": [
+    "Set Covering",
+    "Maximum Independent Set",
+    "Capacitated Facility Location"
+  ],
+  "performance_metrics": [
+    "Average solving time (T_avg)",
+    "Average solving nodes (N_avg)",
+    "Wins"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\mathbf{c}^T \\mathbf{x}$",
+    "constraints": [
+      "$A\\mathbf{x} \\leq \\mathbf{b}$",
+      "$\\ell \\leq \\mathbf{x} \\leq \\mathbf{u}$",
+      "$x_j \\in \\mathbb{Z}, \\forall j \\in J$"
+    ],
+    "variables": [
+      "$\\mathbf{x} \\in \\mathbb{R}^n$: decision vector",
+      "$x_j$: integer variable for $j \\in J$, where $J \\subseteq \\{1, \\cdots, n\\}$"
+    ]
+  },
+  "raw_latex_model": "$$\\min_{\\mathbf{x} \\in \\mathbb{R}^n} \\left\\{ \\mathbf{c}^T \\mathbf{x} : A\\mathbf{x} \\leq \\mathbf{b}, \\ell \\leq \\mathbf{x} \\leq \\mathbf{u}, x_j \\in \\mathbb{Z},\\ \\forall j \\in J \\right\\}$$",
+  "algorithm_description": "Reinforcement learning agent with a primal-dual policy network and novelty search evolutionary strategy for learning variable selection policies in the Branch and Bound algorithm to solve Mixed Integer Programs."
+}

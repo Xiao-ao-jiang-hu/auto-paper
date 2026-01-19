@@ -1,0 +1,38 @@
+{
+  "paper_id": "Robust_Scheduling_with_GFlowNets",
+  "title": "ROBUST SCHEDULING WITH GFLOWNETS",
+  "abstract": "Finding the best way to schedule operations in a computation graph is a classical NP-hard problem which is central to compiler optimization. However, evaluating the goodness of a schedule on the target hardware can be very time-consuming. Traditional approaches as well as previous machine learning ones typically optimize proxy metrics, which are fast to evaluate but can lead to bad schedules when tested on the target hardware. In this work, we propose a new approach to scheduling by sampling proportionally to the proxy metric using a novel GFlowNet method. We introduce a technique to control the trade-off between diversity and goodness of the proposed schedules at inference time and demonstrate empirically that the pure optimization baselines can lead to subpar performance with respect to our approach when tested on a target model. Furthermore, we show that conditioning the GFlowNet on the computation graph enables generalization to unseen scheduling problems for both synthetic and real-world compiler datasets.",
+  "problem_description_natural": "The paper addresses the problem of scheduling operations in a directed acyclic computation graph (DAG) onto a fixed number of homogeneous devices while respecting precedence constraints and ensuring each device runs only one operation at a time. The goal is to minimize the makespan (total execution time) on real hardware. However, directly evaluating makespan on hardware is expensive, so a fast but imperfect proxy is used during training. The challenge is to generate a diverse set of high-quality candidate schedules according to the proxy, such that at least one performs well on the actual hardware despite potential inaccuracies in the proxy model.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "Generated ER Graphs",
+    "Layered Graphs",
+    "Stochastic Block Model Graphs",
+    "Watts-Strogatz Graphs",
+    "Barabási–Albert Graphs",
+    "Real-world AI Product Computation Graphs"
+  ],
+  "performance_metrics": [
+    "Speedup",
+    "Graph-Edit Distance (GED)",
+    "L2 distance between proxy start-times (d_inv)",
+    "L2 distance between proxy start-times and device placement (d_sen)"
+  ],
+  "lp_model": {
+    "objective": "$\\min C_{\\max}$ where $C_{\\max} = \\max_{i \\in O} (\\tau_i + \\rho_i)$",
+    "constraints": [
+      "$\\sum_{d \\in \\mathcal{D}} x_{id} = 1 \\quad \\forall i \\in O$",
+      "$\\tau_j \\geq \\tau_i + \\rho_i \\quad \\forall (i,j) \\in P$",
+      "For each device $d \\in \\mathcal{D}$ and for all operations $i,j \\in O$ with $i \\neq j$ and $x_{id} = x_{jd} = 1$, either $\\tau_i + \\rho_i \\leq \\tau_j$ or $\\tau_j + \\rho_j \\leq \\tau_i$ (no overlap on same device)",
+      "$C_{\\max} \\geq \\tau_i + \\rho_i \\quad \\forall i \\in O$",
+      "$\\tau_i \\geq 0 \\quad \\forall i \\in O$"
+    ],
+    "variables": [
+      "$x_{id} \\in \\{0,1\\}$: binary variable indicating if operation $i$ is assigned to device $d$",
+      "$\\tau_i \\geq 0$: start time of operation $i$",
+      "$C_{\\max} \\geq 0$: makespan (maximum completion time)"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} \\text{Minimize} \\quad & C_{\\max} \\\\ \\text{subject to} \\quad & \\sum_{d \\in \\mathcal{D}} x_{id} = 1, \\quad \\forall i \\in O \\\\ & \\tau_j \\geq \\tau_i + \\rho_i, \\quad \\forall (i,j) \\in P \\\\ & \\text{For each } d \\in \\mathcal{D}, \\text{ if } x_{id} = x_{jd} = 1 \\text{ for } i \\neq j, \\text{ then } \\tau_i + \\rho_i \\leq \\tau_j \\text{ or } \\tau_j + \\rho_j \\leq \\tau_i \\\\ & C_{\\max} \\geq \\tau_i + \\rho_i, \\quad \\forall i \\in O \\\\ & \\tau_i \\geq 0, \\quad \\forall i \\in O \\\\ & x_{id} \\in \\{0,1\\}, \\quad \\forall i \\in O, d \\in \\mathcal{D} \\end{aligned}$$",
+  "algorithm_description": "The paper proposes a generative scheduling approach using GFlowNets (Generative Flow Networks) to sample multiple candidate schedules proportionally to a proxy reward based on speedup. The method conditions on the computation graph and temperature to control diversity and goodness, and uses a Topoformer architecture for the policy networks. It generates diverse schedules to improve robustness against proxy errors when evaluated on target hardware."
+}

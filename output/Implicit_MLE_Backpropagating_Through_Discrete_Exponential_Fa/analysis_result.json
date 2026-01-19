@@ -1,0 +1,32 @@
+{
+  "paper_id": "Implicit_MLE_Backpropagating_Through_Discrete_Exponential_Fa",
+  "title": "Implicit MLE: Backpropagating Through Discrete Exponential Family Distributions",
+  "abstract": "Combining discrete probability distributions and combinatorial optimization problems with neural network components has numerous applications but poses several challenges. We propose Implicit Maximum Likelihood Estimation (I-MLE), a framework for end-to-end learning of models combining discrete exponential family distributions and differentiable neural components. I-MLE is widely applicable as it only requires the ability to compute the most probable states and does not rely on smooth relaxations. The framework encompasses several approaches such as perturbation-based implicit differentiation and recent methods to differentiate through black-box combinatorial solvers. We introduce a novel class of noise distributions for approximating marginals via perturb-and-MAP. Moreover, we show that I-MLE simplifies to maximum likelihood estimation when used in some recently studied learning settings that involve combinatorial solvers. Experiments on several datasets suggest that I-MLE is competitive with and often outperforms existing approaches which rely on problem-specific relaxations.",
+  "problem_description_natural": "The paper addresses the challenge of backpropagating gradients through discrete components—specifically, discrete exponential family distributions and combinatorial optimization problems—within end-to-end trainable neural architectures. The core issue is that exact gradient computation through discrete random variables is intractable due to discontinuities and the combinatorial nature of the state space. Standard approaches use problem-specific smooth relaxations, which are not always feasible or scalable. The proposed solution, Implicit Maximum Likelihood Estimation (I-MLE), avoids explicit relaxations by defining a target distribution based on the downstream loss and using perturb-and-MAP (Gumbel-max) techniques to approximate gradients via differences of MAP solutions under shared random perturbations. This enables gradient estimation using only access to a MAP solver for the underlying discrete structure.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "Synthetic 5-subset",
+    "BEERADVOCATE",
+    "Warcraft II tile set"
+  ],
+  "performance_metrics": [
+    "Test MSE",
+    "Subset Precision",
+    "Accuracy",
+    "Optimization loss L",
+    "Binary reconstruction loss",
+    "KL divergence"
+  ],
+  "lp_model": {
+    "objective": "$\\max_{\\mathbf{z}} \\langle \\mathbf{z}, \\boldsymbol{\\theta} \\rangle$",
+    "constraints": [
+      "$\\langle \\mathbf{z}, \\mathbf{1} \\rangle = k$",
+      "$\\mathbf{z} \\in \\{0, 1\\}^m$"
+    ],
+    "variables": [
+      "$z_i$: binary decision variable indicating whether element $i$ is selected, for $i = 1, \\dots, m$"
+    ]
+  },
+  "raw_latex_model": "$$\\max_{\\mathbf{z} \\in \\{0, 1\\}^m} \\langle \\mathbf{z}, \\boldsymbol{\\theta} \\rangle \\quad \\text{subject to} \\quad \\langle \\mathbf{z}, \\mathbf{1} \\rangle = k$$",
+  "algorithm_description": "The paper uses Implicit Maximum Likelihood Estimation (I-MLE), a framework for gradient estimation through discrete exponential family distributions. It involves perturb-and-MAP sampling to approximate gradients, constructing target distributions based on the loss, and backpropagating through discrete components without requiring smooth relaxations."
+}

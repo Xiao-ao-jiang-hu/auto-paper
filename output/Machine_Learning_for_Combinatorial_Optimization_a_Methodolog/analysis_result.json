@@ -1,0 +1,25 @@
+{
+  "paper_id": "Machine_Learning_for_Combinatorial_Optimization_a_Methodolog",
+  "title": "Machine Learning for Combinatorial Optimization: a Methodological Tour d’Horizon",
+  "abstract": "This paper surveys the recent attempts, both from the machine learning and operations research communities, at leveraging machine learning to solve combinatorial optimization problems. Given the hard nature of these problems, state-of-the-art algorithms rely on hand-crafted heuristics for making decisions that are otherwise too expensive to compute or mathematically not well defined. Thus, machine learning looks like a natural candidate to make such decisions in a more principled and optimized way. We advocate for pushing further the integration of machine learning and combinatorial optimization and detail a methodology to do so. A main point of the paper is seeing generic optimization problems as data points and inquiring what is the relevant distribution of problems to use for learning on a given task.",
+  "problem_description_natural": "The paper addresses the challenge of solving combinatorial optimization (CO) problems—specifically NP-hard discrete optimization problems such as the Traveling Salesman Problem (TSP)—by integrating machine learning techniques. Traditional CO algorithms rely on expert-designed heuristics that exploit problem-specific structure, but these can be suboptimal or difficult to generalize. The authors propose treating problem instances as data drawn from an implicit distribution (e.g., TSPs arising in a specific city like Montreal with geographic and logistical constraints) and using machine learning to automatically learn decision policies that perform well on this distribution. The goal is to replace or augment hand-crafted components of CO solvers (e.g., branching rules, primal heuristics) with learned models that generalize across instances from the same distribution.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [],
+  "performance_metrics": [],
+  "lp_model": {
+    "objective": "$\\min \\sum_{i=1}^{n} \\sum_{j=1, j\\neq i}^{n} c_{ij} x_{ij}$",
+    "constraints": [
+      "$\\sum_{j=1, j\\neq i}^{n} x_{ij} = 1 \\quad \\forall i \\in V$",
+      "$\\sum_{i=1, i\\neq j}^{n} x_{ij} = 1 \\quad \\forall j \\in V$",
+      "$u_i - u_j + n x_{ij} \\leq n-1 \\quad \\forall i,j \\in V \\setminus \\{1\\}, i \\neq j$",
+      "$u_i \\geq 0 \\quad \\forall i \\in V \\setminus \\{1\\}$",
+      "$x_{ij} \\in \\{0,1\\} \\quad \\forall i,j \\in V, i \\neq j$"
+    ],
+    "variables": [
+      "$x_{ij}$: binary decision variable indicating if the tour goes from city i to city j",
+      "$u_i$: auxiliary integer variable for subtour elimination (for $i \\in V \\setminus \\{1\\}$)"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned}\\min & \\sum_{i=1}^{n} \\sum_{j=1, j\\neq i}^{n} c_{ij} x_{ij} \\\\\\text{s.t.} & \\sum_{j=1, j\\neq i}^{n} x_{ij} = 1 \\quad \\forall i \\in V \\\\& \\sum_{i=1, i\\neq j}^{n} x_{ij} = 1 \\quad \\forall j \\in V \\\\& u_i - u_j + n x_{ij} \\leq n-1 \\quad \\forall i,j \\in V \\setminus \\{1\\}, i \\neq j \\\\& u_i \\geq 0 \\quad \\forall i \\in V \\setminus \\{1\\} \\\\& x_{ij} \\in \\{0,1\\} \\quad \\forall i,j \\in V, i \\neq j\\end{aligned}$$",
+  "algorithm_description": "The paper surveys machine learning approaches for solving combinatorial optimization problems. For the Traveling Salesman Problem (TSP), methods include end-to-end learning with neural networks (e.g., pointer networks) trained via supervised learning (imitation) or reinforcement learning to output tours directly, as well as learning policies for decisions within traditional algorithms like branch-and-bound."
+}

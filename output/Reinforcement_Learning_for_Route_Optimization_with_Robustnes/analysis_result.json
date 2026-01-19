@@ -1,0 +1,31 @@
+{
+  "paper_id": "Reinforcement_Learning_for_Route_Optimization_with_Robustnes",
+  "title": "Reinforcement Learning for Route Optimization with Robustness Guarantees",
+  "abstract": "Application of deep learning to NP-hard combinatorial optimization problems is an emerging research trend, and a number of interesting approaches have been published over the last few years. In this work we address robust optimization, which is a more complex variant where a max-min problem is to be solved. We obtain robust solutions by solving the inner minimization problem exactly and apply Reinforcement Learning to learn a heuristic for the outer problem. The minimization term in the inner objective represents an obstacle to existing RL-based approaches, as its value depends on the full solution in a non-linear manner and cannot be evaluated for partial solutions constructed by the agent over the course of each episode. We overcome this obstacle by defining the reward in terms of the one-step advantage over a baseline policy whose role can be played by any fast heuristic for the given problem. The agent is trained to maximize the total advantage, which, as we show, is equivalent to the original objective. We validate our approach by solving min-max versions of standard benchmarks for the Capacitated Vehicle Routing and the Traveling Salesperson Problem, where our agents obtain near-optimal solutions and improve upon the baselines.",
+  "problem_description_natural": "The paper addresses robust combinatorial optimization problems formulated as max-min (or min-max) problems, where the goal is to find a solution that maximizes the worst-case performance over an uncertainty set of parameters. Specifically, given a problem instance with known parameters and an uncertainty set, the robust objective is to compute a solution that guarantees the best possible outcome under the most adverse realization of uncertain parameters within that set. The authors focus on two classic routing problems—the Capacitated Vehicle Routing Problem (CVRP) and the Traveling Salesperson Problem (TSP)—under parameter uncertainty (e.g., uncertain edge distances or customer demands). The inner minimization (over the uncertainty set) is solved exactly, assuming convex uncertainty sets and linearity of the objective in the uncertain parameters, while Reinforcement Learning is used to heuristically solve the outer maximization over solution space.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "CVRPlib",
+    "Generated ER Graphs"
+  ],
+  "performance_metrics": [
+    "Approximation Factor",
+    "Average Tour Length (Robust Objective)"
+  ],
+  "lp_model": {
+    "objective": "$\\min_{y} \\max_{u \\in U} f(y, x, u)$ where for CVRP, $f(y,x,u) = \\sum_{k} \\sum_{(i,j) \\in \\text{tour}_k} d_{ij}(u)$ and for TSP, $f(y,x,u) = \\sum_{(i,j) \\in T} d_{ij}(u)$, with $y$ being the solution (tours for CVRP, tour for TSP).",
+    "constraints": [
+      "For CVRP: Each customer $v \\in V \\setminus \\{v_0\\}$ is served exactly once.",
+      "For CVRP: Each tour starts and ends at depot $v_0$.",
+      "For CVRP: For each tour $k$, $\\sum_{v \\in \\text{tour}_k} d_v \\leq 1$ (capacity constraint, normalized to 1).",
+      "For TSP: The solution $T$ must be a Hamiltonian tour visiting all nodes exactly once.",
+      "Uncertainty set $U$: Parameterized by $\\alpha$ and $\\beta$, where up to $\\lfloor \\alpha n \\rfloor$ edges can have distances increased by a factor up to $\\beta$, i.e., $d_{ij}(u) = d_{ij} \\cdot (1 + \\delta_{ij} (\\beta - 1))$ with $\\delta_{ij} \\in \\{0,1\\}$ and $\\sum_{(i,j)} \\delta_{ij} \\leq \\lfloor \\alpha n \\rfloor$."
+    ],
+    "variables": [
+      "$y$: Solution variable; for CVRP, $y$ represents a set of tours, each as a sequence of nodes; for TSP, $y$ represents a tour as a set of edges.",
+      "$\\delta_{ij}$: Auxiliary binary variables for uncertainty realization in the inner minimization, but fixed in the outer problem."
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned}\n\\text{For robust CVRP: } & \\min_{R} \\max_{u \\in U} \\sum_{k=1}^{K} \\sum_{(i,j) \\in \\text{tour}_k} d_{ij}(u) \\\\\n\\text{s.t. } & \\text{Each customer } v \\in V \\setminus \\{v_0\\} \\text{ is served exactly once.} \\\\\n& \\text{Each tour starts and ends at depot } v_0. \\\\\n& \\text{For each tour } k, \\sum_{v \\in \\text{tour}_k} d_v \\leq 1. \\\\\n& \\text{Where } U = \\{ u : d_{ij}(u) = d_{ij} \\cdot (1 + \\delta_{ij} (\\beta - 1)), \\delta_{ij} \\in \\{0,1\\}, \\sum_{(i,j)} \\delta_{ij} \\leq \\lfloor \\alpha n \\rfloor \\}. \\\\\n\\text{For robust TSP: } & \\min_{T} \\max_{u \\in U} \\sum_{(i,j) \\in T} d_{ij}(u) \\\\\n\\text{s.t. } & T \\text{ is a Hamiltonian cycle on nodes } V. \\\\\n& U \\text{ as defined above.}\n\\end{aligned}$$",
+  "algorithm_description": "Reinforcement Learning framework using Deep Q-Networks (DQN) with one-step advantage rewards over a baseline policy. The agent is trained to construct solutions for robust min-max routing problems by maximizing the total advantage, which is equivalent to optimizing the robust objective. The environment provides rewards based on the improvement over the baseline policy's completion of partial solutions."
+}

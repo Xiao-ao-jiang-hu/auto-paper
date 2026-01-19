@@ -1,0 +1,30 @@
+{
+  "paper_id": "Enhancing_SAT_solvers_with_glue_variable_predictions",
+  "title": "Enhancing SAT solvers with glue variable predictions",
+  "abstract": "Modern SAT solvers routinely operate at scales that make it impractical to query a neural network for every branching decision. NeuroCore, proposed by [32], offered a proof-of-concept that neural networks can still accelerate SAT solvers by only periodically refocusing a score-based branching heuristic. However, that work suffered from several limitations: their modified solvers require GPU acceleration, further ablations showed that they were not better than a random baseline on the SATCOMP 2018 benchmark, and their training target of unsat cores required an expensive data pipeline which only labels relatively easy unsatisfiable problems. We address all these limitations, using a simpler network architecture allowing CPU inference for even large industrial problems with millions of clauses, and training instead to predict glue variables—a target for which it is easier to generate labelled data, and which can also be formulated as a reinforcement learning task. We demonstrate the effectiveness of our approach by modifying the state-of-the-art SAT solver CADICAL, improving its performance on SATCOMP 2018 and SATRACE 2019 with supervised learning and its performance on a dataset of SHA-1 preimage attacks with reinforcement learning.",
+  "problem_description_natural": "The paper addresses the challenge of integrating machine learning into the branching heuristics of modern Conflict-Driven Clause Learning (CDCL) SAT solvers without incurring prohibitive computational overhead. Specifically, it aims to improve solver performance by predicting 'glue variables'—variables likely to appear in low-glue-level conflict clauses, which are known to be critical for efficient search. Instead of querying a neural network at every branching decision (which is too slow for large industrial instances), the authors use periodic predictions to refocus an existing score-based heuristic (like EVSIDS). The approach uses a lightweight graph neural network that operates on the clause-literal graph of the input CNF formula and can run on CPU. Training targets are derived either via supervised learning (using glue variable counts from solver runs) or via reinforcement learning (rewarding low glue levels of learned clauses during search).",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "SATCOMP 2016",
+    "SATCOMP 2017",
+    "SATCOMP 2018",
+    "SATRACE 2019",
+    "sha-1"
+  ],
+  "performance_metrics": [
+    "PAR-2 score",
+    "global learning rate (GLR)",
+    "average glue level"
+  ],
+  "lp_model": {
+    "objective": "$\\min 0$",
+    "constraints": [
+      "$\\sum_{i \\in I_j^+} x_i + \\sum_{i \\in I_j^-} (1 - x_i) \\ge 1, \\quad \\forall j = 1, \\ldots, m$"
+    ],
+    "variables": [
+      "$x_i \\in \\{0,1\\}$ for $i = 1, \\ldots, n$: binary decision variable indicating assignment to variable $i$"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} \\min \\quad & 0 \\\\ \\text{s.t.} \\quad & \\sum_{i \\in I_j^+} x_i + \\sum_{i \\in I_j^-} (1 - x_i) \\ge 1, \\quad \\forall j = 1, \\ldots, m \\\\ & x_i \\in \\{0,1\\}, \\quad \\forall i = 1, \\ldots, n \\end{aligned}$$",
+  "algorithm_description": "The paper enhances a CDCL SAT solver (CADiCAL) by using a graph neural network to predict glue variables (variables likely to appear in low-glue-level conflict clauses). The neural network is trained via supervised learning on glue counts from past runs or via reinforcement learning to minimize expected glue levels. The solver periodically refocuses its EVSIDS branching heuristic by updating variable scores based on network predictions, improving decision efficiency without querying the network at every decision."
+}

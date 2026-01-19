@@ -1,0 +1,53 @@
+{
+  "paper_id": "Neural_Large_Neighborhood_Search_for_the_Capacitated_Vehicle",
+  "title": "Neural Large Neighborhood Search for the Capacitated Vehicle Routing Problem",
+  "abstract": "Learning how to automatically solve optimization problems has the potential to provide the next big leap in optimization technology. The performance of automatically learned heuristics on routing problems has been steadily improving in recent years, but approaches based purely on machine learning are still outperformed by state-of-the-art optimization methods. To close this performance gap, we propose a novel large neighborhood search (LNS) framework for vehicle routing that integrates learned heuristics for generating new solutions. The learning mechanism is based on a deep neural network with an attention mechanism and has been especially designed to be integrated into an LNS search setting. We evaluate our approach on the capacitated vehicle routing problem (CVRP) and the split delivery vehicle routing problem (SDVRP). On CVRP instances with up to 297 customers, our approach significantly outperforms an LNS that uses only handcrafted heuristics and a well-known heuristic from the literature. Furthermore, we show for the CVRP and the SDVRP that our approach surpasses the performance of existing machine learning approaches and comes close to the performance of state-of-the-art optimization approaches.",
+  "problem_description_natural": "The paper focuses on the Capacitated Vehicle Routing Problem (CVRP) and the related Split Delivery Vehicle Routing Problem (SDVRP). In the CVRP, a fleet of vehicles with fixed capacity must deliver goods to a set of customers, each with a specific demand, starting and ending at a central depot. The goal is to minimize total travel cost while ensuring each customer is visited exactly once and vehicle capacities are not exceeded. In the SDVRP, customers may be visited multiple times (i.e., deliveries can be split across vehicles), offering more flexibility. Both problems assume the distance matrix satisfies the triangle inequality. The authors propose a Neural Large Neighborhood Search (NLNS) method that combines deep reinforcement learning with a metaheuristic framework to iteratively destroy and repair partial solutions using a neural network trained to complete incomplete routes efficiently.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "XE.1",
+    "XE.2",
+    "XE.3",
+    "XE.4",
+    "XE.5",
+    "XE.6",
+    "XE.7",
+    "XE.8",
+    "XE.9",
+    "XE.10",
+    "XE.11",
+    "XE.12",
+    "XE.13",
+    "XE.14",
+    "XE.15",
+    "XE.16",
+    "XE.17",
+    "S76D1",
+    "S76D2",
+    "S76D3",
+    "S76D4",
+    "S101D1",
+    "S101D2",
+    "S101D3",
+    "S101D5"
+  ],
+  "performance_metrics": [
+    "Average Costs",
+    "Optimality Gap",
+    "Total Wall-clock Time",
+    "Average Runtime"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\sum_{i,j \\in V, i<j} c_{ij} x_{ij}$",
+    "constraints": [
+      "$\\sum_{j \\in V, j \\neq i} x_{ij} = 2 \\quad \\forall i \\in V \\setminus \\{0\\}$",
+      "$\\sum_{i,j \\in S, i<j} x_{ij} \\le |S| - \\lceil \\frac{\\sum_{i \\in S} d_i}{Q} \\rceil \\quad \\forall S \\subseteq V \\setminus \\{0\\}$",
+      "$x_{ij} \\in \\{0,1\\} \\quad \\forall i,j \\in V, i<j$"
+    ],
+    "variables": [
+      "$x_{ij}$: binary variable that equals 1 if edge $(i,j)$ is used in the solution, and 0 otherwise"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned}\n\\min & \\sum_{i,j \\in V, i<j} c_{ij} x_{ij} \\\\\n\\text{s.t.} & \\sum_{j \\in V, j \\neq i} x_{ij} = 2 \\quad \\forall i \\in V \\setminus \\{0\\} \\\\\n& \\sum_{i,j \\in S, i<j} x_{ij} \\le |S| - \\lceil \\frac{\\sum_{i \\in S} d_i}{Q} \\rceil \\quad \\forall S \\subseteq V \\setminus \\{0\\} \\\\\n& x_{ij} \\in \\{0,1\\} \\quad \\forall i,j \\in V, i<j\n\\end{aligned}$$",
+  "algorithm_description": "Neural Large Neighborhood Search (NLNS): A metaheuristic that iteratively applies destroy and repair operators to explore the solution space. The repair operators are deep neural networks with attention mechanisms, trained via policy gradient reinforcement learning to complete incomplete solutions. The destroy operators are simple procedures (point-based or tour-based) that remove parts of a solution. The search is guided by a simulated annealing acceptance criterion and can be run in batch or single-instance mode."
+}

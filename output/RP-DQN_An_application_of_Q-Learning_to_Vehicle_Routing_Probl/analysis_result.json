@@ -1,0 +1,31 @@
+{
+  "paper_id": "RP-DQN_An_application_of_Q-Learning_to_Vehicle_Routing_Probl",
+  "title": "RP-DQN: An application of Q-Learning to Vehicle Routing Problems",
+  "abstract": "In this paper we present a new approach to tackle complex routing problems with an improved state representation that utilizes the model complexity better than previous methods. We enable this by training from temporal differences. Specifically Q-Learning is employed. We show that our approach achieves state-of-the-art performance for autoregressive policies that sequentially insert nodes to construct solutions on the CVRP. Additionally, we are the first to tackle the MDVRP with machine learning methods and demonstrate that this problem type greatly benefits from our approach over other ML methods.",
+  "problem_description_natural": "The paper addresses two variants of vehicle routing problems: the Capacitated Vehicle Routing Problem (CVRP) and the Multiple Depot Vehicle Routing Problem (MDVRP). In the CVRP, a fleet of homogeneous vehicles with fixed capacity must deliver goods to a set of customers, each with a known demand, starting and ending at a single depot, while minimizing total travel distance and respecting vehicle capacity constraints. The MDVRP generalizes this by allowing multiple depots, where each vehicle must start and end at the same depot, but the choice of depot for each route is part of the optimization. The goal in both cases is to find feasible routes that minimize total distance traveled.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "Nazari et al. [21] CVRP dataset",
+    "Generated MDVRP dataset"
+  ],
+  "performance_metrics": [
+    "Mean Gap %"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\sum_{i,j \\in N} c_{ij} x_{ij}$",
+    "constraints": [
+      "Each customer $i \\in C$ is visited exactly once: $\\sum_{j \\in N} x_{ij} = 1$ and $\\sum_{j \\in N} x_{ji} = 1$",
+      "All routes must start and end at a depot: for each depot $d \\in D$, $\\sum_{j \\in N} x_{dj} = \\sum_{i \\in N} x_{id}$",
+      "Capacity constraints: For each route, the total demand $\\sum_{i \\in \\text{route}} d_i \\leq Q$, enforced via subtour elimination constraints, e.g., for any subset $S \\subseteq C$, $\\sum_{i \\in S, j \\in N \\setminus S} x_{ij} \\geq \\lceil \\frac{\\sum_{i \\in S} d_i}{Q} \\rceil$",
+      "For MDVRP, each vehicle must return to the same depot it started from: $x_{d,d'} = 0$ for all $d, d' \\in D$ with $d \\neq d'$ to prevent inter-depot travel"
+    ],
+    "variables": [
+      "$x_{ij}$: binary decision variable indicating if edge $(i,j)$ is used in the solution, for $i,j \\in N = C \\cup D$",
+      "$d_i$: demand of customer $i \\in C$, with $d_i > 0$",
+      "$c_{ij}$: distance or cost associated with edge $(i,j)$",
+      "$Q$: vehicle capacity, constant"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} \\text{Given:} & \\quad \\text{Graph } G(N, E) \\text{ with node set } N = C \\cup D, \\text{ where } C = \\{1, \\dots, n\\} \\text{ is the set of customers and } D \\text{ is the set of depots (|D| = 1 \\text{ for CVRP, } |D| > 1 \\text{ for MDVRP}), \\\\ & \\quad \\text{complete edge set } E, \\text{ distances } c_{ij} \\text{ for } (i,j) \\in E, \\text{ customer demands } d_i > 0 \\text{ for } i \\in C, \\text{ vehicle capacity } Q. \\\\ \\text{Minimize:} & \\quad \\sum_{i,j \\in N} c_{ij} x_{ij} \\\\ \\text{Subject to:} & \\quad \\sum_{j \\in N} x_{ij} = 1 \\quad \\forall i \\in C \\\\ & \\quad \\sum_{i \\in N} x_{ij} = 1 \\quad \\forall j \\in C \\\\ & \\quad \\sum_{j \\in N} x_{dj} = \\sum_{i \\in N} x_{id} \\quad \\forall d \\in D \\\\ & \\quad \\sum_{i \\in S, j \\in N \\setminus S} x_{ij} \\geq \\left\\lceil \\frac{\\sum_{i \\in S} d_i}{Q} \\right\\rceil \\quad \\forall S \\subseteq C, S \\neq \\emptyset \\quad \\text{(capacity and subtour elimination)} \\\\ & \\quad x_{d,d'} = 0 \\quad \\forall d, d' \\in D, d \\neq d' \\quad \\text{(for MDVRP, ensure vehicles return to same depot)} \\\\ & \\quad x_{ij} \\in \\{0,1\\} \\quad \\forall i,j \\in N \\end{aligned}$$",
+  "algorithm_description": "The paper proposes RP-DQN, a Deep Q-Learning method based on an encoder-decoder architecture, to learn an autoregressive policy that sequentially constructs solutions by inserting one node at a time for Capacitated Vehicle Routing Problem (CVRP) and Multiple Depot Vehicle Routing Problem (MDVRP). The model uses dynamic node features and is optimized with temporal-difference learning (Double DQN with N-step returns and prioritized replay buffer) to improve state representation and sample efficiency."
+}

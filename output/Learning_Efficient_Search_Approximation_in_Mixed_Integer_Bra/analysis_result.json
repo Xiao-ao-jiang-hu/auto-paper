@@ -1,0 +1,33 @@
+{
+  "paper_id": "Learning_Efficient_Search_Approximation_in_Mixed_Integer_Bra",
+  "title": "A Study of Learning Search Approximation in Mixed Integer Branch and Bound: Node Selection in SCIP",
+  "abstract": "In line with the growing trend of using machine learning to help solve combinatorial optimisation problems, one promising idea is to improve node selection within a mixed integer programming (MIP) branch-and-bound tree by using a learned policy. Previous work using imitation learning indicates the feasibility of acquiring a node selection policy, by learning an adaptive node searching order. In contrast, our imitation learning policy is focused solely on learning which of a node’s children to select. We present an offline method to learn such a policy in two settings: one that comprises a heuristic by committing to pruning of nodes; one that is exact and backtracks from a leaf to guarantee finding the optimal integer solution. The former setting corresponds to a child selector during plunging, while the latter is akin to a diving heuristic. We apply the policy within the popular open-source solver SCIP, in both heuristic and exact settings. Empirical results on five MIP datasets indicate that our node selection policy leads to solutions significantly more quickly than the state-of-the-art precedent in the literature. While we do not beat the highly-optimised SCIP state-of-practice baseline node selector in terms of solving time on exact solutions, our heuristic policies have a consistently better optimality gap than all baselines, if the accuracy of the predictive model is sufficient. Further, the results also indicate that, when a time limit is applied, our heuristic method finds better solutions than all baselines in the majority of problems tested. We explain the results by showing that the learned policies have imitated the SCIP baseline, but without the latter’s early plunge abort. Our recommendation is that, despite the clear improvements over the literature, this kind of MIP child selector is better seen in a broader approach to using learning in MIP branch-and-bound tree decisions.",
+  "problem_description_natural": "The paper addresses the problem of improving node selection within the branch-and-bound search tree used to solve mixed integer programming (MIP) problems. Specifically, it focuses on learning a policy—via imitation learning—that decides which child node (left, right, or both) to explore next during the search. The goal is to find high-quality or optimal integer solutions more quickly by guiding the search toward promising regions of the tree. Two settings are considered: (1) a heuristic setting that commits to pruning unpromising subtrees to accelerate solution discovery (similar to a diving heuristic), and (2) an exact setting that backtracks upon reaching a leaf to guarantee optimality (used as a child selector during plunging). The approach leverages features from the current node, branched variable, and global tree state to predict the best child to select, trained on expert demonstrations derived from SCIP’s search paths leading to the best k solutions.",
+  "problem_type": "Mixed Integer Linear Programming (MILP)",
+  "datasets": [
+    "Set Cover",
+    "Maximum Independent Set",
+    "Capacitated Facility Location",
+    "Combinatorial Auctions"
+  ],
+  "performance_metrics": [
+    "Optimality Gap",
+    "Integrality Gap",
+    "Solving Time",
+    "Number of Explored Nodes",
+    "Primal Bound",
+    "Dual Bound"
+  ],
+  "lp_model": {
+    "objective": "$\\min c^T x$",
+    "constraints": [
+      "$Ax \\geq b$",
+      "$x \\in \\mathbb{Z}^k \\times \\mathbb{R}^{n-k}$ with $k > 0$"
+    ],
+    "variables": [
+      "$x$: vector of $n$ decision variables, where the first $k$ components are integer and the remaining $n-k$ are continuous"
+    ]
+  },
+  "raw_latex_model": "$$\\min c^T x \\quad \\text{subject to} \\quad Ax \\geq b, \\quad x \\in \\mathbb{Z}^k \\times \\mathbb{R}^{n-k}, \\quad k > 0$$",
+  "algorithm_description": "The paper uses imitation learning to train a multi-layer perceptron model that predicts which child node to select in the branch-and-bound tree for mixed integer programming problems. This learned policy is integrated into the SCIP solver to improve node selection during plunging, in both heuristic and exact settings."
+}

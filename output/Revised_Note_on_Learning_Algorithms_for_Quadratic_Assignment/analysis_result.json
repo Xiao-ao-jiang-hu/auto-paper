@@ -1,0 +1,26 @@
+{
+  "paper_id": "Revised_Note_on_Learning_Algorithms_for_Quadratic_Assignment",
+  "title": "REVISED NOTE ON LEARNING QUADRATIC ASSIGNMENT WITH GRAPH NEURAL NETWORKS",
+  "abstract": "This paper explores a data-driven approach to solving the Quadratic Assignment Problem (QAP) using Graph Neural Networks (GNNs). Instead of relying on traditional algorithmic or relaxation-based methods, the authors train GNNs on collections of solved QAP instances to learn an algorithm that generalizes to new instances drawn from the same distribution. They demonstrate that GNNs can achieve strong performance—even outperforming spectral and semidefinite programming (SDP) relaxations in certain random graph regimes—while operating at lower computational cost. The work also introduces a notion of 'learnability hardness' and provides preliminary analysis of the optimization landscape for a simplified GNN architecture, linking it to concentration of measure phenomena that also govern statistical hardness.",
+  "problem_description_natural": "The Quadratic Assignment Problem (QAP) involves finding a permutation matrix X that maximizes the trace of AXBX^T, where A and B are given symmetric n×n matrices (often representing graphs). Equivalently, in network alignment, it seeks to minimize the Frobenius norm ||AX - XB||_F over permutation matrices X, which corresponds to matching nodes between two graphs so their edge structures align as closely as possible. The problem is NP-hard and arises in applications like graph isomorphism testing, network alignment, and minimum bisection. The paper studies a statistical version where one graph is a noisy, relabeled copy of the other, and the goal is to recover the underlying permutation.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "Generated ER Graphs",
+    "Random Regular Graphs"
+  ],
+  "performance_metrics": [
+    "Recovery Rate"
+  ],
+  "lp_model": {
+    "objective": "$\\text{maximize } \\text{trace}(AXBX^\\top)$",
+    "constraints": [
+      "$X \\in \\Pi$",
+      "where $\\Pi$ is the set of $n \\times n$ permutation matrices"
+    ],
+    "variables": [
+      "$X$: an $n \\times n$ permutation matrix"
+    ]
+  },
+  "raw_latex_model": "$$\\text{maximize } \\text{trace}(AXBX^\\top), \\text{ subject to } X \\in \\Pi,$$ where $\\Pi$ is the set of permutation matrices of size $n \\times n$.",
+  "algorithm_description": "The paper uses a data-driven approach with Graph Neural Networks (GNNs) to learn algorithms for solving the Quadratic Assignment Problem (QAP). A GNN with a specific architecture (alternating linear combinations of local graph operators and pointwise non-linearities) is trained on a dataset of solved QAP instances. The trained model is then used to predict solutions for new instances from the same distribution."
+}

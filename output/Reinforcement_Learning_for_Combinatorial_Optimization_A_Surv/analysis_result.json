@@ -1,0 +1,22 @@
+{
+  "paper_id": "Reinforcement_Learning_for_Combinatorial_Optimization_A_Surv",
+  "title": "Reinforcement Learning for Combinatorial Optimization: A Survey",
+  "abstract": "Many traditional algorithms for solving combinatorial optimization problems involve using hand-crafted heuristics that sequentially construct a solution. Such heuristics are designed by domain experts and may often be suboptimal due to the hard nature of the problems. Reinforcement learning (RL) proposes a good alternative to automate the search of these heuristics by training an agent in a supervised or self-supervised manner. In this survey, we explore the recent advancements of applying RL frameworks to hard combinatorial problems. Our survey provides the necessary background for operations research and machine learning communities and showcases the works that are moving the field forward. We juxtapose recently proposed RL methods, laying out the timeline of the improvements for each problem, as well as we make a comparison with traditional algorithms, indicating that RL models can become a promising direction for solving combinatorial problems.",
+  "problem_description_natural": "The paper surveys the application of reinforcement learning (RL) to combinatorial optimization (CO) problems, which involve finding an optimal configuration from a finite set of discrete possibilities. Examples include the Travelling Salesman Problem (TSP), Maximum Cut (Max-Cut), Minimum Vertex Cover (MVC), Bin Packing Problem (BPP), and Mixed-Integer Linear Programs (MILP). These problems are typically NP-hard, making exact solutions computationally infeasible for large instances, so heuristic or approximate methods are used. The survey focuses on how RL can learn policies—via value-based or policy-based methods—to either construct solutions incrementally or iteratively improve existing ones, by modeling the problem as a Markov Decision Process (MDP) with states, actions, rewards, and transitions.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [],
+  "performance_metrics": [],
+  "lp_model": {
+    "objective": "$\\min \\sum_{i=1}^n \\sum_{j=1}^n c_{ij} x_{ij}$",
+    "constraints": [
+      "$\\sum_{j=1}^n x_{ij} = 1, \\quad \\forall i = 1, \\dots, n$",
+      "$\\sum_{i=1}^n x_{ij} = 1, \\quad \\forall j = 1, \\dots, n$",
+      "$\\sum_{i \\in S} \\sum_{j \\in S} x_{ij} \\leq |S| - 1, \\quad \\forall S \\subset \\{1, \\dots, n\\}, S \\neq \\emptyset, S \\neq \\{1, \\dots, n\\}$"
+    ],
+    "variables": [
+      "$x_{ij} \\in \\{0, 1\\}$: binary decision variable indicating if edge $(i, j)$ is included in the tour"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} \\min & \\sum_{i=1}^n \\sum_{j=1}^n c_{ij} x_{ij} \\\\ \\text{s.t.} & \\sum_{j=1}^n x_{ij} = 1, \\quad \\forall i = 1, \\dots, n \\\\ & \\sum_{i=1}^n x_{ij} = 1, \\quad \\forall j = 1, \\dots, n \\\\ & \\sum_{i \\in S} \\sum_{j \\in S} x_{ij} \\leq |S| - 1, \\quad \\forall S \\subset \\{1, \\dots, n\\}, S \\neq \\emptyset, S \\neq \\{1, \\dots, n\\} \\\\ & x_{ij} \\in \\{0, 1\\}, \\quad \\forall i, j = 1, \\dots, n \\end{aligned}$$",
+  "algorithm_description": "The paper surveys reinforcement learning (RL) approaches for solving TSP, including policy-based methods (e.g., REINFORCE, actor-critic) and value-based methods (e.g., DQN). The RL agent is trained to construct tours sequentially, with rewards based on tour length, and uses encoders such as pointer networks, graph neural networks, or attention models."
+}

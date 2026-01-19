@@ -1,0 +1,32 @@
+{
+  "paper_id": "Learning_to_Branch_with_Tree_MDPs",
+  "title": "Learning to Branch with Tree MDPs",
+  "abstract": "State-of-the-art Mixed Integer Linear Program (MILP) solvers combine systematic tree search with a plethora of hard-coded heuristics, such as the branching rule. The idea of learning branching rules from data has received increasing attention recently, and promising results have been obtained by learning fast approximations of the strong branching expert. In this work, we instead propose to learn branching rules from scratch via Reinforcement Learning (RL). We revisit the work of Etheve et al. [11] and propose tree Markov Decision Processes, or tree MDPs, a generalization of temporal MDPs that provides a more suitable framework for learning to branch. We derive a tree policy gradient theorem, which exhibits a better credit assignment compared to its temporal counterpart. We demonstrate through computational experiments that tree MDPs improve the learning convergence, and offer a promising framework for tackling the learning-to-branch problem in MILPs.",
+  "problem_description_natural": "The paper addresses the problem of learning effective branching rules for solving Mixed Integer Linear Programs (MILPs) using Branch-and-Bound (B&B). In B&B, at each node of the search tree, a branching decision must be made—typically selecting a fractional integer variable to split into two subproblems. The quality of these decisions greatly affects the size of the resulting search tree and thus the solver's efficiency. Instead of imitating expensive expert heuristics like strong branching, the authors propose learning branching policies from scratch using Reinforcement Learning, framed within a novel 'tree MDP' framework that better aligns rewards with individual branching actions by respecting the tree structure of B&B.",
+  "problem_type": "MILP",
+  "datasets": [
+    "Combinatorial Auctions",
+    "Set Covering",
+    "Maximum Independent Set",
+    "Capacitated Facility Location",
+    "Multiple Knapsack"
+  ],
+  "performance_metrics": [
+    "Final B&B Tree Size",
+    "Solving Time"
+  ],
+  "lp_model": {
+    "objective": "$\\min c^T x$",
+    "constraints": [
+      "$A x \\leq b$",
+      "$l \\leq x \\leq u$",
+      "$x_i \\in \\mathbb{Z} \\; \\forall i \\in \\mathcal{I}$"
+    ],
+    "variables": [
+      "$x \\in \\mathbb{R}^n$: decision variable vector",
+      "$x_i$: component of $x$ for $i \\in \\mathcal{I}$, constrained to integer values"
+    ]
+  },
+  "raw_latex_model": "$$\\min_{x \\in \\mathbb{R}^n} \\{ c^T x : A x \\leq b, \\, l \\leq x \\leq u, \\, x_i \\in \\mathbb{Z} \\; \\forall i \\in \\mathcal{I} \\}$$",
+  "algorithm_description": "Reinforcement Learning (RL) with tree Markov Decision Processes (tree MDPs) to learn branching policies for the Branch-and-Bound algorithm in Mixed Integer Linear Programming solvers."
+}

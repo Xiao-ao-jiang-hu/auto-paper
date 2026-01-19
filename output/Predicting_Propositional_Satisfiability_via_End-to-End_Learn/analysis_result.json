@@ -1,0 +1,25 @@
+{
+  "paper_id": "Predicting_Propositional_Satisfiability_via_End-to-End_Learn",
+  "title": "Predicting Propositional Satisfiability via End-to-End Learning",
+  "abstract": "Strangely enough, it is possible to use machine learning models to predict the satisfiability status of hard SAT problems with accuracy considerably higher than random guessing. Existing methods have relied on extensive, manual feature engineering and computationally complex features (e.g., based on linear programming relaxations). We show for the first time that even better performance can be achieved by end-to-end learning methods — i.e., models that map directly from raw problem inputs to predictions and take only linear time to evaluate. Our work leverages deep network models which capture a key invariance exhibited by SAT problems: satisfiability status is unaffected by reordering variables and clauses. We showed that end-to-end learning with deep networks can outperform previous work on random 3-SAT problems at the solubility phase transition, where: (1) exactly 50% of problems are satisfiable; and (2) empirical runtimes of known solution methods scale exponentially with problem size (e.g., we achieved 84% prediction accuracy on 600-variable problems, which take hours to solve with state-of-the-art methods). We also showed that deep networks can generalize across problem sizes (e.g., a network trained only on 100-variable problems, which typically take about 10 ms to solve, achieved 81% accuracy on 600-variable problems).",
+  "problem_description_natural": "The paper addresses the problem of predicting whether a given Boolean formula in conjunctive normal form (CNF) is satisfiable—that is, whether there exists an assignment of truth values to its variables that makes the entire formula evaluate to true. Specifically, the authors focus on uniform random 3-SAT instances at the solubility phase transition (clauses-to-variables ratio ≈ 4.26), where problems are hardest to solve and exactly half are satisfiable. Instead of solving the SAT instance, the goal is to classify its satisfiability status using machine learning models that operate directly on the raw CNF representation without hand-crafted features.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "Uniform-random 3-SAT at the solubility phase transition (100–600 variables)"
+  ],
+  "performance_metrics": [
+    "Prediction accuracy",
+    "Binary cross-entropy loss"
+  ],
+  "lp_model": {
+    "objective": "$ \\min 0 $",
+    "constraints": [
+      "$ \\sum_{j \\in P_i} y_j + \\sum_{j \\in N_i} (1 - y_j) \\geq 1 \\quad \\forall i = 1,\\ldots,n $"
+    ],
+    "variables": [
+      "$ y_j \\in \\{0,1\\} $ for $ j=1,\\ldots,m $"
+    ]
+  },
+  "raw_latex_model": "$$ \\begin{aligned} & \\text{Given: } m \\text{ variables, } n \\text{ clauses in CNF, each clause has exactly three literals (3-SAT).} \\\\ & \\text{Variables: } y_j \\in \\{0,1\\}, \\quad j=1,\\ldots,m \\\\ & \\text{For each clause } i, \\text{ let } P_i \\text{ be the set of variables appearing positively, and } N_i \\text{ be the set appearing negatively.} \\\\ & \\text{Constraints: } \\sum_{j \\in P_i} y_j + \\sum_{j \\in N_i} (1 - y_j) \\geq 1, \\quad \\forall i = 1,\\ldots,n \\\\ & \\text{Objective: Find an assignment } y \\text{ that satisfies all constraints (feasibility problem).} \\end{aligned} $$",
+  "algorithm_description": "End-to-end deep learning using permutation-invariant neural network architectures, specifically exchangeable matrix layers and neural message passing networks, to predict satisfiability status from raw CNF representations of SAT instances, without relying on hand-engineered features."
+}

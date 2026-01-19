@@ -1,0 +1,38 @@
+{
+  "paper_id": "Learning_to_Handle_Complex_Constraints_for_Vehicle_Routing_P",
+  "title": "Learning to Handle Complex Constraints for Vehicle Routing Problems",
+  "abstract": "Vehicle Routing Problems (VRPs) can model many real-world scenarios and often involve complex constraints. While recent neural methods excel in constructing solutions based on feasibility masking, they struggle with handling complex constraints, especially when obtaining the masking itself is NP-hard. In this paper, we propose a novel Proactive Infeasibility Prevention (PIP) framework to advance the capabilities of neural methods towards more complex VRPs. Our PIP integrates the Lagrangian multiplier as a basis to enhance constraint awareness and introduces preventative infeasibility masking to proactively steer the solution construction process. Moreover, we present PIP-D, which employs an auxiliary decoder and two adaptive strategies to learn and predict these tailored masks, potentially enhancing performance while significantly reducing computational costs during training. To verify our PIP designs, we conduct extensive experiments on the highly challenging Traveling Salesman Problem with Time Window (TSPTW), and TSP with Draft Limit (TSPDL) variants under different constraint hardness levels. Notably, our PIP is generic to boost many neural methods, and exhibits both a significant reduction in infeasible rate and a substantial improvement in solution quality.",
+  "problem_description_natural": "The paper addresses Vehicle Routing Problems (VRPs) with complex interdependent constraints that are common in real-world logistics and supply chain applications. Specifically, it focuses on two challenging variants: the Traveling Salesman Problem with Time Windows (TSPTW), where each node must be visited within a specific time window, and the TSP with Draft Limit (TSPDL), where visiting a port (node) is constrained by the vessel's current load not exceeding the port’s maximum draft limit. In both cases, decisions made early in the route construction can irreversibly lead to infeasibility later due to tight coupling between sequential choices. Traditional neural constructive solvers rely on feasibility masking that assumes local feasibility guarantees global feasibility—a condition that fails under such complex constraints. The core challenge is to design a learning-based method that proactively avoids infeasible regions during autoregressive solution construction without requiring computationally intractable global feasibility checks at each step.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "Easy TSPTW",
+    "Medium TSPTW",
+    "Hard TSPTW",
+    "Medium TSPDL",
+    "Hard TSPDL"
+  ],
+  "performance_metrics": [
+    "Infeasible%",
+    "Sol. Infeasible Rate",
+    "Inst. Infeasible Rate",
+    "Optimality Gap",
+    "Average Tour Length (Obj.)",
+    "Inference Time"
+  ],
+  "lp_model": {
+    "objective": "$\\min_{\\tau} \\sum_{k=0}^{n} \\|v_{\\tau(k)} - v_{\\tau(k+1)}\\|_2$",
+    "constraints": [
+      "$\\tau(0)=0$, $\\tau(n+1)=0$",
+      "$\\{\\tau(1),\\ldots,\\tau(n)\\} = \\{1,\\ldots,n\\}$ (each node visited exactly once)",
+      "$t_{\\tau(0)} = 0$",
+      "$t_{\\tau(k)} = \\max(t_{\\tau(k-1)}, l_{\\tau(k-1)}) + \\|v_{\\tau(k-1)} - v_{\\tau(k)}\\|_2$, for $k=1,\\ldots,n+1$",
+      "$t_{\\tau(k)} \\leq u_{\\tau(k)}$, for $k=1,\\ldots,n$ (time window constraints)"
+    ],
+    "variables": [
+      "$\\tau$: a permutation of nodes representing the tour, with $\\tau(0)=0$ and $\\tau(n+1)=0$",
+      "$t_i$: arrival time at node $v_i$, defined recursively along the tour"
+    ]
+  },
+  "raw_latex_model": "$$\\min_{\\tau} \\sum_{k=0}^{n} \\|v_{\\tau(k)} - v_{\\tau(k+1)}\\|_2$$ subject to: \\begin{align*} &\\tau(0)=0, \\quad \\tau(n+1)=0, \\\\ &\\{\\tau(1),\\ldots,\\tau(n)\\} = \\{1,\\ldots,n\\}, \\\\ &t_{\\tau(0)} = 0, \\\\ &t_{\\tau(k)} = \\max(t_{\\tau(k-1)}, l_{\\tau(k-1)}) + \\|v_{\\tau(k-1)} - v_{\\tau(k)}\\|_2, \\quad k=1,\\ldots,n+1, \\\\ &t_{\\tau(k)} \\leq u_{\\tau(k)}, \\quad k=1,\\ldots,n. \\end{align*}",
+  "algorithm_description": "The paper proposes a Proactive Infeasibility Prevention (PIP) framework that integrates Lagrangian multipliers for constraint awareness and introduces preventative infeasibility masking to steer the solution construction process in neural constructive solvers (e.g., AM, POMO, GFACS). An enhanced version, PIP-D, uses an auxiliary decoder to learn the masking information, with adaptive strategies for training efficiency."
+}

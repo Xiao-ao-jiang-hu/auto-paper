@@ -1,0 +1,35 @@
+{
+  "paper_id": "Multi-View_Graph_Contrastive_Learning_for_Solving_Vehicle_Ro",
+  "title": "Multi-View Graph Contrastive Learning for Solving Vehicle Routing Problems",
+  "abstract": "Recently, neural heuristics based on deep learning have reported encouraging results for solving vehicle routing problems (VRPs), especially on independent and identically distributed (i.i.d.) instances, e.g. uniform. However, in the presence of a distribution shift for the testing instances, their performance becomes considerably inferior. In this paper, we propose a multi-view graph contrastive learning (MVGCL) approach to enhance the generalization across different distributions, which exploits a graph pattern learner in a self-supervised fashion to facilitate a neural heuristic equipped with an active search scheme. Specifically, our MVGCL first leverages graph contrastive learning to extract transferable patterns from VRP graphs to attain the generalizable multi-view (i.e. node and graph) representation. Then it adopts the learnt node embedding and graph embedding to assist the neural heuristic and the active search (during inference) for route construction, respectively. Extensive experiments on randomly generated VRP instances of various distributions, and the ones from TSPLib and CVRPLib show that our MVGCL is superior to the baselines in boosting the cross-distribution generalization performance.",
+  "problem_description_natural": "The paper addresses the vehicle routing problem (VRP), specifically focusing on two classic variants: the Travelling Salesman Problem (TSP) and the Capacitated Vehicle Routing Problem (CVRP). In TSP, a single vehicle must visit each customer node exactly once and return to the starting depot while minimizing total travel distance. In CVRP, a fleet of vehicles with limited capacity originates from a depot, must serve all customers (each with a specific demand) exactly once, and return to the depot, again minimizing total travel distance while respecting vehicle capacity constraints. The key challenge tackled is poor generalization of existing neural heuristics when test instances come from a different spatial distribution of nodes than the training data (e.g., trained on uniformly distributed nodes but tested on clustered or real-world instances).",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "TSPLib",
+    "CVRPLib",
+    "Generated Explosion Distribution Instances",
+    "Generated Compression Distribution Instances",
+    "Generated Cluster Distribution Instances",
+    "Generated Expansion Distribution Instances",
+    "Generated Rotation Distribution Instances"
+  ],
+  "performance_metrics": [
+    "Tour Length",
+    "Optimality Gap",
+    "Inference Time"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\sum_{i,j \\in V} c_{ij} x_{ij}$",
+    "constraints": [
+      "$\\sum_{j \\in V} x_{ij} = 2 \\quad \\forall i \\in V \\setminus \\{0\\}$",
+      "$\\sum_{j \\in V} x_{0j} = 2m$ for some integer $m \\geq 1$",
+      "$\\sum_{i \\in S} d_i \\leq Q \\cdot \\left( \\frac{\\sum_{i \\in S, j \\notin S} x_{ij}}{2} \\right) \\quad \\forall S \\subseteq V \\setminus \\{0\\}, S \\neq \\emptyset$"
+    ],
+    "variables": [
+      "$x_{ij} \\in \\{0,1\\}$: binary decision variable indicating if edge $(i,j)$ is used in the route",
+      "$u_i \\geq 0$: auxiliary continuous variable representing the load after visiting customer $i$ (optional for capacity constraints)"
+    ]
+  },
+  "raw_latex_model": "For the Capacitated Vehicle Routing Problem (CVRP) with depot $0$, customer set $V \\setminus \\{0\\}$, distances $c_{ij}$, demands $d_i$, and vehicle capacity $Q$, the formulation is: $$\\begin{aligned} \\min & \\sum_{i,j \\in V} c_{ij} x_{ij} \\\\ \\text{s.t.} & \\sum_{j \\in V} x_{ij} = 2 \\quad \\forall i \\in V \\setminus \\{0\\} \\\\ & \\sum_{j \\in V} x_{0j} = 2m \\quad \\text{for integer } m \\\\ & \\sum_{i \\in S} d_i \\leq Q \\cdot \\left( \\frac{\\sum_{i \\in S, j \\notin S} x_{ij}}{2} \\right) \\quad \\forall S \\subseteq V \\setminus \\{0\\}, S \\neq \\emptyset \\\\ & x_{ij} \\in \\{0,1\\} \\quad \\forall i,j \\in V. \\end{aligned}$$ Note: The Travelling Salesman Problem (TSP) is a special case with no depot ($V$ includes all nodes) and no capacity constraints, so the constraints reduce to $\\sum_{j} x_{ij} = 2$ for all $i$ and subtour elimination.",
+  "algorithm_description": "The paper uses a multi-view graph contrastive learning (MVGCL) approach to pre-train a Graph Neural Network (GNN) encoder in a self-supervised manner, learning node and graph embeddings from VRP instances of various distributions. These embeddings are then integrated into the neural heuristic POMO (Policy Optimization with Multiple Optima) for policy optimization and active search during inference to construct routes for TSP and CVRP instances."
+}

@@ -1,0 +1,31 @@
+{
+  "paper_id": "Learning_to_Select_Cuts_for_Efficient_Mixed-Integer_Programm",
+  "title": "Learning to Select Cuts for Efficient Mixed-Integer Programming",
+  "abstract": "Cutting plane methods play a significant role in modern solvers for tackling mixed-integer programming (MIP) problems. Proper selection of cuts would remove infeasible solutions in the early stage, thus largely reducing the computational burden without hurting the solution accuracy. However, the major cut selection approaches heavily rely on heuristics, which strongly depend on the specific problem at hand and thus limit their generalization capability. In this paper, we propose a data-driven and generalizable cut selection approach, named CUT RANKING, in the settings of multiple instance learning. To measure the quality of the candidate cuts, a scoring function, which takes the instance-specific cut features as inputs, is trained and applied in cut ranking and selection. In order to evaluate our method, we conduct extensive experiments on both synthetic datasets and real-world datasets. Compared with commonly used heuristics for cut selection, the learning-based policy has shown to be more effective, and is capable of generalizing over multiple problems with different properties. CUT RANKING has been deployed in an industrial solver for large-scale MIPs. In the online A/B testing of the product planning problems with more than 10^7 variables and constraints daily, CUT RANKING has achieved the average speedup ratio of 12.42% over the production solver without any accuracy loss.",
+  "problem_description_natural": "The paper addresses the challenge of efficiently solving large-scale Mixed-Integer Programming (MIP) problems by improving the selection of cutting planes (cuts) within the branch-and-cut framework. In MIP solvers, cuts are used to tighten the linear programming (LP) relaxation by removing fractional or infeasible solutions, thereby reducing the search space and accelerating convergence. However, generating too many cuts can increase computational overhead, while poor cut selection may yield little improvement. Traditional cut selection relies on handcrafted heuristics that lack generalizability across different problem structures. The authors propose a machine learning-based method called CUT RANKING that learns a scoring function to rank and select the most effective cuts from a candidate set. This is framed as a multiple instance learning (MIL) problem because individual cut labels are unavailable; instead, feedback (e.g., reduction in solve time) is obtained at the level of a group (bag) of selected cuts. The method uses both static and dynamic features derived from the MIP instance and LP solution to enable generalization across diverse problems.",
+  "problem_type": "Mixed-Integer Linear Programming (MILP)",
+  "datasets": [
+    "Set Cover",
+    "Knapsack",
+    "Planning",
+    "General MIP",
+    "Offline Phase production planning problems (January 2021)",
+    "Online Phase production planning problems (March 2021)"
+  ],
+  "performance_metrics": [
+    "reduction ratio of solution time",
+    "reduction ratio of the number of nodes visited"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\mathbf{z}^\\top \\mathbf{x}$",
+    "constraints": [
+      "$\\mathbf{A}\\mathbf{x} \\leq \\mathbf{b}$",
+      "$\\mathbf{x} \\in \\mathbb{Z}^p \\times \\mathbb{R}^{n-p}$"
+    ],
+    "variables": [
+      "$\\mathbf{x}$: decision variable vector where the first $p$ components are integer and the remaining $n-p$ are continuous"
+    ]
+  },
+  "raw_latex_model": "$$\\arg\\min_{\\mathbf{x}} \\left\\{ \\mathbf{z}^\\top \\mathbf{x} \\mid \\mathbf{A}\\mathbf{x} \\leq \\mathbf{b}, \\mathbf{x} \\in \\mathbb{Z}^p \\times \\mathbb{R}^{n-p} \\right\\}$$",
+  "algorithm_description": "CUT RANKING: a multiple instance learning-based method that trains a scoring function to rank and select cuts using problem-specific features, integrated into the branch-and-cut algorithm to improve solving efficiency for mixed-integer programs."
+}

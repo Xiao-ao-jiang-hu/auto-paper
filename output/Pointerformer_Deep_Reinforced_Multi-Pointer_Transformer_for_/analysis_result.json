@@ -1,0 +1,30 @@
+{
+  "paper_id": "Pointerformer_Deep_Reinforced_Multi-Pointer_Transformer_for_",
+  "title": "Pointerformer: Deep Reinforced Multi-Pointer Transformer for the Traveling Salesman Problem",
+  "abstract": "Traveling Salesman Problem (TSP), as a classic routing optimization problem originally arising in the domain of transportation and logistics, has become a critical task in broader domains, such as manufacturing and biology. Recently, Deep Reinforcement Learning (DRL) has been increasingly employed to solve TSP due to its high inference efficiency. Nevertheless, most of existing end-to-end DRL algorithms only perform well on small TSP instances and can hardly generalize to large scale because of the drastically soaring memory consumption and computation time along with the enlarging problem scale. In this paper, we propose a novel end-to-end DRL approach, referred to as Pointerformer, based on multi-pointer Transformer. Particularly, Pointerformer adopts both reversible residual network in the encoder and multi-pointer network in the decoder to effectively contain memory consumption of the encoder-decoder architecture. To further improve the performance of TSP solutions, Pointerformer employs both a feature augmentation method to explore the symmetries of TSP at both training and inference stages as well as an enhanced context embedding approach to include more comprehensive context information in the query. Extensive experiments on a randomly generated benchmark and a public benchmark have shown that, while achieving comparative results on most small-scale TSP instances as SOTA DRL approaches do, Pointerformer can also well generalize to large-scale TSPs.",
+  "problem_description_natural": "The Traveling Salesman Problem (TSP) involves finding the shortest possible route that visits each city exactly once and returns to the starting city. Given a set of cities represented as nodes in a complete undirected graph with edge costs equal to Euclidean distances, the goal is to construct a feasible tour minimizing total travel cost. The problem is formulated as a Markov decision process where a policy sequentially selects the next unvisited city until all cities are visited and the tour returns to the depot.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "TSP_random",
+    "TSPLIB"
+  ],
+  "performance_metrics": [
+    "Optimality Gap (%)",
+    "Solution Length (Len)",
+    "Inference Time"
+  ],
+  "lp_model": {
+    "objective": "$\\min L(\\tau) = c_{\\tau_{[N]}\\tau_{[1]}} + \\sum_{i=1}^{N-1} c_{\\tau_{[i]}\\tau_{[i+1]}}$",
+    "constraints": [
+      "$\\tau_{[1]} = \\text{depot}$",
+      "$\\tau_{[N]} = \\text{depot}$",
+      "$\\{\\tau_{[2]}, \\ldots, \\tau_{[N-1]}\\} = V \\setminus \\{\\text{depot}\\}$ and all elements are distinct"
+    ],
+    "variables": [
+      "$\\tau_{[i]}$: the node at position $i$ in the route, for $i = 1, \\ldots, N$, where $\\tau_{[i]} \\in V$",
+      "$c_{ij}$: the Euclidean distance between nodes $i$ and $j$, defined for all $i,j \\in V$"
+    ]
+  },
+  "raw_latex_model": "$$\\min_{\\tau} L(\\tau) = c_{\\tau_{[N]}\\tau_{[1]}} + \\sum_{i=1}^{N-1} c_{\\tau_{[i]}\\tau_{[i+1]}}$$ subject to \\begin{itemize} \\item $\\tau_{[1]} = \\text{depot}$ \\item $\\tau_{[N]} = \\text{depot}$ \\item $\\{\\tau_{[2]}, \\ldots, \\tau_{[N-1]}\\} = V \\setminus \\{\\text{depot}\\}$ and $\\tau_{[i]} \\neq \\tau_{[j]}$ for $2 \\leq i < j \\leq N-1$ \\end{itemize} where $V = \\{v_i \\mid 1 \\leq i \\leq N\\}$ is the set of nodes, $\\text{depot} \\in V$ is the starting and ending node, and $c_{ij}$ is the Euclidean distance between $v_i$ and $v_j$.",
+  "algorithm_description": "Pointerformer: an end-to-end deep reinforcement learning algorithm based on a multi-pointer transformer architecture, using a reversible residual network in the encoder and a multi-pointer network in the decoder, trained with a modified REINFORCE algorithm to solve TSP sequentially."
+}

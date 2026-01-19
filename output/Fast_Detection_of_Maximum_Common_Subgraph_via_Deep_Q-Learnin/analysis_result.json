@@ -1,0 +1,45 @@
+{
+  "paper_id": "Fast_Detection_of_Maximum_Common_Subgraph_via_Deep_Q-Learnin",
+  "title": "GLSearch: Maximum Common Subgraph Detection via Learning to Search",
+  "abstract": "Detecting the Maximum Common Subgraph (MCS) between two input graphs is fundamental for applications in drug synthesis, malware detection, cloud computing, etc. However, MCS computation is NP-hard, and state-of-the-art MCS solvers rely on heuristic search algorithms which in practice cannot find good solution for large graph pairs given a limited computation budget. We propose GLSEARCH, a Graph Neural Network (GNN) based learning to search model. Our model is built upon the branch and bound algorithm, which selects one pair of nodes from the two input graphs to expand at a time. Instead of using heuristics, we propose a novel GNN-based Deep Q-Network (DQN) to select the node pair, making the search process faster and more adaptive. To further enhance the training of DQN, we leverage the search process to provide supervision in a pre-training stage and guide our agent during an imitation learning stage. Experiments on synthetic and real-world graph pairs demonstrate that our model learns a search strategy that is able to detect significantly larger common subgraphs than existing MCS solvers given the same computation budget. GLSEARCH can be potentially extended to solve many other combinatorial problems with constraints on graphs.",
+  "problem_description_natural": "The paper addresses the problem of finding the Maximum Common Subgraph (MCS) between two input graphs. The MCS is defined as the largest induced connected subgraph that appears in both graphs, with matching node labels if present, and satisfying the graph isomorphism constraint—meaning the subgraphs extracted from each input graph must be structurally identical (isomorphic). This problem is particularly challenging because it is NP-hard, and exact algorithms become intractable for large graphs. The goal is to find a high-quality (large) common subgraph within a limited computational budget, rather than necessarily the exact optimal solution.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "BA-50",
+    "BA-100",
+    "ER-50",
+    "ER-100",
+    "WS-50",
+    "WS-100",
+    "NC1109",
+    "ROAD 652",
+    "DbEN 1945",
+    "DbZH 1907",
+    "DbPD 1907",
+    "ENRO 3369",
+    "CoPr 3518",
+    "CIRC 4275",
+    "HPPI 2152",
+    "ROAD-CA",
+    "ROAD-TX"
+  ],
+  "performance_metrics": [
+    "Ratio of subgraph size to best solution size",
+    "Best solution size (number of nodes in MCS)"
+  ],
+  "lp_model": {
+    "objective": "$\\max \\sum_{i \\in \\mathcal{V}_1} \\sum_{j \\in \\mathcal{V}_2} x_{i,j}$",
+    "constraints": [
+      "$\\sum_{j \\in \\mathcal{V}_2} x_{i,j} \\leq 1 \\quad \\forall i \\in \\mathcal{V}_1$",
+      "$\\sum_{i \\in \\mathcal{V}_1} x_{i,j} \\leq 1 \\quad \\forall j \\in \\mathcal{V}_2$",
+      "For all $i,k \\in \\mathcal{V}_1$ and $j,l \\in \\mathcal{V}_2$, if $(i,k) \\in \\mathcal{E}_1$ and $(j,l) \\notin \\mathcal{E}_2$, then $x_{i,j} + x_{k,l} \\leq 1$; similarly if $(i,k) \\notin \\mathcal{E}_1$ and $(j,l) \\in \\mathcal{E}_2$, then $x_{i,j} + x_{k,l} \\leq 1$",
+      "If node labels exist, $x_{i,j} = 0$ for all $i,j$ with $l(i) \\neq l(j)$",
+      "The induced subgraph on $\\{ i \\in \\mathcal{V}_1 : \\sum_j x_{i,j} = 1 \\}$ in $\\mathcal{G}_1$ must be connected"
+    ],
+    "variables": [
+      "$x_{i,j} \\in \\{0,1\\}$: binary variable indicating if node $i \\in \\mathcal{V}_1$ is matched to node $j \\in \\mathcal{V}_2$ in the common subgraph"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} & \\max \\sum_{i \\in \\mathcal{V}_1} \\sum_{j \\in \\mathcal{V}_2} x_{i,j} \\\\ & \\text{s.t.} \\\\ & \\sum_{j \\in \\mathcal{V}_2} x_{i,j} \\leq 1, \\quad \\forall i \\in \\mathcal{V}_1 \\\\ & \\sum_{i \\in \\mathcal{V}_1} x_{i,j} \\leq 1, \\quad \\forall j \\in \\mathcal{V}_2 \\\\ & \\text{For all } i,k \\in \\mathcal{V}_1, j,l \\in \\mathcal{V}_2: \\\\ & \\quad \\text{if } (i,k) \\in \\mathcal{E}_1 \\text{ and } (j,l) \\notin \\mathcal{E}_2, \\text{ then } x_{i,j} + x_{k,l} \\leq 1 \\\\ & \\quad \\text{if } (i,k) \\notin \\mathcal{E}_1 \\text{ and } (j,l) \\in \\mathcal{E}_2, \\text{ then } x_{i,j} + x_{k,l} \\leq 1 \\\\ & \\text{If labels exist, } x_{i,j} = 0 \\text{ for all } i,j \\text{ with } l(i) \\neq l(j) \\\\ & \\text{The induced subgraph on } \\{ i \\in \\mathcal{V}_1 : \\sum_j x_{i,j} = 1 \\} \\text{ in } \\mathcal{G}_1 \\text{ is connected} \\end{aligned}$$",
+  "algorithm_description": "GLSEARCH uses a Graph Neural Network-based Deep Q-Network (DQN) to learn a policy for selecting node pairs in a branch and bound search algorithm, enhancing the search process to quickly find large common subgraphs under computation budgets."
+}

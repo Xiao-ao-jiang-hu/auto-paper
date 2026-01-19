@@ -1,0 +1,32 @@
+{
+  "paper_id": "⭐Fast_T2T_Optimization_Consistency_Speeds_Up_Diffusion-Based",
+  "title": "Fast T2T: Optimization Consistency Speeds Up Diffusion-Based Training-to-Testing Solving for Combinatorial Optimization",
+  "abstract": "Diffusion models have recently advanced Combinatorial Optimization (CO) as a powerful backbone for neural solvers. However, their iterative sampling process requiring denoising across multiple noise levels incurs substantial overhead. We propose to learn direct mappings from different noise levels to the optimal solution for a given instance, facilitating high-quality generation with minimal shots. This is achieved through an optimization consistency training protocol, which, for a given instance, minimizes the difference among samples originating from varying generative trajectories and time steps relative to the optimal solution. The proposed model enables fast single-step solution generation while retaining the option of multi-step sampling to trade for sampling quality, which offers a more effective and efficient alternative backbone for neural solvers. In addition, within the training-to-testing (T2T) framework, to bridge the gap between training on historical instances and solving new instances, we introduce a novel consistency-based gradient search scheme during the test stage, enabling more effective exploration of the solution space learned during training. It is achieved by updating the latent solution probabilities under objective gradient guidance during the alternation of noise injection and denoising steps. We refer to this model as Fast T2T. Extensive experiments on two popular tasks, the Traveling Salesman Problem (TSP) and Maximal Independent Set (MIS), demonstrate the superiority of Fast T2T regarding both solution quality and efficiency, even outperforming LKH given limited time budgets. Notably, Fast T2T with merely one-step generation and one-step gradient search can mostly outperform the SOTA diffusion-based counterparts that require hundreds of steps, while achieving tens of times speedup.",
+  "problem_description_natural": "The paper addresses combinatorial optimization (CO) problems, specifically focusing on two canonical examples: the Traveling Salesman Problem (TSP) and the Maximum Independent Set (MIS). In TSP, the goal is to find the shortest possible Hamiltonian cycle (a tour visiting each city exactly once and returning to the start) in a complete weighted graph representing cities and distances. In MIS, the task is to find the largest subset of vertices in an undirected graph such that no two vertices in the subset are adjacent. Both problems involve discrete decision variables and are NP-hard. The authors frame these as conditional generation tasks where a neural model learns to map a problem instance (graph) to a distribution over high-quality or optimal solutions.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "TSP-50",
+    "TSP-100",
+    "TSP-500",
+    "TSP-1000",
+    "RB-[200-300]",
+    "ER-[700-800]"
+  ],
+  "performance_metrics": [
+    "Length",
+    "Drop",
+    "Time",
+    "Size"
+  ],
+  "lp_model": {
+    "objective": "$\\min l(\\mathbf{x}; G)$",
+    "constraints": [
+      "$\\mathbf{x} \\in \\Omega$"
+    ],
+    "variables": [
+      "$\\mathbf{x} \\in \\{0,1\\}^{N \\times 2}$: matrix of binary decision variables, where for edge-decision problems like TSP, $N = n^2$ and each entry $\\mathbf{x}_{i,j}$ corresponds to edge selection; for node-decision problems like MIS, $N = n$ and each entry $\\mathbf{x}_i$ corresponds to node selection."
+    ]
+  },
+  "raw_latex_model": "$$ \\min_{\\mathbf{x} \\in \\{0,1\\}^{N \\times 2}} l(\\mathbf{x}; G) \\quad \\text{s.t.} \\quad \\mathbf{x} \\in \\Omega $$ where for the Traveling Salesman Problem (TSP), $l(\\mathbf{x}; G) = \\sum_{i=1}^n \\sum_{j=1}^n w_{ij} x_{ij}$ with $x_{ij} \\in \\{0,1\\}$, and $\\Omega$ requires $\\mathbf{x}$ to form a Hamiltonian cycle, typically with constraints $\\sum_j x_{ij} = 2$ for all $i$ and subtour elimination constraints. For the Maximal Independent Set (MIS), $l(\\mathbf{x}; G) = -\\sum_{i=1}^n x_i$ (equivalent to maximizing $\\sum_i x_i$) with $x_i \\in \\{0,1\\}$, and $\\Omega$ requires $\\mathbf{x}$ to be an independent set, i.e., $x_i + x_j \\leq 1$ for all edges $(i,j) \\in E$.",
+  "algorithm_description": "Fast T2T is an optimization consistency model that speeds up diffusion-based training-to-testing solving for combinatorial optimization. It learns direct mappings from varying noise levels to optimal solutions using a consistency training protocol, and incorporates a novel gradient search scheme with objective feedback during testing to explore the solution space efficiently."
+}

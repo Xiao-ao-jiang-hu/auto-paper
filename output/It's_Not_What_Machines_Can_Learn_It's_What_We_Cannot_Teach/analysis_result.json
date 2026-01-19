@@ -1,0 +1,30 @@
+{
+  "paper_id": "It's_Not_What_Machines_Can_Learn_It's_What_We_Cannot_Teach",
+  "title": "It’s Not What Machines Can Learn, It’s What We Cannot Teach",
+  "abstract": "This paper investigates whether deep neural networks can learn to solve computationally hard problems, focusing on NP-hard tasks. Under the widely accepted assumption that NP ≠ coNP, the authors prove that any polynomial-time data generator for an NP-hard classification problem necessarily samples from an easier sub-problem in NP ∩ coNP. They demonstrate this issue empirically using Conjunctive Query Containment (CQC), an NP-complete problem, showing that common data generation techniques—such as data augmentation—produce biased datasets that mislead model evaluation. The results imply that machine learning approaches requiring dense, uniform sampling cannot reliably solve NP-hard problems due to the infeasibility of generating large, unbiased training sets.",
+  "problem_description_natural": "The core problem examined is Conjunctive Query Containment (CQC): given two conjunctive database queries p and q, determine whether p(D) ⊆ q(D) for every possible database D. This is a fundamental decision problem in database theory with applications in query optimization, integrity checking, and cache management. The paper uses CQC as a case study to illustrate a broader limitation: when training machine learning models on NP-hard decision problems, efficient (polynomial-time) data generation methods inevitably produce instances from a restricted, easier subset of the problem space, leading to over-optimistic performance estimates and poor generalization to the true problem distribution.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "ALL-CQC",
+    "μ(10, 8)",
+    "AUG"
+  ],
+  "performance_metrics": [
+    "Accuracy",
+    "Cross Entropy Loss"
+  ],
+  "lp_model": {
+    "objective": "Determine the binary label $y$ such that $y=1$ if $p \\subseteq q$ and $y=0$ otherwise",
+    "constraints": [
+      "$p$ and $q$ are conjunctive queries of the form $\\exists x_1, ..., x_n : R_{i_1}(\\ell_1, \\ell_2, \\ell_3) \\land \\cdots \\land R_{i_s}(\\ell_{3s-2}, \\ell_{3s-1}, \\ell_{3s})$ where $\\ell_j$ are variables or constants from a finite set $\\Sigma$",
+      "$p \\subseteq q$ if and only if for every database $D$, $p(D) \\subseteq q(D)$, where $p(D)$ and $q(D)$ are the sets of tuples satisfying $p$ and $q$ on $D$ respectively"
+    ],
+    "variables": [
+      "$p$: first conjunctive query (input)",
+      "$q$: second conjunctive query (input)",
+      "$y \\in \\{0,1\\}$: binary decision variable indicating whether $p \\subseteq q$ (output)"
+    ]
+  },
+  "raw_latex_model": "Given two conjunctive queries $p$ and $q$ over a finite set $\\Sigma$, where each query is of the form $$\\exists x_1, ..., x_n : R_{i_1}(\\ell_1, \\ell_2, \\ell_3) \\land \\cdots \\land R_{i_s}(\\ell_{3s-2}, \\ell_{3s-1}, \\ell_{3s})$$ with $\\ell_j$ being variables or constants, the Conjunctive Query Containment (CQC) problem is to decide if $p \\subseteq q$, meaning that for every database $D$, $p(D) \\subseteq q(D)$.",
+  "algorithm_description": "The paper uses a supervised learning approach with a Recurrent Neural Network (RNN) based on Long Short-Term Memory (LSTM) units to classify query pairs. The model encodes each query into a vector via LSTM layers, computes a difference vector, and passes it through a fully connected layer with sigmoid activation to output a probability indicating whether $p \\subseteq q$."
+}

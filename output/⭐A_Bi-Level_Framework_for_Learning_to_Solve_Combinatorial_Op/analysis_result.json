@@ -1,0 +1,30 @@
+{
+  "paper_id": "⭐A_Bi-Level_Framework_for_Learning_to_Solve_Combinatorial_Op",
+  "title": "A Bi-Level Framework for Learning to Solve Combinatorial Optimization on Graphs",
+  "abstract": "Combinatorial Optimization (CO) has been a long-standing challenging research topic featured by its NP-hard nature. Traditionally such problems are approximately solved with heuristic algorithms which are usually fast but may sacrifice the solution quality. Currently, machine learning for combinatorial optimization (MLCO) has become a trending research topic, but most existing MLCO methods treat CO as a single-level optimization by directly learning the end-to-end solutions, which are hard to scale up and mostly limited by the capacity of ML models given the high complexity of CO. In this paper, we propose a hybrid approach to combine the best of the two worlds, in which a bi-level framework is developed with an upper-level learning method to optimize the graph (e.g. add, delete or modify edges in a graph), fused with a lower-level heuristic algorithm solving on the optimized graph. Such a bi-level approach simplifies the learning on the original hard CO and can effectively mitigate the demand for model capacity. The experiments and results on several popular CO problems like Directed Acyclic Graph scheduling, Graph Edit Distance and Hamiltonian Cycle Problem show its effectiveness over manually designed heuristics and single-level learning methods.",
+  "problem_description_natural": "The paper addresses general combinatorial optimization (CO) problems defined on graphs, where the goal is to find a discrete solution that minimizes a given objective function under problem-specific constraints. Instead of directly learning the solution, the authors reformulate the problem into a bi-level optimization: the upper level uses a reinforcement learning agent to adaptively modify the input graph structure (by adding, deleting, or changing edges), and the lower level applies a traditional heuristic algorithm to solve the CO problem on the modified graph. The upper-level objective is to minimize the original problem's cost evaluated on the solution produced by the heuristic. This approach avoids the need for ground-truth labels and reduces the burden on the learning model by offloading part of the reasoning to the heuristic solver.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "TPC-H",
+    "AIDS",
+    "FHCP"
+  ],
+  "performance_metrics": [
+    "makespan",
+    "graph edit distance",
+    "TSP objective",
+    "found cycles",
+    "relative improvement"
+  ],
+  "lp_model": {
+    "objective": "$\\min_{\\mathbf{x}} f(\\mathbf{x}|\\mathcal{G})$",
+    "constraints": [
+      "$h_i(\\mathbf{x}, \\mathcal{G}) \\leq 0, \\text{for } i = 1...I$"
+    ],
+    "variables": [
+      "$\\mathbf{x}$: decision variable representing the solution to the combinatorial optimization problem"
+    ]
+  },
+  "raw_latex_model": "$$\\min_{\\mathbf{x}} f(\\mathbf{x}|\\mathcal{G}) \\quad s.t. \\quad h_i(\\mathbf{x}, \\mathcal{G}) \\leq 0, \\text{for } i = 1...I$$",
+  "algorithm_description": "A bi-level hybrid machine learning and heuristic approach where reinforcement learning (Proximal Policy Optimization) is used at the upper level to modify the graph structure (e.g., add, delete, or modify edges), and traditional heuristics solve the lower-level combinatorial optimization problem on the modified graph. This framework is applied to specific problems such as DAG scheduling (minimizing makespan with resource and dependency constraints), Graph Edit Distance (minimizing edit cost between graphs), and Hamiltonian Cycle Problem (finding cycles via transformed TSP)."
+}

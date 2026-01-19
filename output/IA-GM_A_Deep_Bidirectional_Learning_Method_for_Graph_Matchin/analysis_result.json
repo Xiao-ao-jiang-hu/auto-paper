@@ -1,0 +1,31 @@
+{
+  "paper_id": "IA-GM_A_Deep_Bidirectional_Learning_Method_for_Graph_Matchin",
+  "title": "IA-GM: A Deep Bidirectional Learning Method for Graph Matching",
+  "abstract": "Existing deep learning methods for graph matching (GM) problems usually considered affinity learning to assist combinatorial optimization in a feedforward pipeline, and parameter learning is executed by back-propagating the gradients of the matching loss. Such a pipeline pays little attention to the possible complementary benefit from the optimization layer to the learning component. In this paper, we overcome the above limitation under a deep bidirectional learning framework. Our method circulates the output of the GM optimization layer to fuse with the input for affinity learning. Such direct feedback enhances the input by a feature enrichment and fusion technique, which exploits and integrates the global matching patterns from the deviation of the similarity permuted by the current matching estimate. As a result, the circulation enables the learning component to benefit from the optimization process, taking advantage of both global feature and the embedding result which is calculated by local propagation through node-neighbors. Moreover, circulation consistency induces an unsupervised loss that can be implemented individually or jointly to regularize the supervised loss. Experiments on challenging datasets demonstrate the effectiveness of our methods for both supervised learning and unsupervised learning.",
+  "problem_description_natural": "The paper addresses the inexact graph matching problem, which involves finding correspondences between nodes of two graphs such that the structural and attribute differences—captured via node-to-node and edge-to-edge similarities—are minimized. This is formulated as Lawler’s Quadratic Assignment Problem (QAP), where the goal is to maximize a quadratic objective function defined over a binary assignment matrix subject to permutation constraints. Due to the NP-hard nature of QAP, exact solutions are intractable for large graphs, so the focus is on learning effective affinity matrices and leveraging iterative bidirectional feedback between a deep learning component (for feature embedding and affinity estimation) and a combinatorial optimization component (e.g., Sinkhorn and Hungarian algorithms) to improve matching accuracy.",
+  "problem_type": "Graph Matching",
+  "datasets": [
+    "PASCAL VOC Keypoints",
+    "CMU House",
+    "CMU Hotel",
+    "Cars",
+    "Motorbikes"
+  ],
+  "performance_metrics": [
+    "Matching Accuracy"
+  ],
+  "lp_model": {
+    "objective": "$\\max \\mathbf{x}^T \\mathbf{K} \\mathbf{x}$",
+    "constraints": [
+      "$\\mathbf{X} \\in \\{0,1\\}^{n_1 \\times n_2}$",
+      "$\\mathbf{X} \\mathbf{1}_{n_2} = \\mathbf{1}_{n_1}$",
+      "$\\mathbf{X}^T \\mathbf{1}_{n_1} \\leq \\mathbf{1}_{n_2}$"
+    ],
+    "variables": [
+      "$\\mathbf{X}$: binary assignment matrix of size $n_1 \\times n_2$ indicating node correspondences between two graphs",
+      "$\\mathbf{x} = \\text{vec}(\\mathbf{X})$: vectorized form of $\\mathbf{X}$"
+    ]
+  },
+  "raw_latex_model": "$$ J(\\mathbf{X}) = \\mathbf{x}^T \\mathbf{K} \\mathbf{x}, \\; \\mathbf{x} = \\text{vec}(\\mathbf{X}), $$ $$ \\mathbf{X} \\in \\{0,1\\}^{n_1 \\times n_2}, \\; \\mathbf{X} \\mathbf{1}_{n_2} = \\mathbf{1}_{n_1}, \\; \\mathbf{X}^T \\mathbf{1}_{n_1} \\leq \\mathbf{1}_{n_2}. $$",
+  "algorithm_description": "The paper proposes IA-GM, a deep bidirectional learning method that alternates between a learning component (using SR-GGNN for graph embedding to learn affinities) and an optimization component (using Sinkhorn normalization and Hungarian algorithm to solve the quadratic assignment problem for graph matching)."
+}

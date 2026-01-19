@@ -1,0 +1,31 @@
+{
+  "paper_id": "Learning_Primal_Heuristics_for_Mixed_Integer_Programs",
+  "title": "Learning Primal Heuristics for Mixed Integer Programs",
+  "abstract": "This paper proposes a novel primal heuristic for Mixed Integer Programs, by employing machine learning techniques. Mixed Integer Programming is a general technique for formulating combinatorial optimization problems. Inside a solver, primal heuristics play a critical role in finding good feasible solutions that enable one to tighten the duality gap from the outset of the Branch-and-Bound algorithm (B&B), greatly improving its performance by pruning the B&B tree aggressively. In this paper, we investigate whether effective primal heuristics can be automatically learned via machine learning. We propose a new method to represent an optimization problem as a graph, and train a Graph Convolutional Network on solved problem instances with known optimal solutions. This in turn can predict the values of decision variables in the optimal solution for an unseen problem instance of a similar type. The prediction of variable solutions is then leveraged by a novel configuration of the B&B method, Probabilistic Branching with guided Depth-first Search (PB-DFS) approach, aiming to find (near-)optimal solutions quickly. The experimental results show that this new heuristic can find better primal solutions at a much earlier stage of the solving process, compared to other state-of-the-art primal heuristics.",
+  "problem_description_natural": "The paper addresses the challenge of efficiently finding high-quality feasible (primal) solutions early in the solving process of Mixed Integer Programs (MIPs), particularly those with binary decision variables. The authors focus on combinatorial optimization problems that can be modeled as MIPs, such as covering problems (e.g., Maximum Independent Set). Their goal is to use machine learning—specifically a Graph Convolutional Network (GCN)—to predict the likelihood that each binary variable takes the value 1 in an optimal solution, based on a graph representation of the problem derived from its constraint matrix. These predictions are then used to guide a customized Branch-and-Bound search strategy (PB-DFS) that prioritizes exploring regions of the search space more likely to contain near-optimal solutions.",
+  "problem_type": "Mixed Integer Linear Programming (MILP) / Combinatorial Optimization",
+  "datasets": [
+    "Generated ER Graphs",
+    "Combinatorial Auction Instances"
+  ],
+  "performance_metrics": [
+    "Average Precision",
+    "Best Solution Objective",
+    "Best Solution Time",
+    "Optimality Gap",
+    "# Instances no feasible solution",
+    "Heuristic Total Time"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\sum_{j=1}^n c_j x_j$",
+    "constraints": [
+      "$\\sum_{j=1}^n A_{ij} x_j \\leq b_i, \\quad \\forall i=1,\\ldots,m$",
+      "$x_j \\in \\{0,1\\}, \\quad \\forall j=1,\\ldots,n$"
+    ],
+    "variables": [
+      "$x_j$: binary decision variable for $j=1,\\ldots,n$"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} & \\min \\sum_{j=1}^n c_j x_j \\\\ & \\text{s.t.} \\quad \\sum_{j=1}^n A_{ij} x_j \\leq b_i, \\quad \\forall i=1,\\ldots,m \\\\ & \\qquad x_j \\in \\{0,1\\}, \\quad \\forall j=1,\\ldots,n \\end{aligned}$$",
+  "algorithm_description": "The paper proposes a primal heuristic for Mixed Integer Programs (MIPs) called Probabilistic Branching with guided Depth-first Search (PB-DFS). It uses a Graph Convolutional Network (GCN) trained on solved instances to predict the probability of each binary variable being 1 in the optimal solution. These probabilities are then used to guide the Branch-and-Bound search: branching on variables with the highest confidence (max(p,1-p)) and using a depth-first search that explores the child node corresponding to the nearest integer to the predicted probability first."
+}

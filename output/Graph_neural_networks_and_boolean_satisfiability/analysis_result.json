@@ -1,0 +1,26 @@
+{
+  "paper_id": "Graph_neural_networks_and_boolean_satisfiability",
+  "title": "Graph Neural Networks and Boolean Satisfiability",
+  "abstract": "In this paper we explore whether or not deep neural architectures can learn to classify Boolean satisfiability (SAT). We devote considerable time to discussing the theoretical properties of SAT. Then, we define a graph representation for Boolean formulas in conjunctive normal form, and train neural classifiers over general graph structures called Graph Neural Networks, or GNNs, to recognize features of satisfiability. To the best of our knowledge this has never been tried before. Our preliminary findings are potentially profound. In a weakly-supervised setting, that is, without problem specific feature engineering, Graph Neural Networks can learn features of satisfiability.",
+  "problem_description_natural": "The paper investigates whether Graph Neural Networks (GNNs) can learn to classify the satisfiability of Boolean formulas given in conjunctive normal form (CNF). The Boolean satisfiability (SAT) problem asks whether there exists an assignment of truth values to variables that makes a given Boolean formula evaluate to true. The authors represent CNF formulas as undirected variable-variable graphs, where nodes correspond to literals and edges indicate co-occurrence in clauses, and then apply GNNs to predict if a formula is satisfiable (SAT) or unsatisfiable (UNSAT). This is framed as a binary graph classification task without explicit feature engineering, relying solely on the relational structure of the formula encoded in the graph.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "RAND-SAT"
+  ],
+  "performance_metrics": [
+    "Train Error",
+    "Validation Error",
+    "Test Accuracy"
+  ],
+  "lp_model": {
+    "objective": "$\\max_{x \\in \\{-1,1\\}^N} \\mathrm{SAT}_W(x)$",
+    "constraints": [
+      "$x_j \\in \\{-1,1\\}, \\quad \\forall j=1,\\ldots,N$"
+    ],
+    "variables": [
+      "$x_j$: binary decision variable representing the truth assignment to Boolean variable $x_j$, where $x_j = 1$ if true and $x_j = -1$ if false"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} \\text{maximize} \\quad & \\mathrm{SAT}_W(x) = \\theta\\left(\\sum_{i=1}^M \\theta\\left(W_{i,\\cdot} \\cdot x + W_{i,\\cdot}^2 \\cdot x^2 - 0.5\\right) - M + 0.5\\right) \\\\ \\text{subject to} \\quad & x_j \\in \\{-1,1\\}, \\quad j=1,\\ldots,N \\end{aligned}$$",
+  "algorithm_description": "The paper uses two main methods: (1) A circuit solver (Appendix A) that approximates the step function $\\theta$ with the sigmoid function and binary variables with continuous variables via $\\tanh$, then uses gradient-based optimization to maximize the approximated function $\\mathrm{APPROXSAT}_W(\\hat{x})$. The continuous solution is rounded to a binary assignment. (2) Graph Neural Networks (GNNs) are trained on graph representations of CNF formulas to classify instances as satisfiable or unsatisfiable, without explicit feature engineering."
+}

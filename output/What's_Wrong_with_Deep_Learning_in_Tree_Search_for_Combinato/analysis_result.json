@@ -1,0 +1,54 @@
+{
+  "paper_id": "What's_Wrong_with_Deep_Learning_in_Tree_Search_for_Combinato",
+  "title": "WHAT’S WRONG WITH DEEP LEARNING IN TREE SEARCH FOR COMBINATORIAL OPTIMIZATION",
+  "abstract": "Combinatorial optimization lies at the core of many real-world problems. Especially since the rise of graph neural networks (GNNs), the deep learning community has been developing solvers that derive solutions to NP-hard problems by learning the problem-specific solution structure. However, reproducing the results of these publications proves to be difficult. We make three contributions. First, we present an open-source benchmark suite for the NP-hard MAXIMUM INDEPENDENT SET problem, in both its weighted and unweighted variants. The suite offers a unified interface to various state-of-the-art traditional and machine learning-based solvers. Second, using our benchmark suite, we conduct an in-depth analysis of the popular guided tree search algorithm by Li et al. [NeurIPS 2018], testing various configurations on small and large synthetic and real-world graphs. By re-implementing their algorithm with a focus on code quality and extensibility, we show that the graph convolution network used in the tree search does not learn a meaningful representation of the solution structure, and can in fact be replaced by random values. Instead, the tree search relies on algorithmic techniques like graph kernelization to find good solutions. Thus, the results from the original publication are not reproducible. Third, we extend the analysis to compare the tree search implementations to other solvers, showing that the classical algorithmic solvers often are faster, while providing solutions of similar quality. Additionally, we analyze a recent solver based on reinforcement learning and observe that for this solver, the GNN is responsible for the competitive solution quality.",
+  "problem_description_natural": "The paper focuses on the Maximum (Weighted) Independent Set (MIS/MWIS) problem. Given an undirected graph, the goal is to find a subset of vertices such that no two vertices in the subset are adjacent, and the total weight (or cardinality in the unweighted case) of the subset is maximized. This is a classic NP-hard combinatorial optimization problem with applications in various domains including scheduling, resource allocation, and network design.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "ER",
+    "BA",
+    "HK",
+    "WS",
+    "HRG",
+    "SATLIB",
+    "VC-BM",
+    "DIMACS",
+    "PPI",
+    "as-Caida",
+    "REDDIT-B",
+    "REDDIT-5K",
+    "REDDIT-12K",
+    "wiki-RfA",
+    "wiki-Vote",
+    "PubMed",
+    "Cora",
+    "Citeseer",
+    "bitcoin-alpha",
+    "bitcoin-otc",
+    "ego-facebook",
+    "roadnet-berlin",
+    "DBLP",
+    "roadnet-pennsylvania",
+    "ego-gplus",
+    "web-google",
+    "Amazon MWIS"
+  ],
+  "performance_metrics": [
+    "Average MIS size",
+    "Average approximation factor",
+    "Average time to best solution (seconds)",
+    "Number of graphs solved"
+  ],
+  "lp_model": {
+    "objective": "$\\max \\sum_{v \\in V} w_v x_v$",
+    "constraints": [
+      "$x_u + x_v \\leq 1 \\quad \\forall (u,v) \\in E$",
+      "$x_v \\in \\{0,1\\} \\quad \\forall v \\in V$"
+    ],
+    "variables": [
+      "$x_v$: binary decision variable indicating whether vertex $v$ is included in the independent set ($x_v = 1$) or not ($x_v = 0$)"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} \\max & \\sum_{v \\in V} w_v x_v \\\\ \\text{s.t.} & x_u + x_v \\leq 1 \\quad \\forall (u,v) \\in E \\\\ & x_v \\in \\{0,1\\} \\quad \\forall v \\in V \\end{aligned}$$",
+  "algorithm_description": "The paper evaluates machine learning-based solvers for the Maximum (Weighted) Independent Set problem, including supervised tree search algorithms (Intel-TreeSearch and DGL-TreeSearch) that use Graph Convolutional Networks (GCNs) to guide the search by predicting vertex probabilities, and a reinforcement learning approach (Learning What to Defer) that employs an unsupervised agent. These are compared to traditional solvers like the exact solver Gurobi and the heuristic solver KaMIS, which use algorithmic techniques such as branch-and-bound and graph kernelization."
+}

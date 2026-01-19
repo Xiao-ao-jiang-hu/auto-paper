@@ -1,0 +1,43 @@
+{
+  "paper_id": "Neural_Combinatorial_Optimization_for_Robust_Routing_Problem",
+  "title": "Neural Combinatorial Optimization for Robust Routing Problem with Uncertain Travel Times",
+  "abstract": "We consider the robust routing problem with uncertain travel times under the min-max regret criterion, which represents an extended and robust version of the classic traveling salesman problem (TSP) and vehicle routing problem (VRP). The general budget uncertainty set is employed to capture the uncertainty, which provides the capability to control the conservatism of obtained solutions and covers the commonly used interval uncertainty set as a special case. The goal is to obtain a robust solution that minimizes the maximum deviation from the optimal routing time in the worst-case scenario. Given the significant advancements and broad applications of neural combinatorial optimization methods in recent years, we present our initial attempt to combine neural approaches for solving this problem. We propose a dual multi-head cross attention mechanism to extract problem features represented by the inputted uncertainty sets. To tackle the built-in maximization problem, we derive the regret value by invoking a pre-trained model, subsequently utilizing it as the reward during the model training. Our experimental results on the robust TSP and VRP demonstrate the efficacy of our neural combinatorial optimization method, showcasing its ability to efficiently handle the robust routing problem of various sizes within a shorter time compared with alternative heuristic approaches.",
+  "problem_description_natural": "The paper addresses a robust variant of routing problems—specifically the Traveling Salesman Problem (TSP) and Capacitated Vehicle Routing Problem (VRP)—where travel times on edges are uncertain. Instead of fixed travel times, each edge has a range defined by lower and upper bounds. The uncertainty is modeled using a budget uncertainty set, which limits the number of edges that can simultaneously take their worst-case (upper-bound) values via a parameter Γ. The objective is to find a route that minimizes the maximum regret across all possible realizations of travel times within the uncertainty set. Regret is defined as the difference between the cost of the chosen solution in a given scenario and the cost of the optimal solution for that same scenario. This leads to a min-max regret formulation, which avoids overly conservative solutions while ensuring robustness against worst-case deviations.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "R-20-10",
+    "R-30-10",
+    "R-40-10",
+    "R-50-10",
+    "R-20-100",
+    "R-30-100",
+    "R-40-100",
+    "R-50-100",
+    "R-20-1000",
+    "R-30-1000",
+    "R-40-1000",
+    "R-50-1000"
+  ],
+  "performance_metrics": [
+    "Obj",
+    "Gap",
+    "Time"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\sum_{(i,j)\\in E} t_{ij}^+ x_{ij} - r$",
+    "constraints": [
+      "$r \\leq \\sum_{(i,j)\\in E} y_{ij} t_{ij}^- + \\sum_{(i,j)\\in E} y_{ij} (t_{ij}^+ - t_{ij}^-) x_{ij}, \\quad \\forall y \\in \\mathbb{S}$",
+      "$\\sum_{i \\in V, i \\neq j} x_{ij} = 1, \\quad \\forall j \\in V$",
+      "$\\sum_{j \\in V, j \\neq i} x_{ij} = 1, \\quad \\forall i \\in V$",
+      "$\\sum_{i,j \\in S} x_{ij} \\leq |S| - 1, \\quad \\forall S \\subsetneq V, S \\neq \\emptyset$",
+      "$x_{ij} \\in \\{0,1\\}, \\quad \\forall (i,j) \\in E$",
+      "$r \\in \\mathcal{R}$"
+    ],
+    "variables": [
+      "$x_{ij}$: binary decision variable indicating if edge $(i,j)$ is used in the robust TSP route",
+      "$r$: free real variable representing the regret value"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} &\\min \\quad \\sum_{(i,j)\\in E} t_{ij}^+ x_{ij} - r \\\\ &\\text{s.t.} \\quad r \\leq \\sum_{(i,j)\\in E} y_{ij} t_{ij}^- + \\sum_{(i,j)\\in E} y_{ij} (t_{ij}^+ - t_{ij}^-) x_{ij}, \\quad \\forall y \\in \\mathbb{S} \\\\ &\\quad \\quad \\sum_{i \\in V, i \\neq j} x_{ij} = 1, \\quad \\forall j \\in V \\\\ &\\quad \\quad \\sum_{j \\in V, j \\neq i} x_{ij} = 1, \\quad \\forall i \\in V \\\\ &\\quad \\quad \\sum_{i,j \\in S} x_{ij} \\leq |S| - 1, \\quad \\forall S \\subsetneq V, S \\neq \\emptyset \\\\ &\\quad \\quad x_{ij} \\in \\{0,1\\}, \\quad \\forall (i,j) \\in E \\\\ &\\quad \\quad r \\in \\mathcal{R} \\end{aligned}$$",
+  "algorithm_description": "The paper proposes a neural combinatorial optimization method using an encoder-decoder model with a dual multi-head cross attention mechanism to extract features from uncertainty sets (upper and lower bound matrices). It employs deep reinforcement learning (REINFORCE algorithm with POMO training) to train the policy network, and uses a pre-trained TSP model to efficiently approximate the reward (max-regret) during training by solving the inner TSP problem under worst-case scenarios."
+}

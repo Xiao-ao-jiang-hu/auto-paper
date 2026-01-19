@@ -1,0 +1,27 @@
+{
+  "paper_id": "Reversible_Action_Design_for_Combinatorial_Optimization_with",
+  "title": "Reversible Action Design for Combinatorial Optimization with Reinforcement Learning",
+  "abstract": "Combinatorial optimization problem (COP) over graphs is a fundamental challenge in optimization. Reinforcement learning (RL) has recently emerged as a new framework to tackle these problems and has demonstrated promising results. However, most RL solutions employ a greedy manner to construct the solution incrementally, thus inevitably pose unnecessary dependency on action sequences and need a lot of problem-specific designs. We propose a general RL framework that not only exhibits state-of-the-art empirical performance but also generalizes to a variety of class of COPs. Specifically, we define state as a solution to a problem instance and action as a perturbation to this solution. We utilize graph neural networks (GNN) to extract latent representations for given problem instances for state-action encoding, and then apply deep Q-learning to obtain a policy that gradually refines the solution by flipping or swapping vertex labels. Experiments are conducted on Maximum $k$-Cut and Traveling Salesman Problem and performance improvement is achieved against a set of learning-based and heuristic baselines.",
+  "problem_description_natural": "The paper addresses combinatorial optimization problems (COPs) defined over weighted graphs, where the goal is to find a discrete assignment (or labeling) of vertices that optimizes a given objective function. Two representative problems are studied: (1) Maximum $k$-Cut, which seeks to partition the graph's vertices into $k$ disjoint subsets to maximize the total weight of edges between different subsets; and (2) the Traveling Salesman Problem (TSP), which aims to find the shortest possible tour that visits each vertex exactly once and returns to the starting point. The proposed method treats any complete candidate solution as a state and improves it iteratively through reversible actions—such as flipping a vertex’s label (for $k$-Cut) or swapping segments of a tour (for TSP)—guided by a reinforcement learning policy.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "TSPLIB",
+    "Generated k-clustered graphs",
+    "Complete graphs with Euclidean distances"
+  ],
+  "performance_metrics": [
+    "Approximation ratio"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\sum_{c=1}^k \\sum_{i,j: l_i = l_j = c} w_{ij}$",
+    "constraints": [
+      "$l_i \\in \\{1, 2, \\dots, k\\} \\quad \\forall i \\in V$",
+      "$|\\{ i \\in V : l_i = c \\}| = s_c \\quad \\forall c \\in \\{1, \\dots, k\\}$ where $s_c$ are given constants for cluster sizes"
+    ],
+    "variables": [
+      "$l_i$: integer decision variable representing the cluster assignment of vertex $i$, for $i \\in V$"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} \\text{Minimize} & \\quad \\sum_{c=1}^k \\sum_{i,j: l_i = l_j = c} w_{ij} \\\\ \\text{Subject to} & \\quad l_i \\in \\{1, 2, \\dots, k\\} \\quad \\forall i \\in V \\\\ & \\quad |\\{ i \\in V : l_i = c \\}| = s_c \\quad \\forall c \\in \\{1, \\dots, k\\} \\\\ \\text{where} & \\quad w_{ij} \\text{ is the weight of edge } (i,j), \\text{ and } s_c \\text{ are given cluster sizes.} \\end{aligned}$$",
+  "algorithm_description": "Reinforcement learning framework with reversible actions (flipping or swapping vertex labels), using graph neural networks for state-action encoding and deep Q-learning to learn a policy that iteratively improves solutions from an initial state."
+}

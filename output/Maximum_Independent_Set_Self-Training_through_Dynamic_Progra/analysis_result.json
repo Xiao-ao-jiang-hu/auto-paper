@@ -1,0 +1,28 @@
+{
+  "paper_id": "Maximum_Independent_Set_Self-Training_through_Dynamic_Progra",
+  "title": "Maximum Independent Set: Self-Training through Dynamic Programming",
+  "abstract": "This work presents a graph neural network (GNN) framework for solving the maximum independent set (MIS) problem, inspired by dynamic programming (DP). Specifically, given a graph, we propose a DP-like recursive algorithm based on GNNs that firstly constructs two smaller sub-graphs, predicts the one with the larger MIS, and then uses it in the next recursive call. To train our algorithm, we require annotated comparisons of different graphs concerning their MIS size. Annotating the comparisons with the output of our algorithm leads to a self-training process that results in more accurate self-annotation of the comparisons and vice versa. We provide numerical evidence showing the superiority of our method vs prior methods in multiple synthetic and real-world datasets.",
+  "problem_description_natural": "The paper addresses the Maximum Independent Set (MIS) problem: given an undirected graph, find a set of vertices of maximum cardinality such that no two vertices in the set are adjacent. This is a classic NP-hard combinatorial optimization problem. The authors propose a recursive, dynamic programming-inspired algorithm that, at each step, selects a vertex and creates two subgraphs—one with the vertex removed and another with all its neighbors removed—and uses a learned graph-comparing function (implemented via a GNN) to decide which subgraph likely has the larger MIS. The algorithm proceeds recursively until an independent set is formed. The key innovation is a self-training approach where the model labels its own training data by comparing subgraphs generated during inference, avoiding the need for expensive ground-truth MIS annotations.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "COLLAB",
+    "TWITTER",
+    "RB",
+    "SPECIAL"
+  ],
+  "performance_metrics": [
+    "approximation ratio"
+  ],
+  "lp_model": {
+    "objective": "$\\max \\sum_{v \\in V} x_v$",
+    "constraints": [
+      "$x_u + x_v \\leq 1$ for every edge $(u,v) \\in E$",
+      "$x_v \\in \\{0,1\\}$ for every vertex $v \\in V$"
+    ],
+    "variables": [
+      "$x_v$: binary decision variable indicating whether vertex $v$ is included in the independent set $S$"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} \\text{Maximize} & \\sum_{v \\in V} x_v \\\\ \\text{subject to} & \\quad x_u + x_v \\leq 1 \\quad \\forall (u,v) \\in E, \\\\ & \\quad x_v \\in \\{0,1\\} \\quad \\forall v \\in V. \\end{aligned}$$",
+  "algorithm_description": "The paper proposes a self-training graph neural network (GNN) framework inspired by dynamic programming (DP) for solving the Maximum Independent Set (MIS) problem. A GNN-based comparator function is trained to predict which of two subgraphs has a larger MIS size. This comparator guides a recursive DP-like algorithm (Algorithm 1) that, at each step, selects a vertex and chooses to remove either that vertex or its neighbors based on the comparator's prediction. The training is self-supervised: the algorithm's own outputs (via roll-outs) are used to generate labels for graph pairs, which are then used to update the comparator in an iterative process."
+}

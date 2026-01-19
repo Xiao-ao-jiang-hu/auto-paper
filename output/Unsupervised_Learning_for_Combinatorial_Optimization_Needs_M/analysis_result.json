@@ -1,0 +1,34 @@
+{
+  "paper_id": "Unsupervised_Learning_for_Combinatorial_Optimization_Needs_M",
+  "title": "Unsupervised Learning for Combinatorial Optimization Needs Meta Learning",
+  "abstract": "Current unsupervised learning frameworks for combinatorial optimization (CO) train neural networks to directly output solutions by optimizing an average performance over historical problem instances. This approach misaligns with the practical goal of CO, which requires high-quality solutions for every individual instance—even out-of-distribution ones. The authors propose a new objective: instead of producing direct solutions, the model should learn a good initialization that can be quickly fine-tuned for any new instance. They implement this via a meta-learning pipeline inspired by MAML, extending the Erdős-Goes-Neural (EGN) framework to create Meta-EGN. Experiments on max clique, vertex cover, and max independent set problems show that Meta-EGN outperforms existing learning-based methods, greedy baselines, and Gurobi, especially under distribution shifts and large-scale settings. Notably, even without fine-tuning, Meta-EGN’s initial solutions surpass prior methods, suggesting meta-learning encourages adaptability across diverse optimization landscapes.",
+  "problem_description_natural": "The paper addresses combinatorial optimization (CO) problems defined on graphs, where the goal is to select a subset of nodes that minimizes (or maximizes) a given cost function while satisfying feasibility constraints. Examples include the Maximum Independent Set (MIS), Minimum Vertex Cover, and Maximum Clique problems. Each problem instance is a graph, and the solution is a binary vector indicating selected nodes. Traditional unsupervised learning methods train a neural network to minimize an average loss over a distribution of training graphs, but this fails to guarantee good performance on individual test instances—especially when they differ in size or structure from training data. The proposed method reframes learning as finding a model initialization that enables rapid adaptation (via fine-tuning) to any new instance, ensuring high-quality instance-wise solutions.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "Twitter",
+    "COLLAB",
+    "IMDB",
+    "RB200",
+    "RB500",
+    "RB1000",
+    "RB2000",
+    "RB5000",
+    "Random-Regular Graphs (RRGs)"
+  ],
+  "performance_metrics": [
+    "Approximation Rate (ApR)"
+  ],
+  "lp_model": {
+    "objective": "$\\min_{X} f(X; G)$ or $\\max_{X} f(X; G)$ depending on the specific problem",
+    "constraints": [
+      "$X \\in \\Omega$",
+      "$\\Omega \\subseteq \\{0,1\\}^n$ is the feasible set defined by problem-specific constraints",
+      "$X_i \\in \\{0,1\\}$ for $i=1,\\ldots,n$"
+    ],
+    "variables": [
+      "$X_i \\in \\{0,1\\}$ for $i=1,\\ldots,n$: binary decision variable indicating if node $i$ is selected in the solution subset"
+    ]
+  },
+  "raw_latex_model": "The general combinatorial optimization problem on a graph $G(V,E)$ with $V = \\{1,2,\\ldots,n\\}$ is defined as: $$ \\min_{X \\in \\{0,1\\}^n} f(X; G) \\quad \\text{s.t.} \\quad X \\in \\Omega $$ where $X = (X_i)_{1 \\le i \\le n}$ and $\\Omega$ is the feasible set. Specific problems studied in the paper include: \\n- Max Clique (MC): $$ \\max_X \\sum_{i=1}^n X_i \\quad \\text{s.t.} \\quad X_i + X_j \\leq 1 \\text{ for all } (i,j) \\notin E $$\\n- Minimum Vertex Cover (MVC): $$ \\min_X \\sum_{i=1}^n X_i \\quad \\text{s.t.} \\quad X_i + X_j \\geq 1 \\text{ for all } (i,j) \\in E $$\\n- Max Independent Set (MIS): $$ \\max_X \\sum_{i=1}^n X_i \\quad \\text{s.t.} \\quad X_i + X_j \\leq 1 \\text{ for all } (i,j) \\in E $$",
+  "algorithm_description": "Meta-EGN, a meta-learning-based unsupervised learning method that extends the EGN framework. It uses MAML (Model-Agnostic Meta-Learning) to train a graph neural network to learn good parameter initializations, enabling fast adaptation via fine-tuning for instance-wise good solutions to combinatorial optimization problems on graphs, rather than optimizing for averaged performance over training instances."
+}

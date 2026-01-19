@@ -1,0 +1,29 @@
+{
+  "paper_id": "Solving_3D_bin_packing_problem_via_multimodal_deep_reinforce",
+  "title": "Solving 3D Bin Packing Problem via Multimodal Deep Reinforcement Learning",
+  "abstract": "Recently, there is growing attention on applying deep reinforcement learning (DRL) to solve the 3D bin packing problem (3D BPP), given its favorable generalization and independence of ground-truth label. However, due to the relatively less informative yet computationally heavy encoder, and considerably large action space inherent to the 3D BPP, existing methods are only able to handle up to 50 boxes. In this paper, we propose to alleviate this issue via an end-to-end multimodal DRL agent, which sequentially addresses three sub-tasks of sequence, orientation and position, respectively. The resulting architecture enables the agent to solve large-scale instances of 100 boxes or more. Experiments show that the agent could learn highly efficient policies that deliver superior performance against all the baselines on instances of various scales.",
+  "problem_description_natural": "The 3D bin packing problem (3D BPP) involves packing a set of cuboid boxes into a single bin such that: (1) no two boxes overlap, (2) all boxes fit within the bin's dimensions, and (3) each box is placed in one allowed orientation. The objective is to minimize the maximum stacked height of the packed boxes, which is equivalent to maximizing the bin's utilization rate. This problem is strongly NP-hard, making exact solutions impractical for large instances, and thus approximate methods—particularly deep reinforcement learning—are explored to generate high-quality packing policies.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "Generated Random Instances"
+  ],
+  "performance_metrics": [
+    "Utilization Rate"
+  ],
+  "lp_model": {
+    "objective": "$\\min H$",
+    "constraints": [
+      "$0 \\leq x_i \\leq L - l_i, \\quad \\forall i \\in I$",
+      "$0 \\leq y_i \\leq W - w_i, \\quad \\forall i \\in I$",
+      "$0 \\leq z_i, \\quad \\forall i \\in I$",
+      "$z_i + h_i \\leq H, \\quad \\forall i \\in I$",
+      "$\\forall i \\neq j, \\quad (x_i + l_i \\leq x_j) \\lor (x_j + l_j \\leq x_i) \\lor (y_i + w_i \\leq y_j) \\lor (y_j + w_j \\leq y_i) \\lor (z_i + h_i \\leq z_j) \\lor (z_j + h_j \\leq z_i)$"
+    ],
+    "variables": [
+      "$x_i, y_i, z_i$: continuous variables for the position of box $i$",
+      "$H$: continuous variable for the maximum stacked height"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned}\\min & \\quad H \\\\\\text{s.t.} & \\quad 0 \\leq x_i \\leq L - l_i, \\quad \\forall i \\in I \\\\& \\quad 0 \\leq y_i \\leq W - w_i, \\quad \\forall i \\in I \\\\& \\quad 0 \\leq z_i, \\quad \\forall i \\in I \\\\& \\quad z_i + h_i \\leq H, \\quad \\forall i \\in I \\\\& \\quad \\forall i \\neq j, \\quad (x_i + l_i \\leq x_j) \\lor (x_j + l_j \\leq x_i) \\lor (y_i + w_i \\leq y_j) \\lor (y_j + w_j \\leq y_i) \\lor (z_i + h_i \\leq z_j) \\lor (z_j + h_j \\leq z_i)\\end{aligned}$$",
+  "algorithm_description": "The paper proposes a multimodal deep reinforcement learning (DRL) agent with an encoder-decoder architecture. The encoder consists of a sparse attention sub-encoder for box states and a CNN sub-encoder for view states (top-down bin layout). The decoder sequentially handles three sub-tasks: selecting box sequence, orientation, and position, using action representation learning to manage large action spaces. Training employs A2C with Generalized Advantage Estimation (GAE) and supervised learning for action representation."
+}

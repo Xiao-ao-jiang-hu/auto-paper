@@ -1,0 +1,36 @@
+{
+  "paper_id": "NeuroComb_Improving_SAT_Solving_with_Graph_Neural_Networks",
+  "title": "NEUROBACK: IMPROVING CDCL SAT SOLVING USING GRAPH NEURAL NETWORKS",
+  "abstract": "Propositional satisfiability (SAT) is an NP-complete problem that impacts many research fields, such as planning, verification, and security. Mainstream modern SAT solvers are based on the Conflict-Driven Clause Learning (CDCL) algorithm. Recent work aimed to enhance CDCL SAT solvers using Graph Neural Networks (GNNs). However, so far this approach either has not made solving more effective, or required substantial GPU resources for frequent online model inferences. Aiming to make GNN improvements practical, this paper proposes an approach called NeuroBack, which builds on two insights: (1) predicting phases (i.e., values) of variables appearing in the majority (or even all) of the satisfying assignments are essential for CDCL SAT solving, and (2) it is sufficient to query the neural model only once for the predictions before the SAT solving starts. Once trained, the offline model inference allows NeuroBack to execute exclusively on the CPU, removing its reliance on GPU resources. To train NeuroBack, a new dataset called DataBack containing 120,286 data samples is created. NeuroBack is implemented as an enhancement to a state-of-the-art SAT solver called Kissat. As a result, it allowed Kissat to solve up to 5.2% and 7.4% more problems on two recent SAT competition problem sets, SATCOMP-2022 and SATCOMP-2023, respectively. NeuroBack therefore shows how machine learning can be harnessed to improve SAT solving in an effective and practical manner.",
+  "problem_description_natural": "The paper addresses the propositional satisfiability (SAT) problem, which involves determining whether there exists an assignment of truth values to Boolean variables that satisfies a given Boolean formula in conjunctive normal form (CNF). The focus is on improving the efficiency and effectiveness of Conflict-Driven Clause Learning (CDCL) SAT solvers by enhancing their phase selection heuristic—i.e., choosing the initial truth value (phase) for decision variables during the search. NeuroBack uses a Graph Neural Network trained offline to predict variable phases that are consistent across most or all satisfying assignments (generalized backbone variables), and applies these predictions once at the start of the solving process to guide the solver without requiring repeated neural inference during search.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "DataBack",
+    "CNFgen",
+    "SATLIB",
+    "MCCOMP",
+    "SATCOMP-2022",
+    "SATCOMP-2023",
+    "SATCOMP (random)",
+    "SATCOMP (main)"
+  ],
+  "performance_metrics": [
+    "precision",
+    "recall",
+    "F1",
+    "accuracy",
+    "number of solved problems",
+    "solving time"
+  ],
+  "lp_model": {
+    "objective": "Find an assignment $x$ that satisfies all clauses of the CNF formula $\\phi$",
+    "constraints": [
+      "$\\sum_{i \\in P_j} x_i + \\sum_{i \\in N_j} (1 - x_i) \\geq 1, \\quad \\forall j = 1, \\ldots, m$"
+    ],
+    "variables": [
+      "$x_i \\in \\{0,1\\}$: binary decision variable for each variable $v_i$, where $x_i = 1$ if $v_i$ is true, and $0$ if false"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned}\n\\text{Given a CNF formula } \\phi \\text{ with } n \\text{ variables } v_1, \\ldots, v_n \\text{ and } m \\text{ clauses } C_1, \\ldots, C_m, \\\\\n\\text{where each clause } C_j \\text{ is defined by sets } P_j \\text{ (variables appearing positively) and } N_j \\text{ (variables appearing negatively)}, \\\\\n\\text{find } x \\in \\{0,1\\}^n \\text{ such that:} \\\\\n\\sum_{i \\in P_j} x_i + \\sum_{i \\in N_j} (1 - x_i) \\geq 1, \\quad \\forall j = 1, \\ldots, m.\n\\end{aligned}$$",
+  "algorithm_description": "NeuroBack uses a Graph Neural Network (GNN) model trained on a dataset of SAT formulas to predict the phases (truth values) of variables, with a focus on backbone variables. These predictions are made offline, before the SAT solving process begins, and are used to initialize the phase selection heuristic in the CDCL SAT solver Kissat. This approach enhances the solver's effectiveness without requiring GPU resources during solving."
+}

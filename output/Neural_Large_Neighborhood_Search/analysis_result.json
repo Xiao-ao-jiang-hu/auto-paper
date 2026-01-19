@@ -1,0 +1,30 @@
+{
+  "paper_id": "Neural_Large_Neighborhood_Search",
+  "title": "Neural Large Neighborhood Search",
+  "abstract": "This paper proposes a reinforcement learning (RL) approach to automatically learn problem-specific neighborhood selection policies for Large Neighborhood Search (LNS), a powerful local search paradigm for combinatorial optimization. The method, called Neural Large Neighborhood Search (NLNS), uses a graph convolutional neural network (GCNN) to select which variables to unassign ('destroy') in each LNS iteration when solving Mixed Integer Programs (MIPs). The policy is trained using the V-trace off-policy actor-critic algorithm with a reward based on the primal integral, which balances solution quality and computational effort. Experiments on four benchmark MIP datasets show that NLNS outperforms strong baselines—including Random, Least-Integral, Most-Integral, and a modified RINS—both as a standalone optimizer and as a primal heuristic within branch-and-bound, achieving up to 4.5× improvement in primal integral.",
+  "problem_description_natural": "The optimization problem addressed is Mixed Integer Programming (MIP), an NP-complete combinatorial optimization problem. Given a MIP instance and an initial feasible solution, the goal is to iteratively improve the solution by repeatedly selecting a subset of integer variables to 'destroy' (i.e., unassign), then solving the resulting smaller sub-MIP (the 'repair' step) using an off-the-shelf solver. The challenge lies in choosing which variables to destroy at each step so that the repair step yields significant objective improvement without excessive computational cost. The proposed method learns a destroy policy via reinforcement learning that adapts to the structure of specific problem domains.",
+  "problem_type": "Mixed Integer Linear Programming (MILP)",
+  "datasets": [
+    "caution",
+    "facilities",
+    "indset",
+    "setcover"
+  ],
+  "performance_metrics": [
+    "primal integral",
+    "primal gap"
+  ],
+  "lp_model": {
+    "objective": "$\\min d^T x$",
+    "constraints": [
+      "$A x \\leq b$",
+      "$x_i \\in \\mathbb{Z}$ for all integer variables $i$",
+      "$x_j \\in \\mathbb{R}$ for all continuous variables $j$"
+    ],
+    "variables": [
+      "$x \\in \\mathbb{R}^n$: decision vector with mixed integer constraints, where some components are integer and some are continuous"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} \\min_{x} \\quad & d^T x \\\\ \\text{s.t.} \\quad & A x \\leq b \\\\ & x_i \\in \\mathbb{Z}, \\quad \\forall i \\in I \\\\ & x_j \\in \\mathbb{R}, \\quad \\forall j \\in C \\end{aligned}$$ where $I$ and $C$ partition the index set $\\{1, \\ldots, n\\}$ into integer and continuous variables, respectively.",
+  "algorithm_description": "Neural Large Neighborhood Search (NLNS) uses reinforcement learning with a graph convolutional neural network policy to learn a neighborhood selection policy for Large Neighborhood Search (LNS) on mixed integer programs, guiding an existing solver to efficiently find high-quality solutions."
+}

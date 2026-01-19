@@ -1,0 +1,32 @@
+{
+  "paper_id": "⭐Unify_ML4TSP_Drawing_Methodological_Principles_for_TSP_and_",
+  "title": "UNIFY ML4TSP: DRAWING METHODOLOGICAL PRINCIPLES FOR TSP AND BEYOND FROM STREAMLINED DESIGN SPACE OF LEARNING AND SEARCH",
+  "abstract": "Despite the rich works on machine learning (ML) for combinatorial optimization (CO), a unified, principled framework remains lacking. This study utilizes the Travelling Salesman Problem (TSP) as a major case study, with adaptations demonstrated for other CO problems, dissecting established mainstream learning-based solvers to outline a comprehensive design space. We present ML4TSPBench, which advances a unified modular streamline incorporating existing technologies in both learning and search for transparent ablation, aiming to reassess the role of learning and discern which parts of existing techniques are genuinely beneficial and which are not. This further leads to the investigation of desirable principles of learning designs and the exploration of concepts guiding method designs. We demonstrate the desirability of principles such as joint probability estimation, symmetry solution representation, and online optimization for learning-based designs. Leveraging the findings, we propose enhancements to existing methods to compensate for their missing attributes, thereby advancing performance and enriching the technique library. From a higher viewpoint, we also uncover a performance advantage in non-autoregressive and supervised paradigms compared to their counterparts. The strategic decoupling and organic recompositions yield a factory of new TSP solvers, where we investigate synergies across various method combinations and pinpoint the optimal design choices to create more powerful ML4TSP solvers, thereby facilitating and offering a reference for future research and engineering endeavors.",
+  "problem_description_natural": "The paper focuses on the Travelling Salesman Problem (TSP), which is defined on an undirected complete graph where each node represents a city and each edge has a non-negative weight representing the distance between two cities. The goal is to find a Hamiltonian cycle (a tour visiting each city exactly once and returning to the starting city) with minimum total weight. The work studies how machine learning can be integrated with search algorithms to solve TSP and other combinatorial optimization problems more effectively, by analyzing and unifying diverse learning-based methodologies into a coherent framework.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "TSP-50",
+    "TSP-100",
+    "TSP-500",
+    "TSP-1000",
+    "TSPLIB"
+  ],
+  "performance_metrics": [
+    "Drop",
+    "Time",
+    "Length"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\sum_{i=1}^{n} \\sum_{j=1}^{n} \\mathbf{D}_{i,j} \\cdot \\mathbf{X}_{i,j}$",
+    "constraints": [
+      "$\\mathbf{X}_{i,j} \\in \\{0,1\\}$ for all $i,j$",
+      "$\\sum_{j=1}^{n} \\mathbf{X}_{i,j} = 2$ for all $i$",
+      "$\\sum_{i \\in S} \\sum_{j \\notin S} \\mathbf{X}_{i,j} \\geq 2$ for all $S \\subset V$, $S \\neq \\emptyset, V$"
+    ],
+    "variables": [
+      "$\\mathbf{X}_{i,j}$: binary decision variable indicating whether edge $(i,j)$ is included in the tour"
+    ]
+  },
+  "raw_latex_model": "$$\\min_{\\mathbf{X} \\in \\{0,1\\}^{n \\times n}} \\sum_{i=1}^{n} \\sum_{j=1}^{n} \\mathbf{D}_{i,j} \\cdot \\mathbf{X}_{i,j} \\quad \\text{subject to} \\quad \\begin{cases} \\sum_{j} \\mathbf{X}_{i,j} = 2, \\forall i \\\\ \\sum_{i \\in S} \\sum_{j \\notin S} \\mathbf{X}_{i,j} \\geq 2, \\forall S \\subset V, S \\neq \\emptyset, V \\end{cases}$$",
+  "algorithm_description": "Machine learning-based approach for TSP using a unified framework (ML4TSPBench) that incorporates various learning functionalities (e.g., edge prediction, solution generation) and search techniques (e.g., construction methods, improvement-based search like MCTS)."
+}

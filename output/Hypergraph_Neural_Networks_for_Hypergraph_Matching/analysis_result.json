@@ -1,0 +1,29 @@
+{
+  "paper_id": "Hypergraph_Neural_Networks_for_Hypergraph_Matching",
+  "title": "Hypergraph Neural Networks for Hypergraph Matching",
+  "abstract": "Hypergraph matching is a useful tool to find feature correspondence by considering higher-order structural information. Recently, the employment of deep learning has made great progress in the matching of graphs, suggesting its potential for hypergraphs. Hence, in this paper, we present the first, to our best knowledge, unified hypergraph neural network (HNN) solution for hypergraph matching. Specifically, given two hypergraphs to be matched, we first construct an association hypergraph over them and convert the hypergraph matching problem into a node classification problem on the association hypergraph. Then, we design a novel hypergraph neural network to effectively solve the node classification problem. Being end-to-end trainable, our proposed method, named HNN-HM, jointly learns all its components with improved optimization. For evaluation, HNN-HM is tested on various benchmarks and shows a clear advantage over state-of-the-arts.",
+  "problem_description_natural": "The hypergraph matching problem involves finding node correspondences between two given K-uniform directed hypergraphs by maximizing an objective function defined over an affinity tensor that encodes both node-level and hyperedge-level similarities. The goal is to find a (partial) permutation matrix X that maximizes the sum of products of affinity tensor entries and corresponding assignment variables, subject to one-to-(at-most)-one matching constraints. This results in a high-order combinatorial optimization problem that is NP-hard due to the multilinear form involving K-th order interactions among assignments.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "Synthetic 2D point sets",
+    "CMU house dataset",
+    "Willow object dataset",
+    "Pascal VOC dataset"
+  ],
+  "performance_metrics": [
+    "Accuracy (%)"
+  ],
+  "lp_model": {
+    "objective": "$\\max_{\\mathbf{X} \\in \\mathcal{P}} \\sum_{i_1,\\ldots,i_K, j_1,\\ldots,j_K} \\mathcal{A}_{i_1 j_1, \\ldots, i_K j_K} \\mathbf{X}_{i_1 j_1} \\cdots \\mathbf{X}_{i_K j_K}$",
+    "constraints": [
+      "$\\mathbf{X}_{i,j} \\in \\{0,1\\} \\quad \\forall i,j$",
+      "$\\sum_{j} \\mathbf{X}_{i,j} \\leq 1 \\quad \\forall i$",
+      "$\\sum_{i} \\mathbf{X}_{i,j} \\leq 1 \\quad \\forall j$"
+    ],
+    "variables": [
+      "$\\mathbf{X}_{i,j}$: binary decision variable indicating if node $V_i^1$ from the first hypergraph matches node $V_j^2$ from the second hypergraph"
+    ]
+  },
+  "raw_latex_model": "$$\\max_{\\mathbf{X} \\in \\mathcal{P}} \\sum_{i_1,\\ldots,i_K, j_1,\\ldots,j_K} \\mathcal{A}_{i_1 j_1, \\ldots, i_K j_K} \\mathbf{X}_{i_1 j_1} \\cdots \\mathbf{X}_{i_K j_K}$$ subject to $$\\mathbf{X}_{i,j} \\in \\{0,1\\} \\quad \\forall i,j$$ $$\\sum_{j} \\mathbf{X}_{i,j} \\leq 1 \\quad \\forall i$$ $$\\sum_{i} \\mathbf{X}_{i,j} \\leq 1 \\quad \\forall j$$ where $\\mathcal{P}$ is the space of partial permutation matrices enforcing one-to-(at most)-one matching, with $|\\mathcal{V}^1| \\leq |\\mathcal{V}^2|$.",
+  "algorithm_description": "The paper solves the hypergraph matching problem using HNN-HM, a hypergraph neural network that first constructs an association hypergraph from the two input hypergraphs, converting the matching problem into a node classification problem. It then employs an encode-process-decode architecture with recurrent hypergraph neural network blocks to learn affinities and the combinatorial solver jointly in an end-to-end trainable manner."
+}

@@ -1,0 +1,37 @@
+{
+  "paper_id": "⭐Towards_One-shot_Neural_Combinatorial_Solvers_Theoretical_a",
+  "title": "Towards One-shot Neural Combinatorial Solvers: Theoretical and Empirical Notes on the Cardinality-Constrained Case",
+  "abstract": "This paper addresses the challenge of solving combinatorial optimization (CO) problems with cardinality constraints using one-shot, non-autoregressive neural networks. Unlike existing approaches that either softly enforce constraints via penalty terms (leading to uncontrolled violations), use black-box gradient estimation (sacrificing objective performance), or rely on relaxed 'soft' algorithms (still permitting arbitrary constraint violations), the authors propose a differentiable framework based on optimal transport (OT). Specifically, they encode cardinality constraints using Sinkhorn and Gumbel-Sinkhorn OT layers, enabling end-to-end self-supervised learning with theoretically bounded constraint violation. Their methods outperform prior neural CO solvers and rival commercial solvers like Gurobi on facility location and max covering tasks. They also demonstrate real-world applicability in predictive portfolio optimization, improving the Sharpe ratio from 1.1 to 2.0 compared to an LSTM+Gurobi baseline.",
+  "problem_description_natural": "The paper focuses on combinatorial optimization problems subject to cardinality constraints, i.e., selecting at most k items from a set of m candidates to minimize (or maximize) an objective function. Formally, the problem is min_x J(x) subject to ||x||_0 ≤ k, where x is a decision vector and J(x) is the objective. Such problems arise in applications like facility location, influence maximization in social networks, and portfolio optimization with limited asset selection. The key challenge is integrating discrete cardinality constraints into differentiable neural networks for end-to-end learning without violating constraints significantly during training or inference.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "FLP-Synthetic",
+    "MCP-Synthetic",
+    "OR-LIB",
+    "Starbucks locations (4 cities)",
+    "Twitch social networks (6 networks)",
+    "S&P 500 (2018-2020 training, 2021 test)"
+  ],
+  "performance_metrics": [
+    "Constraint Violation (CV)",
+    "Optimal Gap",
+    "Objective Score",
+    "Inference Time",
+    "Sharpe Ratio",
+    "Prediction MSE",
+    "Annual Return",
+    "Risk"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\sum_{j=1}^{m} \\min_{i: x_i = 1} \\Delta_{ij}$",
+    "constraints": [
+      "$x_i \\in \\{0,1\\}, \\forall i = 1,\\ldots,m$",
+      "$\\sum_{i=1}^{m} x_i \\leq k$"
+    ],
+    "variables": [
+      "$x_i$: binary decision variable indicating whether a facility is placed at location $i$"
+    ]
+  },
+  "raw_latex_model": "$$\\min_{\\mathbf{x}} \\sum_{j=1}^{m} \\min\\{\\{\\Delta_{i,j} \\mid \\forall \\mathbf{x}_i = 1\\}\\} \\quad \\text{s.t.} \\quad \\mathbf{x} \\in \\{0,1\\}^m, \\|\\mathbf{x}\\|_0 \\leq k.$$",
+  "algorithm_description": "The paper proposes one-shot neural combinatorial solvers (CardNN-S and CardNN-GS) that use differentiable optimal transport layers (Sinkhorn and Gumbel-Sinkhorn) to enforce cardinality constraints in the network architecture, enabling end-to-end learning via self-supervised loss on the objective score."
+}

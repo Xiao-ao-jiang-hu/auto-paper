@@ -1,0 +1,30 @@
+{
+  "paper_id": "⭐Deep_Latent_Graph_Matching",
+  "title": "Deep Latent Graph Matching",
+  "abstract": "Deep learning for graph matching (GM) has emerged as an important research topic due to its superior performance over traditional methods and insights it provides for solving other combinatorial problems on graph. While recent deep methods for GM extensively investigated effective node/edge feature learning or downstream GM solvers given such learned features, there is little existing work questioning if the fixed connectivity/topology typically constructed using heuristics (e.g., Delaunay or $k$-nearest) is indeed suitable for GM. From a learning perspective, we argue that the fixed topology may restrict the model capacity and thus potentially hinder the performance. To address this, we propose to learn the (distribution of) latent topology, which can better support the downstream GM task. We devise two latent graph generation procedures, one deterministic and one generative. Particularly, the generative procedure emphasizes the across-graph consistency and thus can be viewed as a matching-guided co-generative model. Our methods deliver superior performance over previous state-of-the-arts on public benchmarks, hence supporting our hypothesis.",
+  "problem_description_natural": "The paper addresses the graph matching problem, which seeks to find correspondences between nodes of two graphs by maximizing an objective function based on node and edge affinities. Traditionally formulated as a quadratic assignment problem (QAP), graph matching is NP-hard and combinatorial in nature. The authors observe that most deep learning approaches for graph matching rely on a fixed, heuristically constructed graph topology (e.g., via Delaunay triangulation or k-nearest neighbors), which may not be optimal for the matching task. They propose instead to learn a latent graph topology—either deterministically or through a generative process—that is better aligned with the downstream matching objective, thereby improving overall performance.",
+  "problem_type": "Graph Matching",
+  "datasets": [
+    "Pascal VOC",
+    "Willow ObjectClass",
+    "SPair-71K"
+  ],
+  "performance_metrics": [
+    "Accuracy",
+    "F1-score"
+  ],
+  "lp_model": {
+    "objective": "$\\max_{\\mathbf{z}} \\mathbf{z}^\\top \\mathbf{M} \\mathbf{z}$",
+    "constraints": [
+      "$\\mathbf{Z} \\in \\{0,1\\}^{n \\times n}$",
+      "$\\sum_{j=1}^n Z_{ij} = 1 \\quad \\forall i = 1,\\dots,n$",
+      "$\\sum_{i=1}^n Z_{ij} = 1 \\quad \\forall j = 1,\\dots,n$"
+    ],
+    "variables": [
+      "$Z_{ij}$: binary decision variable indicating if node $i$ in the source graph matches node $j$ in the target graph, for $i,j = 1,\\dots,n$",
+      "$\\mathbf{z}$: column-wise vectorization of the permutation matrix $\\mathbf{Z}$"
+    ]
+  },
+  "raw_latex_model": "$$\\max_{\\mathbf{z}} \\mathbf{z}^\\top \\mathbf{M} \\mathbf{z} \\quad \\text{s.t.} \\quad \\mathbf{Z} \\in \\{0,1\\}^{n\\times n}, \\quad \\mathbf{H}\\mathbf{z} = \\mathbf{1}$$ where $\\mathbf{M} \\in \\mathbb{R}_+^{n^2 \\times n^2}$ is the affinity matrix encoding node and edge similarities, $\\mathbf{Z}$ is the permutation matrix, $\\mathbf{z}$ is its vectorization, and $\\mathbf{H}$ ensures each row and column of $\\mathbf{Z}$ sums to 1 (i.e., $\\sum_j Z_{ij} = 1$ and $\\sum_i Z_{ij} = 1$).",
+  "algorithm_description": "The paper proposes Deep Latent Graph Matching (DLGM), a deep learning framework with two variants: deterministic (DLGM-D) and generative (DLGM-G). It learns latent graph topology using graph neural networks (GNNs) from input features and geometric relations, incorporating losses for matching, locality, and consistency. The graph matching problem is then solved using a differentiable black-box combinatorial solver (Pogancic et al., 2020) within an end-to-end training pipeline."
+}

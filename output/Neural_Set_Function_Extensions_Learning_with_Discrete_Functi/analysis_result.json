@@ -1,0 +1,33 @@
+{
+  "paper_id": "Neural_Set_Function_Extensions_Learning_with_Discrete_Functi",
+  "title": "Neural Set Function Extensions: Learning with Discrete Functions in High Dimensions",
+  "abstract": "Integrating functions on discrete domains into neural networks is key to developing their capability to reason about discrete objects. But, discrete domains are (I) not naturally amenable to gradient-based optimization, and (II) incompatible with deep learning architectures that rely on representations in high-dimensional vector spaces. In this work, we address both difficulties for set functions, which capture many important discrete problems. First, we develop a framework for extending set functions onto low-dimensional continuous domains, where many extensions are naturally defined. Our framework subsumes many well-known extensions as special cases. Second, to avoid undesirable low-dimensional neural network bottlenecks, we convert low-dimensional extensions into representations in high-dimensional spaces, taking inspiration from the success of semidefinite programs for combinatorial optimization. Empirically, we observe benefits of our extensions for unsupervised neural combinatorial optimization, in particular with high-dimensional representations.",
+  "problem_description_natural": "The paper addresses the challenge of integrating discrete set functions—functions defined over subsets of a ground set—into neural networks. Such functions are common in combinatorial problems like graph partitioning or pathfinding but are incompatible with gradient-based training and high-dimensional neural representations. The authors propose a two-step approach: (1) construct valid continuous extensions of set functions over the unit hypercube [0,1]^n using linear programming (LP) relaxations that preserve function values at discrete points and enable gradient computation; and (2) 'lift' these scalar extensions into high-dimensional spaces using semi-definite programming (SDP), inspired by techniques like the Goemans-Williamson algorithm, to avoid low-dimensional bottlenecks in neural architectures. The resulting Neural Set Function Extensions (SFEs) allow discrete functions to be used as differentiable layers or losses in deep learning models while maintaining fidelity to the original discrete problem.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "ENZYMES",
+    "PROTEINS",
+    "IMDB-Binary",
+    "MUTAG",
+    "COLLAB",
+    "CIFAR10",
+    "SVHN"
+  ],
+  "performance_metrics": [
+    "Approximation Ratio",
+    "F1 Score",
+    "Training Error"
+  ],
+  "lp_model": {
+    "objective": "$\\max \\sum_{i=1}^{n} x_i$",
+    "constraints": [
+      "$x_i + x_j \\leq 1$ for all $(i,j) \\notin E$",
+      "$x_i \\in \\{0,1\\}$ for all $i \\in [n]$"
+    ],
+    "variables": [
+      "$x_i$: binary decision variable indicating whether node $i$ is included in the set $S$"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} \\max & \\sum_{i=1}^{n} x_i \\\\ \\text{s.t.} & x_i + x_j \\leq 1 \\quad \\forall (i,j) \\notin E \\\\ & x_i \\in \\{0,1\\} \\quad \\forall i \\in [n] \\end{aligned}$$",
+  "algorithm_description": "The paper uses neural set function extensions (SFEs) to enable gradient-based optimization of set functions within neural networks. For combinatorial optimization problems like Maximum Clique and Maximum Independent Set, graph neural networks (GNNs) are employed to produce node embeddings. These embeddings are then processed through scalar or neural SFEs to continuously extend the discrete set function, allowing unsupervised training via automatic differentiation to approximate optimal solutions."
+}

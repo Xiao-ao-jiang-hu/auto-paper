@@ -1,0 +1,41 @@
+{
+  "paper_id": "GLOP_Learning_Global_Partition_and_Local_Construction_for_So",
+  "title": "GLOP: Learning Global Partition and Local Construction for Solving Large-scale Routing Problems in Real-time",
+  "abstract": "The recent end-to-end neural solvers have shown promise for small-scale routing problems but suffered from limited real-time scaling-up performance. This paper proposes GLOP (Global and Local Optimization Policies), a unified hierarchical framework that efficiently scales toward large-scale routing problems. GLOP partitions large routing problems into Travelling Salesman Problems (TSPs) and TSPs into Shortest Hamiltonian Path Problems. For the first time, we hybridize non-autoregressive neural heuristics for coarse-grained problem partitions and autoregressive neural heuristics for fine-grained route constructions, leveraging the scalability of the former and the meticulousness of the latter. Experimental results show that GLOP achieves competitive and state-of-the-art real-time performance on large-scale routing problems, including TSP, ATSP, CVRP, and PCTSP.",
+  "problem_description_natural": "The paper addresses large-scale combinatorial routing problems such as the Travelling Salesman Problem (TSP), Asymmetric TSP (ATSP), Capacitated Vehicle Routing Problem (CVRP), and Prize Collecting TSP (PCTSP). These problems involve finding optimal or near-optimal routes under various constraints—e.g., visiting all cities exactly once with minimal total distance (TSP), handling asymmetric distances (ATSP), respecting vehicle capacity limits while serving customer demands (CVRP), or selecting a subset of nodes to visit based on collected prizes versus travel cost (PCTSP). The core challenge is to solve these problems in real time at very large scales (e.g., TSP with 100,000 nodes), where traditional exact solvers are too slow and existing neural solvers fail to scale effectively.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "TSPLIB",
+    "CVRPLIB",
+    "TSP500",
+    "TSP1K",
+    "TSP10K",
+    "TSP100K",
+    "CVRP1K",
+    "CVRP2K",
+    "CVRP5K",
+    "CVRP7K",
+    "PCTSP500",
+    "PCTSP1K",
+    "PCTSP5K"
+  ],
+  "performance_metrics": [
+    "Optimality Gap (%)",
+    "Objective Value (Obj.)",
+    "Execution Time",
+    "Average Gap (%)"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\sum_{i \\in V} \\sum_{j \\in V} c_{ij} x_{ij}$",
+    "constraints": [
+      "$\\sum_{j \\in V, j \\neq i} x_{ij} = 1 \\quad \\forall i \\in V$",
+      "$\\sum_{i \\in V, i \\neq j} x_{ij} = 1 \\quad \\forall j \\in V$",
+      "$\\sum_{i \\in S} \\sum_{j \\notin S} x_{ij} \\geq 1 \\quad \\forall S \\subset V, S \\neq \\emptyset, V$"
+    ],
+    "variables": [
+      "$x_{ij} \\in \\{0,1\\}$: binary decision variable indicating if edge (i,j) is included in the tour"
+    ]
+  },
+  "raw_latex_model": "$$\\min \\sum_{i \\in V} \\sum_{j \\in V} c_{ij} x_{ij} \\text{ subject to } \\sum_{j \\in V, j \\neq i} x_{ij} = 1 \\forall i \\in V, \\sum_{i \\in V, i \\neq j} x_{ij} = 1 \\forall j \\in V, \\text{ and } \\sum_{i \\in S} \\sum_{j \\notin S} x_{ij} \\geq 1 \\forall S \\subset V, S \\neq \\emptyset, V$$",
+  "algorithm_description": "GLOP is a hierarchical neural solver that uses global partition policies (non-autoregressive) to divide large routing problems into sub-TSPs, and local construction policies (autoregressive) to solve Shortest Hamiltonian Path Problems (SHPPs). It improves solutions by decomposing tours into subtours, reconstructing them with neural models, and composing back, applied to problems like TSP, ATSP, CVRP, and PCTSP."
+}

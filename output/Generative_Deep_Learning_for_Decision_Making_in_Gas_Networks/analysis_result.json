@@ -1,0 +1,53 @@
+{
+  "paper_id": "Generative_Deep_Learning_for_Decision_Making_in_Gas_Networks",
+  "title": "Generative deep learning for decision making in gas networks",
+  "abstract": "A decision support system relies on frequent re-solving of similar problem instances. While the general structure remains the same in corresponding applications, the input parameters are updated on a regular basis. We propose a generative neural network design for learning integer decision variables of mixed-integer linear programming (MILP) formulations of these problems. We utilise a deep neural network discriminator and a MILP solver as our oracle to train our generative neural network. In this article, we present the results of our design applied to the transient gas optimisation problem. With the trained network we produce a feasible solution in $2.5$s, use it as a warm-start solution, and thereby decrease global optimal solution solve time by $60.5\\%$.",
+  "problem_description_natural": "The paper addresses the transient gas optimization problem, which involves making discrete operational decisions (e.g., on/off states of compressors or valves) in natural gas transportation networks over time. The goal is to find cost-effective and feasible control strategies that satisfy physical and operational constraints while minimizing fuel consumption or other costs. Because this problem must be solved repeatedly with updated demand forecasts or boundary conditions in a day-ahead decision support setting, the authors aim to accelerate solution times by using a generative neural network to predict good initial values for key binary decision variables.",
+  "problem_type": "MILP",
+  "datasets": [
+    "Station D Real-World Data (OGE)",
+    "Synthetic Gas Network Data (Algorithm 4)"
+  ],
+  "performance_metrics": [
+    "Solve Time (seconds)",
+    "Optimality Gap",
+    "L1 Loss"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\text{ weighted sum of slack usage and changes in network operation}$",
+    "constraints": [
+      "$p_{u,t_2} + p_{v,t_2} - p_{u,t_1} - p_{v,t_1} + \\frac{2R_s T z_a (\\tau(t_2) - \\tau(t_1))}{L_a A_a} (q_{v,a,t_2} - q_{u,a,t_2}) = 0 \\quad \\forall a \\in \\mathcal{A}^{\\text{pi}}, \\forall t_1, t_2 \\in \\mathcal{T}_0$",
+      "$p_{v,t_2} - p_{u,t_2} + \\frac{\\lambda_a L_a}{4 D_a A_a} (|v_{u,a}| q_{u,a,t_2} + |v_{v,a}| q_{v,a,t_2}) + \\frac{g s_a L_a}{2 R_s T z_a} (p_{u,t_2} + p_{v,t_2}) = 0 \\quad \\forall a \\in \\mathcal{A}^{\\text{pi}}, \\forall t_2 \\in \\mathcal{T}_0$",
+      "$\\sum_{(u,w)=a \\in \\mathcal{A}^{\\text{pi}}} q_{w,a,t} - \\sum_{(w,v)=a \\in \\mathcal{A}^{\\text{pi}}} q_{w,a,t} + \\sum_{(u,w)=a \\in \\mathcal{A} \\setminus \\mathcal{A}^{\\text{pi}}} q_{a,t} - \\sum_{(w,v)=a \\in \\mathcal{A} \\setminus \\mathcal{A}^{\\text{pi}}} q_{a,t} + d_{w,t} = 0 \\quad \\forall w \\in \\mathcal{V}^{\\text{b}}, \\forall t \\in \\mathcal{T}_0$",
+      "$\\sum_{(u,w)=a \\in \\mathcal{A}^{\\text{pi}}} q_{w,a,t} - \\sum_{(w,v)=a \\in \\mathcal{A}^{\\text{pi}}} q_{w,a,t} + \\sum_{(u,w)=a \\in \\mathcal{A} \\setminus \\mathcal{A}^{\\text{pi}}} q_{a,t} - \\sum_{(w,v)=a \\in \\mathcal{A} \\setminus \\mathcal{A}^{\\text{pi}}} q_{a,t} = 0 \\quad \\forall w \\in \\mathcal{V}^{0}, \\forall t \\in \\mathcal{T}_0$",
+      "$1 = \\sum_{c \\in \\mathcal{C}_a} m_{c,a,t}^{\\text{cf}} + m_{a,t}^{\\text{by}} + m_{a,t}^{\\text{cl}} \\quad \\forall a \\in \\mathcal{A}^{\\text{cs}}, \\forall t \\in \\mathcal{T}_0$",
+      "$\\alpha_0 p_{c,a,t}^{\\text{u-cf}} + \\alpha_1 p_{c,a,t}^{\\text{v-cf}} + \\alpha_2 q_{c,a,t}^{\\text{cf}} + \\alpha_3 m_{c,a,t}^{\\text{cf}} \\leq 0 \\quad \\forall (\\alpha_0, \\alpha_1, \\alpha_2, \\alpha_3) \\in \\mathcal{H}_c, \\forall c \\in \\mathcal{C}_a, \\forall a \\in \\mathcal{A}^{\\text{cs}}, \\forall t \\in \\mathcal{T}_0$",
+      "$p_{u,t} - p_{v,t} \\leq (1 - m_{a,t}^{\\text{op}})(\\overline{p}_{u,t} - \\underline{p}_{v,t}) \\quad \\forall a \\in \\mathcal{A}^{\\text{va}}, \\forall t \\in \\mathcal{T}_0$",
+      "$p_{u,t} - p_{v,t} \\geq (1 - m_{a,t}^{\\text{op}})(\\underline{p}_{u,t} - \\overline{p}_{v,t}) \\quad \\forall a \\in \\mathcal{A}^{\\text{va}}, \\forall t \\in \\mathcal{T}_0$",
+      "$q_{a,t} \\leq (m_{a,t}^{\\text{op}})\\overline{q}_{a,t} \\quad \\forall a \\in \\mathcal{A}^{\\text{va}}, \\forall t \\in \\mathcal{T}_0$",
+      "$q_{a,t} \\geq (m_{a,t}^{\\text{op}})\\underline{q}_{a,t} \\quad \\forall a \\in \\mathcal{A}^{\\text{va}}, \\forall t \\in \\mathcal{T}_0$",
+      "$\\sum_{o \\in \\mathcal{O}} m_{o,t}^{\\text{om}} = 1 \\quad \\forall t \\in \\mathcal{T}$",
+      "$m_{a,t}^{\\text{op}} = \\sum_{o \\in \\mathcal{O}: M(o,a) = \\text{op}} m_{o,t}^{\\text{om}} \\quad \\forall a \\in \\mathcal{A}^{\\text{va}}, \\forall t \\in \\mathcal{T}$",
+      "$m_{a,t}^{\\text{by}} = \\sum_{o \\in \\mathcal{O}: M(o,a) = \\text{by}} m_{o,t}^{\\text{om}} \\quad \\forall a \\in \\mathcal{A}^{\\text{cs}}, \\forall t \\in \\mathcal{T}$",
+      "$m_{a,t}^{\\text{cl}} = \\sum_{o \\in \\mathcal{O}: M(o,a) = \\text{cl}} m_{o,t}^{\\text{om}} \\quad \\forall a \\in \\mathcal{A}^{\\text{cs}}, \\forall t \\in \\mathcal{T}$",
+      "$m_{c,a,t}^{\\text{cf}} = \\sum_{o \\in \\mathcal{O}: M(o,a) = c} m_{o,t}^{\\text{om}} \\quad \\forall c \\in \\mathcal{C}_a, \\forall a \\in \\mathcal{A}^{\\text{cs}}, \\forall t \\in \\mathcal{T}$",
+      "$\\hat{p}_{v,t} = p_{v,t} - \\sigma_{v,t}^{p+} + \\sigma_{v,t}^{p-} \\quad \\forall v \\in \\mathcal{V}^{\\text{b}}, \\forall t \\in \\mathcal{T}$",
+      "$\\hat{d}_{v,t} = d_{v,t} - \\sigma_{v,t}^{d+} + \\sigma_{v,t}^{d-} \\quad \\forall v \\in \\mathcal{V}^{\\text{b}}, \\forall t \\in \\mathcal{T}$"
+    ],
+    "variables": [
+      "$p_{v,t}$: pressure at node $v$ at time $t$ (continuous)",
+      "$q_{u,a,t}$, $q_{v,a,t}$: flow in and out of pipe $a$ at time $t$ (continuous)",
+      "$q_{a,t}$: flow for non-pipe element $a$ at time $t$ (continuous)",
+      "$d_{v,t}$: inflow/outflow at boundary node $v$ at time $t$ (continuous, related to slack)",
+      "$\\sigma_{v,t}^{p+}$, $\\sigma_{v,t}^{p-}$: positive and negative pressure slack at boundary node $v$ at time $t$ (continuous)",
+      "$\\sigma_{v,t}^{d+}$, $\\sigma_{v,t}^{d-}$: positive and negative inflow slack at boundary node $v$ at time $t$ (continuous)",
+      "$m_{o,t}^{\\text{om}}$: binary variable for operation mode $o$ at time $t$",
+      "$m_{a,t}^{\\text{by}}$, $m_{a,t}^{\\text{cl}}$: binary variables for compressor station $a$ in bypass or closed mode at time $t$",
+      "$m_{c,a,t}^{\\text{cf}}$: binary variable for compressor station $a$ in configuration $c$ at time $t$",
+      "$m_{a,t}^{\\text{op}}$: binary variable for valve $a$ open at time $t$",
+      "Flow direction variables: binary variables (subset of $z_2$)"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} \\min \\quad & \\text{weighted sum of slack usage and changes in network operation} \\\\ \\text{s.t.} \\quad & \\text{Pipe equations (15), (16)} \\\\ & \\text{Flow conservation (17), (18)} \\\\ & \\text{Compressor constraints (19), (20)} \\\\ & \\text{Valve constraints (21)-(24)} \\\\ & \\text{Operation mode constraints (25)-(29)} \\\\ & \\text{Boundary slack constraints (30), (31)} \\\\ & \\text{Variable bounds and integrality constraints} \\end{aligned}$$",
+  "algorithm_description": "The paper proposes a generative neural network framework (inspired by GANs) to learn binary decision variables (operation modes) of a parametric MILP for transient gas network optimization. The framework consists of a Generator network that outputs operation mode sequences and a Discriminator network that predicts the optimal objective value of the induced sub-MILP (with fixed operation modes). The networks are trained using a bi-level optimization approach, with the Discriminator pre-trained on synthetic data and then both networks trained alternately. The trained Generator is used as a primal heuristic to produce feasible solutions quickly, which are then used to warm-start the global MILP solver."
+}

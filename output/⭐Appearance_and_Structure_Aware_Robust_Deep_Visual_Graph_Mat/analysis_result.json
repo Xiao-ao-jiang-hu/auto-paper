@@ -1,0 +1,29 @@
+{
+  "paper_id": "⭐Appearance_and_Structure_Aware_Robust_Deep_Visual_Graph_Mat",
+  "title": "Appearance and Structure Aware Robust Deep Visual Graph Matching: Attack, Defense and Beyond",
+  "abstract": "Despite the recent breakthrough of high accuracy deep graph matching (GM) over visual images, the robustness of deep GM models is rarely studied which yet has been revealed an important issue in modern deep nets, ranging from image recognition to graph learning tasks. We first show that an adversarial attack on keypoint localities and the hidden graphs can cause significant accuracy drop to deep GM models. Accordingly, we propose our defense strategy, namely Appearance and Structure Aware Robust Graph Matching (ASAR-GM). Specifically, orthogonal to de facto adversarial training (AT), we devise the Appearance Aware Regularizer (AAR) on those appearance-similar keypoints between graphs that are likely to confuse. Experimental results show that our ASAR-GM achieves better robustness compared to AT. Moreover, our locality attack can serve as a data augmentation technique, which boosts the state-of-the-art GM models even on the clean test dataset.",
+  "problem_description_natural": "The paper addresses the vulnerability of deep visual graph matching models to adversarial attacks that perturb both image pixels and keypoint locations (which determine the hidden graph structure via Delaunay triangulation). The core optimization problem in graph matching is formulated as a Quadratic Assignment Problem (QAP): maximizing the affinity score between two graphs by finding an optimal node-to-node correspondence permutation matrix. In the deep learning setting, this is relaxed to a continuous doubly-stochastic matrix and solved end-to-end. The authors introduce adversarial attacks that jointly perturb visual features (pixels) and structural features (keypoint coordinates) to degrade matching performance, and propose a defense mechanism (ASAR-GM) that regularizes the embedding space to increase separation between appearance-similar keypoints, thereby improving robustness without sacrificing clean accuracy.",
+  "problem_type": "Graph Matching",
+  "datasets": [
+    "Pascal VOC",
+    "Willow ObjectClass"
+  ],
+  "performance_metrics": [
+    "robust accuracy (%)",
+    "clean accuracy (%)"
+  ],
+  "lp_model": {
+    "objective": "$\\max_{\\mathbf{X}} \\mathrm{vec}(\\mathbf{X})^\\top \\mathbf{K} \\mathrm{vec}(\\mathbf{X})$",
+    "constraints": [
+      "$\\mathbf{X} \\in \\{0,1\\}^{n\\times n}$",
+      "$\\mathbf{X}\\mathbf{1}_n = \\mathbf{1}_n$",
+      "$\\mathbf{X}^\\top \\mathbf{1}_n = \\mathbf{1}_n$"
+    ],
+    "variables": [
+      "$\\mathbf{X}$: binary permutation matrix of size $n \\times n$ representing node-to-node correspondence between two graphs",
+      "$\\mathbf{K}$: affinity matrix of size $n^2 \\times n^2$ encoding node and edge similarities (given as input)"
+    ]
+  },
+  "raw_latex_model": "$$\\max_{\\mathbf{X}} J(\\mathbf{X}) = \\mathrm{vec}(\\mathbf{X})^\\top \\mathbf{K} \\mathrm{vec}(\\mathbf{X}) \\\\ s.t.~\\mathbf{X} \\in \\{0,1\\}^{n\\times n}, \\mathbf{X}\\mathbf{1}_n = \\mathbf{1}_n, \\mathbf{X}^\\top \\mathbf{1}_n = \\mathbf{1}_n$$",
+  "algorithm_description": "The paper employs deep graph matching methods, primarily NGMv2, which formulates graph matching as Lawler's Quadratic Assignment Problem (QAP). It uses convolutional neural networks (CNNs) and graph neural networks (GNNs) to extract node and edge features from images with keypoints, learns an affinity matrix, and solves the QAP via vertex classification on the association graph with a binary cross-entropy loss. Adversarial training and a proposed Appearance Aware Regularizer (AAR) are integrated to enhance robustness against attacks on keypoint localities and image pixels."
+}

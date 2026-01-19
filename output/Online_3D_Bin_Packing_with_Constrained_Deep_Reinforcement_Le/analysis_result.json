@@ -1,0 +1,31 @@
+{
+  "paper_id": "Online_3D_Bin_Packing_with_Constrained_Deep_Reinforcement_Le",
+  "title": "Online 3D Bin Packing with Constrained Deep Reinforcement Learning",
+  "abstract": "We solve a challenging yet practically useful variant of 3D Bin Packing Problem (3D-BPP). In our problem, the agent has limited information about the items to be packed into a single bin, and an item must be packed immediately after its arrival without buffering or readjusting. The item’s placement also subjects to the constraints of order dependence and physical stability. We formulate this online 3D-BPP as a constrained Markov decision process (CMDP). To solve the problem, we propose an effective and easy-to-implement constrained deep reinforcement learning (DRL) method under the actor-critic framework. In particular, we introduce a prediction-and-projection scheme: The agent first predicts a feasibility mask for the placement actions as an auxiliary task and then uses the mask to modulate the action probabilities output by the actor during training. Such supervision and projection facilitate the agent to learn feasible policies very efficiently. Our method can be easily extended to handle lookahead items, multi-bin packing, and item re-orienting. We have conducted extensive evaluation showing that the learned policy significantly outperforms the state-of-the-art methods. A preliminary user study even suggests that our method might attain a human-level performance.",
+  "problem_description_natural": "The paper addresses an online version of the 3D Bin Packing Problem (3D-BPP), where items arrive sequentially and must be packed immediately into a single bin without knowledge of future items (except possibly a small lookahead window). Each item is a cuboid defined by integer length, width, and height, and must be placed such that it fits within the bin dimensions and satisfies physical stability constraints (e.g., sufficient support under its bottom surface). The placement decision is irrevocable—no repacking or adjustments are allowed after an item is placed. The goal is to maximize the number (or total volume) of items packed into the bin, which corresponds to maximizing space utilization under strict operational constraints typical in logistics and warehousing automation.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "RS",
+    "CUT-1",
+    "CUT-2"
+  ],
+  "performance_metrics": [
+    "Space utilization",
+    "Number of packed items"
+  ],
+  "lp_model": {
+    "objective": "Maximize the total packed volume or reward, i.e., $\\max \\sum_{i \\in P} l_i w_i h_i$ or equivalently $\\max \\sum_{t} r_t$ where $r_t = 10 \\cdot l_t \\cdot w_t \\cdot h_t / (L \\cdot W \\cdot H)$ for successfully placed items, and $P$ is the set of packed items.",
+    "constraints": [
+      "For each item $i$ placed at $(x_i, y_i)$: $0 \\leq x_i \\leq L - l_i$, $0 \\leq y_i \\leq W - w_i$ (within bin boundaries).",
+      "Height constraint: let $R_i = [x_i, x_i + l_i - 1] \\times [y_i, y_i + w_i - 1]$ be the base region of item $i$, and let $h_{\\max,i} = \\max_{(x,y) \\in R_i} H_{i-1}(x,y)$ where $H_{i-1}$ is the height map before placing item $i$. Then $h_{\\max,i} + h_i \\leq H$ (height does not exceed bin).",
+      "Physical stability: let $S_i = \\{ (x,y) \\in R_i : H_{i-1}(x,y) = h_{\\max,i} \\}$ be the supported cells. Require either (i) $|S_i| / |R_i| \\geq 0.6$ and all four corners of $R_i$ are in $S_i$, or (ii) $|S_i| / |R_i| \\geq 0.8$ and three corners are in $S_i$, or (iii) $|S_i| / |R_i| \\geq 0.95$.",
+      "Order dependence (for BPP-$k$ with lookahead): for items $i < j$ in arrival order, if $j$ is virtually placed before $i$, then $i$ cannot be placed on top of $j$, i.e., if $R_i \\cap R_j \\neq \\emptyset$, then the placement must ensure $i$ is not above $j$ (enforced by setting height values in $H$ to $H$ at $j$'s occupancy for $i$'s placement)."
+    ],
+    "variables": [
+      "$(x_i, y_i)$: integer coordinates for the front-left-bottom corner placement of item $i$ on the discretized bin grid.",
+      "$H_{i}(x,y)$: height at grid cell $(x,y)$ after placing item $i$, defined recursively from $H_0(x,y) = 0$."
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} \\text{Maximize } & \\sum_{i=1}^{N} v_i \\cdot \\mathbb{I}\\{ \\text{item } i \\text{ is placed} \\} \\\\ \\text{subject to } & \\text{For each placed item } i \\text{ in order of arrival:} \\\\ & 0 \\leq x_i \\leq L - l_i, \\quad 0 \\leq y_i \\leq W - w_i, \\\\ & h_{\\max,i} + h_i \\leq H, \\\\ & \\text{where } h_{\\max,i} = \\max_{(x,y) \\in R_i} H_{i-1}(x,y), \\\\ & \\text{and } R_i = [x_i, x_i + l_i - 1] \\times [y_i, y_i + w_i - 1], \\\\ & \\text{and physical stability constraints on } S_i \\subseteq R_i \\text{ as defined above.} \\end{aligned}$$",
+  "algorithm_description": "The paper solves the online 3D-BPP using a constrained deep reinforcement learning (DRL) method under the actor-critic framework. It introduces a prediction-and-projection scheme: a feasibility mask is predicted as an auxiliary task and used to modulate action probabilities during training. For handling lookahead items (BPP-$k$), Monte Carlo permutation tree search is employed to explore virtual placements while satisfying order dependence constraints."
+}

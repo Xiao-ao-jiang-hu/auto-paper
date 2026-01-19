@@ -1,0 +1,33 @@
+{
+  "paper_id": "Integrating_prediction_in_mean-variance_portfolio_optimizati",
+  "title": "Integrating prediction in mean-variance portfolio optimization",
+  "abstract": "Prediction models are traditionally optimized independently from their use in the asset allocation decision-making process. We address this shortcoming and present a framework for integrating regression prediction models in a mean-variance optimization (MVO) setting. Closed-form analytical solutions are provided for the unconstrained and equality constrained MVO case. For the general inequality constrained case, we make use of recent advances in neural-network architecture for efficient optimization of batch quadratic-programs. To our knowledge, this is the first rigorous study of integrating prediction in a mean-variance portfolio optimization setting. We present several historical simulations using both synthetic and global futures data to demonstrate the benefits of the integrated approach.",
+  "problem_description_natural": "The paper addresses the integration of linear regression prediction models directly into the mean-variance portfolio optimization (MVO) process. Instead of the traditional 'predict, then optimize' approach—where expected asset returns are first estimated (e.g., via OLS regression) and then plugged into the MVO problem—the authors propose an Integrated Prediction and Optimization (IPO) framework. In this framework, the regression parameters are learned by minimizing the expected realized decision cost of the resulting portfolios, i.e., the actual out-of-sample mean-variance objective evaluated on true returns. The lower-level problem is a quadratic program (the MVO), and the upper-level problem optimizes the prediction model parameters to minimize the average true cost of the decisions induced by the predicted returns. Special cases (unconstrained or equality-constrained MVO) admit closed-form convex reformulations, while the general inequality-constrained case is handled via differentiable optimization layers.",
+  "problem_type": "Quadratic Programming",
+  "datasets": [
+    "Synthetically generated data",
+    "Global futures data from Commodity Systems Inc"
+  ],
+  "performance_metrics": [
+    "MVO Cost",
+    "Proportion of variance explained (PVE)",
+    "Sharpe Ratio",
+    "Annual Return",
+    "Volatility",
+    "Average Drawdown",
+    "Value at Risk",
+    "Dominance Ratio"
+  ],
+  "lp_model": {
+    "objective": "$\\min_{\\mathbf{z}} - \\mathbf{z}^T \\hat{\\mathbf{y}}^{(i)} + \\frac{\\delta}{2} \\mathbf{z}^T \\hat{\\mathbf{V}}^{(i)} \\mathbf{z}$",
+    "constraints": [
+      "$\\mathbf{A} \\mathbf{z} = \\mathbf{b}$",
+      "$\\mathbf{G} \\mathbf{z} \\leq \\mathbf{h}$"
+    ],
+    "variables": [
+      "$\\mathbf{z} \\in \\mathbb{R}^{d_z}$: vector of portfolio weights for assets at time $i$"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} & \\underset{\\mathbf{z}}{\\text{minimize}} \\quad - \\mathbf{z}^T \\hat{\\mathbf{y}}^{(i)} + \\frac{\\delta}{2} \\mathbf{z}^T \\hat{\\mathbf{V}}^{(i)} \\mathbf{z} \\\\ & \\text{subject to} \\quad \\mathbf{A} \\mathbf{z} = \\mathbf{b} \\\\ & \\quad\\quad\\quad\\quad \\mathbf{G} \\mathbf{z} \\leq \\mathbf{h} \\end{aligned}$$",
+  "algorithm_description": "The paper proposes an Integrated Prediction and Optimization (IPO) framework. For unconstrained and linear equality constrained mean-variance optimization problems, closed-form analytical solutions are derived. For the general case with linear inequality constraints, a neural network architecture with a differentiable quadratic programming layer is used to efficiently optimize the integrated problem through gradient descent."
+}

@@ -1,0 +1,29 @@
+{
+  "paper_id": "Solving_Graph-based_Public_Good_Games_with_Tree_Search_and_I",
+  "title": "Solving Graph-based Public Good Games with Tree Search and Imitation Learning",
+  "abstract": "Public goods games represent insightful settings for studying incentives for individual agents to make contributions that, while costly for each of them, benefit the wider society. In this work, we adopt the perspective of a central planner with a global view of a network of self-interested agents and the goal of maximizing some desired property in the context of a best-shot public goods game. Existing algorithms for this known NP-complete problem find solutions that are sub-optimal and cannot optimize for criteria other than social welfare. In order to efficiently solve public goods games, our proposed method directly exploits the correspondence between equilibria and the Maximal Independent Set (mIS) structural property of graphs. In particular, we define a Markov Decision Process which incrementally generates an mIS, and adopt a planning method to search for equilibria, outperforming existing methods. Furthermore, we devise a graph imitation learning technique that uses demonstrations of the search to obtain a graph neural network parametrized policy which quickly generalizes to unseen game instances. Our evaluation results show that this policy is able to reach 99.5% of the performance of the planning method while being three orders of magnitude faster to evaluate on the largest graphs tested. The methods presented in this work can be applied to a large class of public goods games of potentially high societal impact and more broadly to other graph combinatorial optimization problems.",
+  "problem_description_natural": "The paper addresses the problem of finding pure-strategy Nash equilibria in graph-based best-shot public goods games that maximize a given objective function—such as social welfare or fairness—among all possible equilibria. Each equilibrium in this game corresponds to a Maximal Independent Set (mIS) of the underlying graph. The challenge lies in efficiently identifying the mIS that optimizes the desired global criterion, which is known to be NP-complete. The authors frame this as a sequential decision-making problem where an agent incrementally constructs an mIS via a Markov Decision Process, guided by the target objective, and use Monte Carlo Tree Search for planning. They also learn a fast, generalizable policy using graph imitation learning to avoid expensive search at inference time.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "Generated ER Graphs",
+    "Generated BA Graphs",
+    "Generated WS Graphs"
+  ],
+  "performance_metrics": [
+    "Social Welfare (SW)",
+    "Fairness (F)"
+  ],
+  "lp_model": {
+    "objective": "$\\max f(\\mathbf{x})$, where $f$ is either social welfare $SW(\\mathbf{x}) = 1 - \\frac{1}{|N|} \\sum_{i \\in N} c_i x_i$ or fairness $F(\\mathbf{x}) = 1 - \\frac{\\sum_{i \\in N} \\sum_{j \\in N} |u_i - u_j|}{2|N| \\sum_{j \\in N} u_j}$ with $u_i = 1 - c_i x_i$.",
+    "constraints": [
+      "$x_i + x_j \\leq 1, \\quad \\forall (i,j) \\in E$",
+      "$x_i + \\sum_{j \\in N(i)} x_j \\geq 1, \\quad \\forall i \\in N$",
+      "$x_i \\in \\{0,1\\}, \\quad \\forall i \\in N$"
+    ],
+    "variables": [
+      "$x_i$: binary decision variable indicating whether node $i$ is in the maximal independent set (i.e., invests in the public good)."
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned}\n\\max_{\\mathbf{x}} & \\quad f(\\mathbf{x}) \\\\\n\\text{s.t.} & \\quad x_i + x_j \\leq 1, \\quad \\forall (i,j) \\in E, \\\\\n& \\quad x_i + \\sum_{j \\in N(i)} x_j \\geq 1, \\quad \\forall i \\in N, \\\\\n& \\quad x_i \\in \\{0,1\\}, \\quad \\forall i \\in N.\n\\end{aligned}$$\nwhere $f(\\mathbf{x})$ is either the social welfare $SW(\\mathbf{x}) = 1 - \\frac{1}{|N|} \\sum_{i \\in N} c_i x_i$ or the fairness $F(\\mathbf{x}) = 1 - \\frac{\\sum_{i \\in N} \\sum_{j \\in N} |u_i - u_j|}{2|N| \\sum_{j \\in N} u_j}$ with $u_i = 1 - c_i x_i$.",
+  "algorithm_description": "The paper uses a two-stage method: (1) Monte Carlo Tree Search (UCT) for planning in a Markov Decision Process (MDP) that incrementally constructs a maximal independent set (mIS) to maximize the objective; (2) Graph Imitation Learning (GIL), which trains a graph neural network (structure2vec) via behavioral cloning on demonstrations from UCT, yielding a fast policy that generalizes to unseen graph instances."
+}

@@ -1,0 +1,31 @@
+{
+  "paper_id": "⭐Revocable_Deep_Reinforcement_Learning_with_Affinity_Regular",
+  "title": "Revocable Deep Reinforcement Learning with Affinity Regularization for Outlier-Robust Graph Matching",
+  "abstract": "Graph matching (GM) has been a building block in various areas including computer vision and pattern recognition. Despite recent impressive progress, existing deep GM methods often have obvious difficulty in handling outliers, which are ubiquitous in practice. We propose a deep reinforcement learning based approach RGM, whose sequential node matching scheme naturally fits the strategy for selective inlier matching against outliers. A revocable action framework is devised to improve the agent’s flexibility against the complex constrained GM. Moreover, we propose a quadratic approximation technique to regularize the affinity score, in the presence of outliers. As such, the agent can finish inlier matching timely when the affinity score stops growing, for which otherwise an additional parameter i.e. the number of inliers is needed to avoid matching outliers. In this paper, we focus on learning the back-end solver under the most general form of GM: the Lawler’s QAP, whose input is the affinity matrix. Especially, our approach can also boost existing GM methods that use such input. Experiments on multiple real-world datasets demonstrate its performance regarding both accuracy and robustness.",
+  "problem_description_natural": "The paper addresses the problem of pairwise graph matching in the presence of outliers in both input graphs. The goal is to find a partial node correspondence that maximizes an affinity score while avoiding spurious matches involving outliers. The problem is formulated as Lawler's Quadratic Assignment Problem (QAP), which involves maximizing a quadratic objective function defined by an affinity matrix over a set of binary assignment variables subject to one-to-one matching constraints. The authors propose a reinforcement learning approach that sequentially selects node pairs (inliers) to match, uses a revocable action mechanism to correct early mistakes, and introduces an affinity regularization technique to discourage matching outliers by penalizing matches that reduce the overall score.",
+  "problem_type": "Graph Matching",
+  "datasets": [
+    "Willow Object",
+    "Pascal VOC",
+    "QAPLIB",
+    "Synthetic image"
+  ],
+  "performance_metrics": [
+    "F1 score",
+    "Objective score",
+    "Optimality Gap"
+  ],
+  "lp_model": {
+    "objective": "$\\max \\mathrm{vec}(\\mathbf{X})^\\top \\mathbf{K} \\, \\mathrm{vec}(\\mathbf{X})$",
+    "constraints": [
+      "$\\mathbf{X} \\in \\{0,1\\}^{n_1 \\times n_2}$",
+      "$\\mathbf{X}\\mathbf{1}_{n_2} \\leq \\mathbf{1}_{n_1}$",
+      "$\\mathbf{X}^\\top\\mathbf{1}_{n_1} \\leq \\mathbf{1}_{n_2}$"
+    ],
+    "variables": [
+      "$\\mathbf{X}$: binary matrix of size $n_1 \\times n_2$ where $\\mathbf{X}(i,a)=1$ if node $i$ in graph $G^1$ is matched with node $a$ in graph $G^2$"
+    ]
+  },
+  "raw_latex_model": "$$ \\max_{\\mathbf{X}} \\mathrm{vec}(\\mathbf{X})^\\top \\mathbf{K} \\, \\mathrm{vec}(\\mathbf{X}) $$ $$ \\text{s.t.} \\quad \\mathbf{X} \\in \\{0,1\\}^{n_1 \\times n_2}, \\; \\mathbf{X}\\mathbf{1}_{n_2} \\leq \\mathbf{1}_{n_1}, \\; \\mathbf{X}^\\top\\mathbf{1}_{n_1} \\leq \\mathbf{1}_{n_2} $$",
+  "algorithm_description": "The paper proposes a deep reinforcement learning (RL) method called RGM for solving graph matching. It uses Double Dueling DQN (D3QN) with a revocable action mechanism and affinity regularization to handle outliers. The RL agent sequentially selects node correspondences on an association graph derived from the input affinity matrix, with rewards based on affinity score improvement. The revocable framework allows action reversal, and affinity regularization modifies the objective to discourage outlier matching via quadratic approximation."
+}

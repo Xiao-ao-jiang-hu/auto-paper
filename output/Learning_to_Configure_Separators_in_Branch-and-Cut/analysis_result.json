@@ -1,0 +1,37 @@
+{
+  "paper_id": "Learning_to_Configure_Separators_in_Branch-and-Cut",
+  "title": "Learning to Configure Separators in Branch-and-Cut",
+  "abstract": "Cutting planes are crucial in solving mixed integer linear programs (MILP) as they facilitate bound improvements on the optimal solution. Modern MILP solvers rely on a variety of separators to generate a diverse set of cutting planes by invoking the separators frequently during the solving process. This work identifies that MILP solvers can be drastically accelerated by appropriately selecting separators to activate. As the combinatorial separator selection space imposes challenges for machine learning, we learn to separate by proposing a novel data-driven strategy to restrict the selection space and a learning-guided algorithm on the restricted space. Our method predicts instance-aware separator configurations which can dynamically adapt during the solve, effectively accelerating the open source MILP solver SCIP by improving the relative solve time up to 72% and 37% on synthetic and real-world MILP benchmarks. Our work complements recent work on learning to select cutting planes and highlights the importance of separator management.",
+  "problem_description_natural": "The paper addresses the problem of configuring separator algorithms within the Branch-and-Cut (B&C) framework used to solve Mixed Integer Linear Programs (MILPs). In B&C, at each node of the Branch-and-Bound tree, multiple separator algorithms (e.g., Gomory, Clique) are invoked to generate cutting planes that tighten the LP relaxation. However, not all separators are equally effective for every MILP instance or at every stage of the solve. The authors formulate the 'Separator Configuration' task: selecting, for each MILP instance and separation round, which subset of the available separators to activate or deactivate. The goal is to reduce total solve time by generating a high-quality cutpool efficiently, thereby reducing the number of B&B nodes and computational overhead from ineffective separators. The challenge lies in the enormous combinatorial search space (2^(M×R) for M separators and R rounds), which the authors tackle via a data-driven restriction of the configuration space and a learning-guided selection policy.",
+  "problem_type": "MILP",
+  "datasets": [
+    "Tang et al. Bin. Pack.",
+    "Tang et al. Max. Cut",
+    "Tang et al. Pack.",
+    "Ecole Comb. Auc.",
+    "Ecole Indep. Set",
+    "Ecole Fac. Loc.",
+    "MIPLIB",
+    "NN Verification",
+    "Load Balancing"
+  ],
+  "performance_metrics": [
+    "Relative Time Improvement",
+    "Median Relative Time Improvement",
+    "Standard Deviation of Relative Time Improvement",
+    "Relative Gap Improvement"
+  ],
+  "lp_model": {
+    "objective": "$\\min c^{\\top} x$",
+    "constraints": [
+      "$Ax \\leq b$",
+      "$x_j \\in \\mathbb{Z}, \\forall j \\in I$"
+    ],
+    "variables": [
+      "$x \\in \\mathbb{R}^n$: decision variables",
+      "$I \\subseteq \\{1, \\dots, n\\}$: index set of integer variables"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} \\min_{x} \\quad & c^{\\top} x \\\\ \\text{s.t.} \\quad & Ax \\leq b \\\\ & x_j \\in \\mathbb{Z}, \\forall j \\in I \\end{aligned}$$",
+  "algorithm_description": "The paper proposes a learning-based method to configure separators (cutting plane algorithms) in branch-and-cut for MILP solvers. They use a data-driven strategy to restrict the combinatorial space of separator configurations and a neural contextual bandit algorithm to learn instance-aware configurations."
+}

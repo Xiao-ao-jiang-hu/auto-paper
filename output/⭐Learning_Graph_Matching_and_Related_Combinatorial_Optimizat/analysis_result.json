@@ -1,0 +1,25 @@
+{
+  "paper_id": "⭐Learning_Graph_Matching_and_Related_Combinatorial_Optimizat",
+  "title": "Learning for Graph Matching and Related Combinatorial Optimization Problems",
+  "abstract": "This survey gives a selective review of recent development of machine learning (ML) for combinatorial optimization (CO), especially for graph matching. The synergy of these two well-developed areas (ML and CO) can potentially give transformative change to artificial intelligence, whose foundation relates to these two building blocks. For its representativeness and wide-applicability, this paper is more focused on the problem of weighted graph matching, especially from the learning perspective. For graph matching, we show that many learning techniques e.g. convolutional neural networks, graph neural networks, reinforcement learning can be effectively incorporated in the paradigm for extracting the node features, graph structure features, and even the matching engine. We further present outlook for the new settings for learning graph matching, and direction towards more integrated combinatorial optimization solvers with prediction models, and also the mutual embrace of traditional solver and machine learning components.",
+  "problem_description_natural": "The paper focuses on the problem of graph matching, specifically weighted graph matching, which involves establishing one-to-one correspondences between nodes of two or more graphs to maximize an affinity score that accounts for both node and edge similarities. This problem is formulated as a quadratic assignment problem (QAP), which is NP-complete. The affinity score combines vertex-to-vertex and edge-to-edge similarities, often represented via an affinity matrix (or higher-order tensors for hypergraph matching). The goal is to find a binary assignment matrix that satisfies matching constraints while maximizing the total affinity. The problem is inherently combinatorial and becomes computationally intractable for large graphs, motivating the integration of machine learning methods to improve efficiency, scalability, and accuracy.",
+  "problem_type": "Graph Matching (a form of combinatorial optimization, specifically Quadratic Assignment Problem)",
+  "datasets": [
+    "Generated ER Graphs"
+  ],
+  "performance_metrics": [],
+  "lp_model": {
+    "objective": "$\\max \\mathbf{x}^\\top \\mathbf{K} \\mathbf{x}$",
+    "constraints": [
+      "$\\mathbf{X} \\mathbf{1}_{n_2} = \\mathbf{1}_{n_1}$",
+      "$\\mathbf{X}^\\top \\mathbf{1}_{n_1} \\leq \\mathbf{1}_{n_2}$",
+      "$\\mathbf{X} \\in \\{0,1\\}^{n_1 \\times n_2}$"
+    ],
+    "variables": [
+      "$\\mathbf{X} \\in \\{0,1\\}^{n_1 \\times n_2}$: binary assignment matrix where $X_{ij}=1$ if node $i$ in graph 1 is matched to node $j$ in graph 2",
+      "$\\mathbf{x} = \\mathrm{vec}(\\mathbf{X})$: vectorized version of $\\mathbf{X}$"
+    ]
+  },
+  "raw_latex_model": "$$\\max_{\\mathbf{X}} \\mathbf{x}^\\top \\mathbf{K} \\mathbf{x} \\quad \\text{s.t.} \\quad \\mathbf{X} \\mathbf{1}_{n_2} = \\mathbf{1}_{n_1}, \\quad \\mathbf{X}^\\top \\mathbf{1}_{n_1} \\leq \\mathbf{1}_{n_2}, \\quad \\mathbf{X} \\in \\{0,1\\}^{n_1 \\times n_2}, \\quad \\mathbf{x} = \\mathrm{vec}(\\mathbf{X})$$",
+  "algorithm_description": "This survey reviews machine learning techniques for solving graph matching, including convolutional neural networks (CNN) for node feature extraction, graph neural networks (GNN) for graph structure embedding, reinforcement learning (RL) for sequential decision-making, and methods like Sinkhorn networks for differentiable optimization to bridge continuous learning with discrete assignments."
+}

@@ -1,0 +1,30 @@
+{
+  "paper_id": "Let_the_Flows_Tell_Solving_Graph_Combinatorial_Optimization_",
+  "title": "Let the Flows Tell: Solving Graph Combinatorial Optimization Problems with GFlowNets",
+  "abstract": "Combinatorial optimization (CO) problems are often NP-hard and thus out of reach for exact algorithms, making them a tempting domain to apply machine learning methods. The highly structured constraints in these problems can hinder either optimization or sampling directly in the solution space. On the other hand, GFlowNets have recently emerged as a powerful machinery to efficiently sample from composite unnormalized densities sequentially and have the potential to amortize such solution-searching processes in CO, as well as generate diverse solution candidates. In this paper, we design Markov decision processes (MDPs) for different combinatorial problems and propose to train conditional GFlowNets to sample from the solution space. Efficient training techniques are also developed to benefit long-range credit assignment. Through extensive experiments on a variety of different CO tasks with synthetic and realistic data, we demonstrate that GFlowNet policies can efficiently find high-quality solutions.",
+  "problem_description_natural": "The paper addresses four specific NP-hard graph-based combinatorial optimization problems: (1) Maximum Independent Set (MIS)—finding the largest subset of vertices such that no two are adjacent; (2) Maximum Clique (MC)—finding the largest subset of vertices where every pair is connected by an edge; (3) Minimum Dominating Set (MDS)—finding the smallest subset of vertices such that every vertex in the graph is either in the set or adjacent to a vertex in the set; and (4) Maximum Cut (MCut)—partitioning the vertices into two subsets to maximize the number of edges between them. The authors frame these as sequential decision-making problems using GFlowNets, which learn stochastic policies to sample solutions proportional to a reward derived from the optimization objective (e.g., exp(-energy/temperature)). The goal is to generate high-quality and diverse candidate solutions without relying on supervised labels or dense reward signals.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "RB graphs",
+    "SATLIB",
+    "BA graphs",
+    "ER graphs"
+  ],
+  "performance_metrics": [
+    "Absolute objective value (e.g., set size, cut size)",
+    "Approximation ratio (DROP or GAP relative to oracle solver)",
+    "Inference time"
+  ],
+  "lp_model": {
+    "objective": "$\\max \\sum_{i \\in V} x_i$",
+    "constraints": [
+      "$x_i + x_j \\leq 1 \\quad \\forall (i,j) \\in E$",
+      "$x_i \\in \\{0,1\\} \\quad \\forall i \\in V$"
+    ],
+    "variables": [
+      "$x_i$: binary decision variable, where $x_i = 1$ if vertex $i$ is included in the independent set $S$, and $x_i = 0$ otherwise"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} \\max & \\sum_{i \\in V} x_i \\\\ \\text{s.t.} & x_i + x_j \\leq 1 \\quad \\forall (i,j) \\in E \\\\ & x_i \\in \\{0,1\\} \\quad \\forall i \\in V \\end{aligned}$$",
+  "algorithm_description": "The paper uses Generative Flow Networks (GFlowNets), a machine learning method, to solve the combinatorial optimization problems. For each problem, a Markov Decision Process (MDP) is designed where states represent partial solutions (vertex sets with values in {0,1,∅}), and actions sequentially add vertices to the set while ensuring feasibility through transitions. GFlowNets are trained with a transition-based forward-looking detailed balance loss to sample solutions proportionally to a reward based on the objective, enabling efficient credit assignment for long trajectories."
+}

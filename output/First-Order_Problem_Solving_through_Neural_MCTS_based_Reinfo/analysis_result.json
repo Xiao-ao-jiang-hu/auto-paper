@@ -1,0 +1,34 @@
+{
+  "paper_id": "First-Order_Problem_Solving_through_Neural_MCTS_based_Reinfo",
+  "title": "First-Order Problem Solving through Neural MCTS based Reinforcement Learning",
+  "abstract": "The formal semantics of an interpreted first-order logic (FOL) statement can be given in Tarskian Semantics or a basically equivalent Game Semantics. The latter maps the statement and the interpretation into a two-player semantic game. Many combinatorial problems can be described using interpreted FOL statements and can be mapped into a semantic game. Therefore, learning to play a semantic game perfectly leads to the solution of a specific instance of a combinatorial problem. We adapt the AlphaZero algorithm so that it becomes better at learning to play semantic games that have different characteristics than Go and Chess. We propose a general framework, Persephone, to map the FOL description of a combinatorial problem to a semantic game so that it can be solved through a neural MCTS based reinforcement learning algorithm. Our goal for Persephone is to make it tabula-rasa, mapping a problem stated in interpreted FOL to a solution without human intervention.",
+  "problem_description_natural": "The paper addresses the problem of solving combinatorial problems that can be expressed in interpreted first-order logic (FOL). Instead of directly solving the logical formula, the authors transform the problem into a two-player semantic game using game-theoretic semantics, where one player (the Proponent) tries to prove the formula true and the other (the Opponent) tries to refute it. The goal is to learn optimal strategies for these players using a neural Monte Carlo Tree Search (MCTS) based reinforcement learning algorithm. The framework, called Persephone, automatically maps an FOL-expressible combinatorial problem into such a game and solves it without human-designed heuristics, aiming for a tabula rasa approach.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "HSR(7, 7, 128)",
+    "HSR(3, 3, 8)",
+    "HSR(4, 4, 16)"
+  ],
+  "performance_metrics": [
+    "Fault Counting",
+    "Elo-rating",
+    "α-Rank",
+    "Number of Iterations to Convergence",
+    "Policy Loss",
+    "Value Loss"
+  ],
+  "lp_model": {
+    "objective": "Determine if $HSR(k, q, n)$ is true, i.e., evaluate the truth value of the recursive predicate defined for the Highest Safe Rung problem.",
+    "constraints": [
+      "$HSR(k, q, n) = \\text{True}$ if $n = 1$",
+      "$HSR(k, q, n) = \\text{False}$ if $n > 1 \\land (k = 0 \\lor q = 0)$",
+      "For $n > 1$, $k > 0$, $q > 0$, $HSR(k, q, n) = \\text{True}$ if and only if $\\exists m \\in [1, n)$ such that $HSR(k-1, q-1, m) = \\text{True}$ and $HSR(k, q-1, n-m) = \\text{True}$"
+    ],
+    "variables": [
+      "$m$: integer variable in $[1, n)$ representing the chosen test point in the recursive case",
+      "$HSR(k, q, n)$: binary predicate indicating whether the highest safe rung can be located with $k$ jars and $q$ tests for a ladder of height $n$"
+    ]
+  },
+  "raw_latex_model": "$$ HSR(k, q, n) = \\begin{cases} \\text{True}, & \\text{if } n = 1 \\\\ \\text{False}, & \\text{if } n > 1 \\land (k = 0 \\lor q = 0) \\\\ \\exists m \\in [1, n): HSR(k-1, q-1, m) \\land HSR(k, q-1, n-m), & \\text{otherwise} \\end{cases} $$",
+  "algorithm_description": "The paper uses Persephone, a framework that maps first-order logic (FOL) problems to two-player semantic games, which are then solved via a neural Monte Carlo Tree Search (MCTS) based reinforcement learning algorithm. Adaptations include warm-start MCTS (keeping counting info and Q-value injection), separate policy/value neural networks, policy learning with PPO (using KL-divergence or clip loss), and asymmetric network designs for players in asymmetric games."
+}

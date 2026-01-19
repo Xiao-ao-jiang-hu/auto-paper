@@ -1,0 +1,40 @@
+{
+  "paper_id": "⭐Graduated_Assignment_for_Joint_Multi-Graph_Matching_and_Clu",
+  "title": "Graduated Assignment for Joint Multi-Graph Matching and Clustering with Application to Unsupervised Graph Matching Network Learning",
+  "abstract": "This paper considers the setting of jointly matching and clustering multiple graphs belonging to different groups, which naturally rises in many realistic problems. Both graph matching and clustering are challenging (NP-hard) and a joint solution is appealing due to the natural connection of the two tasks. In this paper, we resort to a graduated assignment procedure for soft matching and clustering over iterations, whereby the two-way constraint and clustering confidence are modulated by two separate annealing parameters, respectively. Our technique can be further utilized for end-to-end learning whose loss refers to the cross-entropy between two lines of matching pipelines, as such the keypoint feature extraction CNNs can be learned without ground-truth supervision. Experimental results on real-world benchmarks show our method outperforms learning-free algorithms and performs comparatively against two-graph based supervised graph matching approaches. Source code is publicly available as a module of ThinkMatch.",
+  "problem_description_natural": "The paper addresses the joint optimization of multi-graph matching and clustering (MGMC), where multiple graphs—potentially from different categories—must be simultaneously matched (i.e., node correspondences established) and clustered (i.e., grouped by category). The matching must respect cycle-consistency across all graphs, and the clustering must reflect underlying group structure. The problem is formulated using the Koopmans-Beckmann Quadratic Assignment Problem (QAP) extended to multiple graphs, with an additional soft clustering component controlled by an annealing parameter. The objective combines structural (edge-to-edge) similarity and node-wise feature similarity, while enforcing that matchings are consistent across the entire set of graphs via a universe graph representation. The method uses a graduated assignment approach that iteratively linearizes the QAP via first-order Taylor expansion and solves the resulting linear assignment problems using Sinkhorn normalization with decreasing temperature, followed by the Hungarian algorithm for discretization.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "Willow Object Class",
+    "CUB2011",
+    "Caltech-256",
+    "Pascal VOC 2007"
+  ],
+  "performance_metrics": [
+    "precision",
+    "recall",
+    "f1-score",
+    "matching accuracy",
+    "Clustering Purity (CP)",
+    "Rand Index (RI)",
+    "Clustering Accuracy (CA)",
+    "matching precision (MP)",
+    "matching recall (MR)",
+    "matching f1-score (MF)"
+  ],
+  "lp_model": {
+    "objective": "$\\max_{\\mathbf{X}_{ij}, i,j\\in[m]} \\sum_{i,j\\in[m]} \\mathbb{C}_{ij} \\left( \\lambda \\operatorname{tr}(\\mathbf{X}_{ij}^\\top \\mathbf{A}_i \\mathbf{X}_{ij} \\mathbf{A}_j) + \\operatorname{tr}(\\mathbf{X}_{ij}^\\top \\mathbf{W}_{ij}) \\right)$",
+    "constraints": [
+      "$\\mathbf{X}_{ij} \\in \\{0,1\\}^{n_i \\times n_j}$ for all $i,j\\in[m]$",
+      "$\\mathbf{X}_{ij}\\mathbf{1} = \\mathbf{1}$ for all $i,j\\in[m]$",
+      "$\\mathbf{X}_{ij}^\\top\\mathbf{1} = \\mathbf{1}$ for all $i,j\\in[m]$",
+      "$\\mathbf{X}_{ij} = \\mathbf{X}_{ik}\\mathbf{X}_{kj}$ for all $i,j,k\\in[m]$ (cycle-consistency)"
+    ],
+    "variables": [
+      "$\\mathbf{X}_{ij}$: binary assignment matrix between graph $\\mathcal{G}_i$ and $\\mathcal{G}_j$",
+      "$\\mathbb{C}_{ij}$: binary clustering matrix indicating if graphs $\\mathcal{G}_i$ and $\\mathcal{G}_j$ belong to the same cluster"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} \\max_{\\mathbf{X}_{ij}, i,j\\in[m]} & \\sum_{i,j\\in[m]} \\mathbb{C}_{ij} \\left( \\lambda \\operatorname{tr}(\\mathbf{X}_{ij}^\\top \\mathbf{A}_i \\mathbf{X}_{ij} \\mathbf{A}_j) + \\operatorname{tr}(\\mathbf{X}_{ij}^\\top \\mathbf{W}_{ij}) \\right) \\\\ \\text{s.t. } & \\mathbf{X}_{ij} \\in \\{0,1\\}^{n_i \\times n_j}, \\quad \\forall i,j\\in[m], \\\\ & \\mathbf{X}_{ij}\\mathbf{1} = \\mathbf{1}, \\quad \\mathbf{X}_{ij}^\\top\\mathbf{1} = \\mathbf{1}, \\quad \\forall i,j\\in[m], \\\\ & \\mathbf{X}_{ij} = \\mathbf{X}_{ik}\\mathbf{X}_{kj}, \\quad \\forall i,j,k\\in[m]. \\end{aligned}$$",
+  "algorithm_description": "The paper proposes a graduated assignment procedure for joint multi-graph matching and clustering (MGMC). It alternates between matching and clustering with annealing parameters. For matching, it uses a first-order Taylor expansion of the multi-graph Koopmans-Beckmann QAP objective, leading to independent linear assignment problems solved via Sinkhorn (with annealing parameter $\\tau$) and Hungarian algorithms. For clustering, it computes graph-wise similarity based on matching agreement and applies spectral clustering. The annealing parameter $\\beta$ controls clustering confidence. An unsupervised learning variant (GANN) uses the matching results as pseudo-labels to train a CNN feature extractor via cross-entropy loss."
+}

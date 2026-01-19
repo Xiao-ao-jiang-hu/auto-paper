@@ -1,0 +1,27 @@
+{
+  "paper_id": "GLMNet_Graph_Learning-Matching_Networks_for_Feature_Matching",
+  "title": "GLMNet: Graph Learning-Matching Networks for Feature Matching",
+  "abstract": "Recently, graph convolutional networks (GCNs) have shown great potential for the task of graph matching. It can integrate graph node feature embedding, node-wise affinity learning and matching optimization together in a unified end-to-end model. One important aspect of graph matching is the construction of two matching graphs. However, the matching graphs we feed to existing graph convolutional matching networks are generally fixed and independent of graph matching, which thus are not guaranteed to be optimal for the graph matching task. Also, existing GCN matching method employs several general smoothing-based graph convolutional layers to generate graph node embeddings, in which extensive smoothing convolution operation may dilute the desired discriminatory information of graph nodes. To overcome these issues, we propose a novel Graph Learning-Matching Network (GLMNet) for graph matching problem. GLMNet has three main aspects. (1) It integrates graph learning into graph matching which thus adaptively learn a pair of optimal graphs that best serve graph matching task. (2) It further employs a Laplacian sharpening convolutional module to generate more discriminative node embeddings for graph matching. (3) A new constraint regularized loss is designed for GLMNet training which can encode the desired one-to-one matching constraints in matching optimization. Experiments on two benchmarks demonstrate the effectiveness of GLMNet and advantages of its main modules.",
+  "problem_description_natural": "The paper addresses the feature matching problem between two sets of image features by formulating it as a graph matching problem. The goal is to find consistent one-to-one correspondences between nodes (features) of two graphs while preserving both node descriptor similarities and edge relationship consistencies. Mathematically, this is cast as an Integral Quadratic Programming (IQP) problem with permutation constraints enforcing one-to-one matching. Since this problem is NP-hard, the authors develop an end-to-end deep learning framework (GLMNet) that jointly learns the graph structures, produces discriminative node embeddings using Laplacian sharpening convolutions, and incorporates matching constraints via a regularized loss function to approximate the optimal solution.",
+  "problem_type": "Graph Matching",
+  "datasets": [
+    "PASCAL VOC",
+    "WILLOW-ObjectClass"
+  ],
+  "performance_metrics": [
+    "Matching Accuracy"
+  ],
+  "lp_model": {
+    "objective": "$\\max \\sum_{i=1}^{m} \\sum_{j=1}^{n} \\sum_{k=1}^{m} \\sum_{l=1}^{n} W_{ijkl} P_{ij} P_{kl}$",
+    "constraints": [
+      "$P_{ij} \\in \\{0,1\\}, \\quad \\forall i=1,\\ldots,m, j=1,\\ldots,n$",
+      "$\\sum_{j=1}^{n} P_{ij} \\leq 1, \\quad \\forall i=1,\\ldots,m$",
+      "$\\sum_{i=1}^{m} P_{ij} \\leq 1, \\quad \\forall j=1,\\ldots,n$"
+    ],
+    "variables": [
+      "$P_{ij}$: binary decision variable, where $P_{ij}=1$ if feature $i$ in the first graph matches feature $j$ in the second graph, and $0$ otherwise"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} \\max_{P} & \\sum_{i=1}^{m} \\sum_{j=1}^{n} \\sum_{k=1}^{m} \\sum_{l=1}^{n} W_{ijkl} P_{ij} P_{kl} \\\\ \\text{s.t.} & \\quad P_{ij} \\in \\{0,1\\}, \\quad \\forall i,j \\\\ & \\quad \\sum_{j=1}^{n} P_{ij} \\leq 1, \\quad \\forall i \\\\ & \\quad \\sum_{i=1}^{m} P_{ij} \\leq 1, \\quad \\forall j \\end{aligned}$$",
+  "algorithm_description": "The paper proposes GLMNet, a graph learning-matching network that integrates graph learning, graph convolutional embedding with Laplacian sharpening convolution, and a constraint regularized loss to solve the graph matching problem end-to-end. It uses deep feature extraction, adaptive graph learning, intra- and cross-graph convolutions, and affinity metric learning with Sinkhorn normalization for matching prediction."
+}

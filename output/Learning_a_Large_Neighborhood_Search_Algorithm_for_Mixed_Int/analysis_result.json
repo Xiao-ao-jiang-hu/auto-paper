@@ -1,0 +1,31 @@
+{
+  "paper_id": "Learning_a_Large_Neighborhood_Search_Algorithm_for_Mixed_Int",
+  "title": "Learning a Large Neighborhood Search Algorithm for Mixed Integer Programs",
+  "abstract": "Large Neighborhood Search (LNS) is a combinatorial optimization heuristic that starts with an assignment of values for the variables to be optimized, and iteratively improves it by searching a large neighborhood around the current assignment. In this paper we consider a learning-based LNS approach for mixed integer programs (MIPs). We train a Neural Diving model to generate an initial assignment. Formulating the subsequent search steps as a Markov Decision Process, we train a Neural Neighborhood Selection policy to select a search neighborhood at each step, which is searched using a MIP solver to find the next assignment. The policy network is trained using imitation learning. We propose a target policy for imitation that is designed to select the neighborhood containing the optimal next assignment amongst all possible choices for the neighborhood of a specified size. Our approach matches or outperforms all the baselines on five diverse real-world MIP datasets with large-scale instances, including two production applications at a large technology company. It achieves 2× to 37.8× better average primal gap than the best baseline on three datasets at large running times.",
+  "problem_description_natural": "The paper addresses the problem of solving Mixed Integer Programs (MIPs), which involve minimizing a linear objective function subject to linear constraints, where some variables are required to take integer values. The goal is to find high-quality feasible solutions quickly, especially for large-scale real-world instances. The authors focus on improving primal heuristics—methods that aim to find good feasible assignments without necessarily proving optimality—by combining machine learning with Large Neighborhood Search (LNS). Their approach uses a learned model (Neural Diving) to produce an initial feasible assignment and a learned policy (Neural Neighborhood Selection) to dynamically choose which subset of integer variables to unassign and re-optimize at each LNS iteration, thereby defining a search neighborhood that balances solution quality and computational cost.",
+  "problem_type": "Mixed Integer Linear Programming (MILP)",
+  "datasets": [
+    "Neural Network Verification",
+    "Electric Grid Optimization",
+    "Production Packing",
+    "Production Planning",
+    "MIPLIB"
+  ],
+  "performance_metrics": [
+    "average primal gap",
+    "fraction of test instances with primal gap below a threshold"
+  ],
+  "lp_model": {
+    "objective": "$\\min c^T x$",
+    "constraints": [
+      "$Ax \\leq b$",
+      "$x_i \\in \\mathbb{Z}$ for all $i \\in \\mathcal{I}$"
+    ],
+    "variables": [
+      "$x \\in \\mathbb{R}^n$: vector of decision variables, where $n$ is the number of variables",
+      "For each $i \\in \\mathcal{I} \\subseteq \\{1, \\dots, n\\}$, $x_i$ is an integer variable; otherwise, it is continuous"
+    ]
+  },
+  "raw_latex_model": "$$\\min_x \\{ f(x) = c^T x \\mid Ax \\leq b, x_i \\in \\mathbb{Z} \\text{ for } i \\in \\mathcal{I} \\}$$",
+  "algorithm_description": "The paper proposes a learning-based Large Neighborhood Search (LNS) algorithm for solving Mixed Integer Programs. It uses Neural Diving, a generative model, to produce an initial feasible assignment, and a Neural Neighborhood Selection policy, trained via imitation learning from an expert policy based on local branching, to iteratively select variables to unassign and solve sub-MIPs for improvement."
+}

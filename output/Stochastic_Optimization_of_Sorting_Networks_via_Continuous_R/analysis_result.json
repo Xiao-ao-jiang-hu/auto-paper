@@ -1,0 +1,33 @@
+{
+  "paper_id": "Stochastic_Optimization_of_Sorting_Networks_via_Continuous_R",
+  "title": "STOCHASTIC OPTIMIZATION OF SORTING NETWORKS VIA CONTINUOUS RELAXATIONS",
+  "abstract": "Sorting input objects is an important step in many machine learning pipelines. However, the sorting operator is non-differentiable with respect to its inputs, which prohibits end-to-end gradient-based optimization. In this work, we propose NeuralSort, a general-purpose continuous relaxation of the output of the sorting operator from permutation matrices to the set of unimodal row-stochastic matrices, where every row sums to one and has a distinct argmax. This relaxation permits straight-through optimization of any computational graph involving a sorting operation. Further, we use this relaxation to enable gradient-based stochastic optimization over the combinatorially large space of permutations by deriving a reparameterized gradient estimator for the Plackett-Luce family of distributions over permutations. We demonstrate the usefulness of our framework on three tasks that require learning semantic orderings of high-dimensional objects, including a fully differentiable, parameterized extension of the k-nearest neighbors algorithm.",
+  "problem_description_natural": "The paper addresses the challenge that the sorting operator is non-differentiable, which prevents gradient-based end-to-end learning in models that rely on sorting or ranking operations. The authors aim to enable optimization of objectives that include sorting by introducing a continuous, differentiable relaxation called NeuralSort. This relaxation maps real-valued input scores to unimodal row-stochastic matrices that approximate permutation matrices. Additionally, they tackle stochastic optimization over permutations—specifically under the Plackett-Luce distribution—by combining Gumbel perturbations with NeuralSort to obtain low-variance, reparameterized gradient estimators. The overall goal is to allow gradient-based learning in models where sorting or latent permutations are essential components.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "large-MNIST",
+    "MNIST",
+    "Fashion-MNIST",
+    "CIFAR-10"
+  ],
+  "performance_metrics": [
+    "sorting accuracy",
+    "proportion of individual element ranks correctly identified",
+    "mean squared error",
+    "R^2",
+    "kNN classification accuracy"
+  ],
+  "lp_model": {
+    "objective": "$\\min -\\sum_{i=1}^{n} \\sum_{j=1}^{n} P_{\\text{true}}[i,j] \\log(P[i,j])$",
+    "constraints": [
+      "$\\sum_{j=1}^{n} P[i,j] = 1 \\quad \\forall i \\in \\{1,\\dots,n\\}$",
+      "$\\sum_{i=1}^{n} P[i,j] = 1 \\quad \\forall j \\in \\{1,\\dots,n\\}$",
+      "$P[i,j] \\in \\{0,1\\} \\quad \\forall i,j \\in \\{1,\\dots,n\\}$"
+    ],
+    "variables": [
+      "$P[i,j]$: binary decision variable indicating if item $i$ is assigned to rank $j$ in the predicted permutation"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} \\min & \\quad -\\sum_{i=1}^{n} \\sum_{j=1}^{n} P_{\\text{true}}[i,j] \\log(P[i,j]) \\\\ \\text{s.t.} & \\quad \\sum_{j=1}^{n} P[i,j] = 1, \\quad \\forall i \\in \\{1,\\dots,n\\} \\\\ & \\quad \\sum_{i=1}^{n} P[i,j] = 1, \\quad \\forall j \\in \\{1,\\dots,n\\} \\\\ & \\quad P[i,j] \\in \\{0,1\\}, \\quad \\forall i,j \\in \\{1,\\dots,n\\} \\end{aligned}$$",
+  "algorithm_description": "The paper proposes NeuralSort, a continuous relaxation of the sorting operator that maps input scores to unimodal row-stochastic matrices, enabling gradient-based optimization via backpropagation. This allows for end-to-end learning of semantic orderings in tasks such as sorting high-dimensional images, quantile regression, and differentiable k-nearest neighbors classifiers."
+}

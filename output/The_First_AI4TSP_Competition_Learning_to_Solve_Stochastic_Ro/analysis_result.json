@@ -1,0 +1,31 @@
+{
+  "paper_id": "The_First_AI4TSP_Competition_Learning_to_Solve_Stochastic_Ro",
+  "title": "The First AI4TSP Competition: Learning to Solve Stochastic Routing Problems",
+  "abstract": "This paper reports on the first international competition on AI for the traveling salesman problem (TSP) at the International Joint Conference on Artificial Intelligence 2021 (IJCAI-21). The competition focused on a time-dependent orienteering problem with stochastic weights and time windows (TD-OPSWTW), challenging participants to use either surrogate-based optimization or deep reinforcement learning. The paper describes the problem setup, winning methods, and results, highlighting advances in AI for stochastic routing problems. An open-source simulator was released to serve as a benchmark for future research.",
+  "problem_description_natural": "The optimization problem is a variant of the Traveling Salesman Problem called the Time-Dependent Orienteering Problem with Stochastic Weights and Time Windows (TD-OPSWTW). In this problem, an agent starts and ends at a depot (node 1) and must choose a subset of nodes to visit within a fixed total time budget. Each node has a prize that is collected only if the agent arrives within the node's time window [l_i, h_i]. Arriving before the window requires waiting until the opening time; arriving after incurs a penalty. Travel times between nodes are stochastic—drawn from a distribution based on Euclidean distance scaled by random noise—and are only revealed as the tour progresses. The objective is to maximize the sum of collected prizes minus any penalties, while respecting time windows and the global tour time limit. Not all nodes need to be visited, and the solution is a sequence (tour) starting and ending at the depot.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "TD-OPSWTW"
+  ],
+  "performance_metrics": [
+    "Total collected prize (sum of prizes and penalties)",
+    "Average reward over Monte Carlo samples"
+  ],
+  "lp_model": {
+    "objective": "$\\max_{\\mathbf{s}} \\mathbb{E}[f(\\mathbf{s}, I)]$ where $f(\\mathbf{s}, I)$ is the total reward (sum of prizes and penalties) for tour $\\mathbf{s}$ on instance $I$, with $\\mathbb{E}$ denoting expectation over stochastic travel times.",
+    "constraints": [
+      "$\\mathbf{s} = [s_0, s_1, \\ldots, s_k]$ with $s_0 = 1$ (depot) and $s_k = 1$ (return to depot), and $s_i \\in \\{1,\\ldots,n\\}$ for $i=1,\\ldots,k-1$ representing visited nodes.",
+      "For each visited node $i$ in $\\mathbf{s}$, if arrival time $a_i > h_i$, a penalty $e_i = -1$ is incurred.",
+      "If total travel time $\\sum_{i=0}^{k-1} t_{s_i, s_{i+1}} > T$, a penalty of $-n$ is incurred at the first node where this occurs.",
+      "If arrival time $a_i < l_i$, the agent must wait until time $l_i$ before departing.",
+      "Travel times $t_{i,j}$ are stochastic: $t_{i,j} = d_{i,j} \\frac{\\eta}{\\beta}$ where $d_{i,j}$ is Euclidean distance, $\\eta \\sim \\mathcal{U}\\{1, 100\\}$, and $\\beta=100$."
+    ],
+    "variables": [
+      "$\\mathbf{s}$: sequence of nodes representing the tour, starting and ending at depot (node 1).",
+      "$a_i$: arrival time at node $i$, which depends on $\\mathbf{s}$ and realized travel times.",
+      "$e_i$: penalty incurred at node $i$, which depends on $a_i$ and total travel time relative to $h_i$ and $T$."
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} \\text{Maximize} \\quad & \\mathbb{E} \\left[ \\sum_{i=1}^{n} \\mathbb{1}\\{s_0 \\notin \\{s_1, \\ldots, s_i\\}\\} (p_{s_i} + e_{s_i}) \\right] \\\\ \\text{subject to} \\quad & \\mathbf{s} = [s_0, s_1, \\ldots, s_k] \\text{ with } s_0 = 1, s_k = 1, \\\\ & a_{s_{i+1}} = \\max(a_{s_i} + t_{s_i, s_{i+1}}, l_{s_{i+1}}) \\text{ for } i=0,\\ldots,k-1, \\\\ & \\text{if } a_{s_i} > h_{s_i} \\text{ then } e_{s_i} = -1, \\\\ & \\text{if } \\sum_{i=0}^{k-1} t_{s_i, s_{i+1}} > T \\text{ then penalty } -n \\text{ at first violating node}, \\\\ & t_{i,j} = d_{i,j} \\frac{\\eta}{\\beta}, \\quad \\eta \\sim \\mathcal{U}\\{1, 100\\}, \\\\ & \\text{where } d_{i,j} \\text{ is Euclidean distance, } p_i \\text{ is prize, } [l_i, h_i] \\text{ is time window, } T \\text{ is max tour time.} \\end{aligned}$$",
+  "algorithm_description": "The paper focuses on solving the TD-OPSWTW using machine learning methods, specifically surrogate-based optimization (SBO) and deep reinforcement learning (DRL). In Track 1 (SBO), methods include Bayesian optimization with Gaussian processes, genetic algorithms, and surrogate models like mixed-integer formulations to approximate and optimize the expected reward. In Track 2 (DRL), methods include neural combinatorial optimization with pointer networks, POMO (policy optimization with multiple optima), efficient active search for instance-specific fine-tuning, and Monte-Carlo rollouts to handle stochasticity. These approaches learn to construct or search for high-quality tours under uncertainty."
+}

@@ -1,0 +1,30 @@
+{
+  "paper_id": "Unsupervised_Learning_for_Combinatorial_Optimization_with_Pr",
+  "title": "Unsupervised Learning for Combinatorial Optimization with Principled Objective Relaxation",
+  "abstract": "Using machine learning to solve combinatorial optimization (CO) problems is challenging, especially when the data is unlabeled. This work proposes an unsupervised learning framework for CO problems. Our framework follows a standard relaxation-plus-rounding approach and adopts neural networks to parameterize the relaxed solutions so that simple back-propagation can train the model end-to-end. Our key contribution is the observation that if the relaxed objective satisfies entry-wise concavity, a low optimization loss guarantees the quality of the final integral solutions. This observation significantly broadens the applicability of the previous framework inspired by Erdős’ probabilistic method [1]. In particular, this observation can guide the design of objective models in applications where the objectives are not given explicitly while requiring being modeled in prior. We evaluate our framework by solving a synthetic graph optimization problem, and two real-world applications including resource allocation in circuit design and approximate computing. Our framework largely outperforms the baselines based on naïve relaxation, reinforcement learning, and Gumbel-softmax tricks.",
+  "problem_description_natural": "The paper addresses combinatorial optimization (CO) problems where the goal is to find an optimal solution from a discrete (typically binary) search space, possibly under constraints. A key focus is on Proxy-based CO (PCO) problems, where the true objective or constraint functions are expensive or impossible to evaluate directly and must be approximated (or 'proxied') using learned models. The authors propose an unsupervised learning framework that relaxes the discrete optimization problem into a continuous one with an entry-wise concave objective, solves it via gradient-based optimization using a neural network, and then rounds the continuous solution to a valid discrete one. The method provides theoretical guarantees: if the relaxed objective is entry-wise concave and the relaxed loss is sufficiently low, the rounded discrete solution is both feasible and near-optimal.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "Twitter",
+    "RBtest",
+    "MNIST",
+    "DFG (from [30])"
+  ],
+  "performance_metrics": [
+    "Approximation Rate",
+    "LUT usage",
+    "Relative error",
+    "Averaged rank"
+  ],
+  "lp_model": {
+    "objective": "$\\min f(X;C)$",
+    "constraints": [
+      "$g(X;C) < 1$"
+    ],
+    "variables": [
+      "$X \\in \\{0,1\\}^n$: binary decision vector"
+    ]
+  },
+  "raw_latex_model": "$$\\min_{X \\in \\{0,1\\}^n} f(X;C) \\quad \\text{subject to} \\quad g(X;C) < 1.$$",
+  "algorithm_description": "The paper proposes an unsupervised learning framework for combinatorial optimization (CO) and proxy-based CO (PCO). The method uses a relaxation-plus-rounding approach: it designs entry-wise concave relaxations of the objective $f$ and constraint $g$, then trains a neural network $\\mathcal{A}_\\theta$ to output a soft solution $\\tilde{X} \\in [0,1]^n$ that minimizes the relaxed loss $f_r(\\tilde{X};C) + \\beta g_r(\\tilde{X};C)$. After training, for a given configuration $C$, the soft solution is rounded to a discrete solution $X$ via a deterministic rounding procedure. The framework is applied to three problems: (I) feature-based edge covering and node matching in graphs, (II) resource allocation in circuit design, and (III) imprecise functional unit assignment in approximate computing."
+}

@@ -1,0 +1,35 @@
+{
+  "paper_id": "Scalable_Discrete_Diffusion_Samplers_Combinatorial_Optimizat",
+  "title": "Scalable Discrete Diffusion Samplers: Combinatorial Optimization and Statistical Physics",
+  "abstract": "Learning to sample from complex unnormalized distributions over discrete domains emerged as a promising research direction with applications in statistical physics, variational inference, and combinatorial optimization. Recent work has demonstrated the potential of diffusion models in this domain. However, existing methods face limitations in memory scaling and thus the number of attainable diffusion steps since they require backpropagation through the entire generative process. To overcome these limitations we introduce two novel training methods for discrete diffusion samplers, one grounded in the policy gradient theorem and the other one leveraging Self-Normalized Neural Importance Sampling (SN-NIS). These methods yield memory-efficient training and achieve state-of-the-art results in unsupervised combinatorial optimization. Numerous scientific applications additionally require the ability of unbiased sampling. We introduce adaptations of SN-NIS and Neural Markov Chain Monte Carlo that enable for the first time the application of discrete diffusion models to this problem. We validate our methods on Ising model benchmarks and find that they outperform popular autoregressive approaches. Our work opens new avenues for applying diffusion models to a wide range of scientific applications in discrete domains that were hitherto restricted to exact likelihood models.",
+  "problem_description_natural": "The paper addresses the problem of sampling from unnormalized probability distributions over discrete binary variables, which arises in unsupervised combinatorial optimization (UCO) and statistical physics. Specifically, the goal is to learn a neural sampler that approximates a target Boltzmann distribution defined by an energy function H(X), without access to samples from the target. In UCO, this energy function corresponds to a Quadratic Unconstrained Binary Optimization (QUBO) problem, where the objective is to find binary configurations X ∈ {0,1}^N that minimize H(X). The challenge lies in efficiently training discrete diffusion models with many diffusion steps while enabling both high-quality solution generation and unbiased estimation of expectation values under the target distribution.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "RB-small",
+    "RB-large",
+    "BA-small",
+    "BA-large",
+    "24x24 Ising model"
+  ],
+  "performance_metrics": [
+    "Average independent set size",
+    "Average dominating set size",
+    "Average clique size",
+    "Average cut size",
+    "Free Energy",
+    "Internal Energy",
+    "Entropy",
+    "Effective sample size per sample"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\sum_{i,j} Q_{ij} X_i X_j$",
+    "constraints": [
+      "$X_i \\in \\{0,1\\}$ for all $i \\in \\{1,\\ldots,N\\}$"
+    ],
+    "variables": [
+      "$X_i$: binary decision variable representing the state of element $i$ (e.g., vertex inclusion in graph problems)"
+    ]
+  },
+  "raw_latex_model": "$$ \\min_{X \\in \\{0,1\\}^N} H_Q(X) = \\min_{X \\in \\{0,1\\}^N} \\sum_{i,j=1}^N Q_{ij} X_i X_j $$",
+  "algorithm_description": "The paper uses Scalable Discrete Diffusion Samplers (SDDS), which are discrete diffusion models trained with two novel methods: one based on the reverse Kullback-Leibler divergence optimized via reinforcement learning (SDDS: rKL w/ RL), and the other based on the forward Kullback-Leibler divergence optimized via Self-Normalized Neural Importance Sampling with Monte Carlo estimation (SDDS: fKL w/ MC). These methods are applied to unsupervised combinatorial optimization problems, where the model learns to generate solutions for problem instances drawn from a distribution, without labeled data."
+}

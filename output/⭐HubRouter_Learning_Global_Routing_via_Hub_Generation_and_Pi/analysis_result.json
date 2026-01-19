@@ -1,0 +1,37 @@
+{
+  "paper_id": "⭐HubRouter_Learning_Global_Routing_via_Hub_Generation_and_Pi",
+  "title": "HubRouter: Learning Global Routing via Hub Generation and Pin-hub Connection",
+  "abstract": "Global Routing (GR) is a core yet time-consuming task in VLSI systems. Recent machine learning approaches, especially generative models, suffer from non-connectivity in the generated routes, requiring extensive post-processing. To address this, the authors propose HubRouter, a novel two-phase learning scheme that redefines GR as a hub-pin connection problem. The first phase uses deep generative models in a multi-task framework to generate 'hubs'—key routing points—along with stripe masks to suppress noise. The second phase connects pins and hubs using an actor-critic model to construct a Rectilinear Steiner Minimum Tree (RSMT). Experiments show HubRouter outperforms state-of-the-art generative GR methods in wirelength, overflow, and runtime while guaranteeing connectivity. It also demonstrates generalizability to RSMT construction and interactive path replanning.",
+  "problem_description_natural": "The paper addresses the global routing (GR) problem in VLSI physical design, which involves connecting multiple pins (terminals) of each net on a chip layout using routing paths through a grid of global routing cells (GCells). The goal is to minimize total wirelength while avoiding congestion (i.e., exceeding edge capacity limits), all while ensuring that all pins in a net are connected by a single continuous route. Traditional and recent learning-based methods either scale poorly or fail to guarantee connectivity in one-shot generative outputs, necessitating costly post-processing. HubRouter reframes this as a two-stage problem: first generating intermediate 'hub' points that capture essential topological features of valid routes, then efficiently connecting these hubs and pins into a fully connected tree structure.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "ISPD-07",
+    "ISPD-98",
+    "DRL-8",
+    "DRL-16",
+    "NCTU-GR"
+  ],
+  "performance_metrics": [
+    "Correctness Rate",
+    "Wirelength Rate",
+    "Wirelength",
+    "Overflow",
+    "Generation Time",
+    "Average Percent Errors"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\left( \\text{WL} + \\lambda \\text{OF} \\right)$ where $\\text{WL} = \\sum_{e_{ij} \\in \\mathcal{E}} d_{ij} u_{ij}$ is total wirelength and $\\text{OF} = \\sum_{e_{ij} \\in \\mathcal{E}} \\max(0, u_{ij} - c_{ij})$ is total overflow, with $\\lambda$ as a weighting factor (though not explicitly specified, both are minimized in practice).",
+    "constraints": [
+      "$\\text{For each net } n \\in N, \\text{ the subgraph induced by edges with } x_{ij}^n = 1 \\text{ must be connected and cover all pins in } P_n$.",
+      "$u_{ij} = \\sum_{n \\in N} x_{ij}^n \\text{ for all } e_{ij} \\in \\mathcal{E}$.",
+      "$x_{ij}^n \\in \\{0,1\\} \\text{ for all } n \\in N, e_{ij} \\in \\mathcal{E}$."
+    ],
+    "variables": [
+      "$x_{ij}^n$: binary decision variable indicating whether edge $e_{ij}$ is used for net $n$.",
+      "$u_{ij}$: total usage of edge $e_{ij}$, defined as the sum of $x_{ij}^n$ over all nets.",
+      "$o_{ij} = \\max(0, u_{ij} - c_{ij})$: overflow on edge $e_{ij}$."
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} \\min & \\quad \\sum_{e_{ij} \\in \\mathcal{E}} d_{ij} u_{ij} + \\lambda \\sum_{e_{ij} \\in \\mathcal{E}} \\max(0, u_{ij} - c_{ij}) \\\\ \\text{s.t.} & \\quad \\text{For each net } n \\in N: \\text{ the set } \\{ e_{ij} : x_{ij}^n = 1 \\} \\text{ is connected and contains all pins in } P_n \\\\ & \\quad u_{ij} = \\sum_{n \\in N} x_{ij}^n \\quad \\forall e_{ij} \\in \\mathcal{E} \\\\ & \\quad x_{ij}^n \\in \\{0,1\\} \\quad \\forall n \\in N, e_{ij} \\in \\mathcal{E} \\end{aligned}$$",
+  "algorithm_description": "HubRouter is a two-phase learning scheme for global routing: 1) Hub-generation phase: Uses deep generative models (GAN, VAE, or DPM) in a multi-task framework to generate hubs (key points in routes) from condition images. 2) Pin-hub-connection phase: Employs an actor-critic model to construct rectilinear Steiner minimum trees (RSMT) by connecting generated hubs and pins, ensuring connectivity and minimizing wirelength and overflow."
+}

@@ -1,0 +1,29 @@
+{
+  "paper_id": "On_the_Performance_of_Deep_Generative_Models_of_Realistic_SA",
+  "title": "On the Performance of Deep Generative Models of Realistic SAT Instances",
+  "abstract": "Generating realistic random SAT instances – random SAT formulas with computational characteristics similar to the ones of application SAT benchmarks – is a challenging problem in order to understand the success of modern SAT solvers solving this kind of problems. Traditional approaches are based on probabilistic models, where a probability distribution characterizes the occurrences of variables into clauses in order to mimic a certain feature exhibited in most application formulas (e.g., community structure), but they may be unable to reproduce others. Alternatively, deep generative models have been recently proposed to address this problem. The goal of these models is to learn the whole structure of the formula without focusing on any predefined feature, in order to reproduce all its computational characteristics at once. In this work, we propose two new deep generative models of realistic SAT instances, and carry out an exhaustive experimental evaluation of these and other existing models in order to analyze their performances. Our results show that models based on graph convolutional networks, possibly enhanced with edge features, return the best results in terms of structural properties and SAT solver performance.",
+  "problem_description_natural": "The paper addresses the problem of generating synthetic Boolean Satisfiability (SAT) instances that closely mimic the structural and computational properties of real-world application SAT benchmarks. The goal is to produce random SAT formulas that exhibit realistic features—such as community structure and clustering coefficient—that correlate with the empirical performance of modern Conflict-Driven Clause Learning (CDCL) SAT solvers. Unlike traditional probabilistic models that target specific features (e.g., scale-free or community structure), the authors explore deep generative models based on graph neural networks (GNNs) that aim to learn and reproduce the full underlying structure of input SAT instances without hand-crafted assumptions.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "SAT Competition benchmarks"
+  ],
+  "performance_metrics": [
+    "modularity",
+    "clustering coefficient",
+    "Kendall rank correlation coefficient",
+    "SAT/UNSAT ratio",
+    "cumulative CPU time",
+    "solver ranking"
+  ],
+  "lp_model": {
+    "objective": "$\\min 0$",
+    "constraints": [
+      "$\\sum_{i \\in P_j} x_i + \\sum_{i \\in N_j} (1 - x_i) \\geq 1, \\quad \\forall j = 1, \\ldots, m$"
+    ],
+    "variables": [
+      "$x_i \\in \\{0,1\\}$ for each Boolean variable $v_i$, $i = 1, \\ldots, n$"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned}\\text{Minimize} & \\quad 0 \\\\\\text{Subject to} & \\quad \\sum_{i \\in P_j} x_i + \\sum_{i \\in N_j} (1 - x_i) \\geq 1, \\quad \\forall j = 1, \\ldots, m \\\\& \\quad x_i \\in \\{0,1\\}, \\quad \\forall i = 1, \\ldots, n\\end{aligned}$$ where $n$ is the number of variables, $m$ is the number of clauses, $P_j$ is the set of variables appearing positively in clause $j$, and $N_j$ is the set of variables appearing negatively in clause $j$.",
+  "algorithm_description": "The paper uses deep generative models based on graph neural networks (GNNs) to learn the structure of SAT formulas and generate realistic instances. Methods include G2SAT, GCN2S, EGNN2S, and ECC2S, which involve training on graph representations (e.g., Literal-Clause Graph or Signed Variable-Clause Graph) of CNF formulas and performing node splitting and merging operations to generate new formulas."
+}

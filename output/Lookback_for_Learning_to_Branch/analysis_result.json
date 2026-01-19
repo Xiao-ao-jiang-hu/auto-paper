@@ -1,0 +1,34 @@
+{
+  "paper_id": "Lookback_for_Learning_to_Branch",
+  "title": "Lookback for Learning to Branch",
+  "abstract": "The expressive and computationally efficient bipartite Graph Neural Networks (GNN) have been shown to be an important component of deep learning enhanced Mixed-Integer Linear Programming (MILP) solvers. Recent works have demonstrated the effectiveness of such GNNs in replacing the branching (variable selection) heuristic in branch-and-bound (B&B) solvers. These GNNs are trained, offline and on a collection of MILP instances, to imitate a very good but computationally expensive branching heuristic, strong branching. Given that B&B results in a tree of sub-MILPs, we ask (a) whether there are strong dependencies exhibited by the target heuristic among the neighboring nodes of the B&B tree, and (b) if so, whether we can incorporate them in our training procedure. Specifically, we find that with the strong branching heuristic, a child node’s best choice was often the parent’s second-best choice. We call this the “lookback” phenomenon. Surprisingly, the branching GNN of Gasse et al. (2019) often misses this simple “answer”. To imitate the target behavior more closely, we propose two methods that incorporate the lookback phenomenon into GNN training: (a) target smoothing for the standard cross-entropy loss function, and (b) adding a Parent-as-Target (PAT) Lookback regularizer term. Finally, we propose a model selection framework that directly considers harder-to-formulate objectives such as solving time. Through extensive experimentation on standard benchmark instances, we show that our proposal leads to decreases of up to 22% in the size of the B&B tree and up to 15% in the solving times.",
+  "problem_description_natural": "The paper addresses the variable selection problem within the Branch-and-Bound (B&B) algorithm for solving Mixed-Integer Linear Programs (MILPs). In B&B, at each node of the search tree, a fractional variable must be selected to branch on, which critically affects the size of the search tree and overall solving time. The authors focus on improving machine learning models—specifically Graph Neural Networks—that learn to imitate the strong branching heuristic, a high-quality but computationally expensive strategy. They observe a 'lookback' phenomenon: the optimal branching variable at a child node is often the second-best choice at its parent node. The work proposes new training techniques to encourage learned models to respect this dependency between parent and child nodes in the B&B tree, leading to more efficient solvers.",
+  "problem_type": "MILP",
+  "datasets": [
+    "Combinatorial Auctions",
+    "Minimum Set Covering",
+    "Capacitated Facility Location",
+    "Maximum Independent Set",
+    "CORLAT",
+    "RCW"
+  ],
+  "performance_metrics": [
+    "1-shifted geometric mean of solving time",
+    "1-shifted geometric mean of node count",
+    "Number of wins (instances solved fastest)",
+    "Total number of instances solved",
+    "Optimality gap"
+  ],
+  "lp_model": {
+    "objective": "$\\min_{\\mathbf{x}} \\mathbf{c}^\\intercal \\mathbf{x}$",
+    "constraints": [
+      "$\\mathbf{A}\\mathbf{x} \\leq \\mathbf{b}$",
+      "$\\mathbf{x} \\in \\mathbb{Z}^p \\times \\mathbb{R}^{n-p}$"
+    ],
+    "variables": [
+      "$\\mathbf{x}$: decision variable vector, where the first $p$ variables are integer and the remaining $n-p$ are continuous"
+    ]
+  },
+  "raw_latex_model": "$$\\min_{\\mathbf{x}} \\mathbf{c}^\\intercal \\mathbf{x}, \\quad \\text{s.t.} \\quad \\mathbf{A}\\mathbf{x} \\leq \\mathbf{b}, \\quad \\mathbf{x} \\in \\mathbb{Z}^p \\times \\mathbb{R}^{n-p}$$",
+  "algorithm_description": "The paper proposes a branch-and-bound (B&B) algorithm enhanced with Graph Neural Networks (GNNs) for variable selection (branching). The GNN is trained offline via imitation learning to mimic the strong branching heuristic, using a bipartite graph representation of the MILP. Two methods are introduced to incorporate the 'lookback' phenomenon (where a child node's best branching variable is often the parent's second-best): target smoothing and a Parent-as-Target (PAT) regularizer. A model selection framework is also proposed to optimize for practical objectives like solving time or node count."
+}

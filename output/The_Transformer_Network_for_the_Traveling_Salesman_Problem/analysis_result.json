@@ -1,0 +1,34 @@
+{
+  "paper_id": "The_Transformer_Network_for_the_Traveling_Salesman_Problem",
+  "title": "The Transformer Network for the Traveling Salesman Problem",
+  "abstract": "This paper presents a Transformer-based neural network architecture trained with reinforcement learning to solve the Traveling Salesman Problem (TSP). The approach treats TSP as a sequence-to-sequence 'translation' task, where a set of 2D city coordinates is mapped to an optimal tour sequence. The model uses an encoder-decoder Transformer with autoregressive decoding and attention mechanisms, and is trained end-to-end using policy gradient methods with tour length as the reward. The work builds upon recent advances in deep learning for combinatorial optimization and aims to learn effective heuristics directly from data without relying on hand-crafted rules.",
+  "problem_description_natural": "The Traveling Salesman Problem (TSP) asks: given a list of cities and the pairwise distances between them, find the shortest possible route that visits each city exactly once and returns to the starting city. This problem is NP-hard and has broad industrial applications in logistics, manufacturing, and supply chain management. The paper focuses on Euclidean TSP instances, where cities are represented as points in 2D space and distances are Euclidean.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "TSP50",
+    "TSP100",
+    "TSP200"
+  ],
+  "performance_metrics": [
+    "Optimality Gap",
+    "Objective Value (Obj)",
+    "Inference Time (I Time)",
+    "Total Time (T Time)"
+  ],
+  "lp_model": {
+    "objective": "$\\min_x \\sum_{e \\in E} d_e x_e$",
+    "constraints": [
+      "$\\sum_{e \\in \\text{Cut}(\\{v\\}, V-\\{v\\})} x_e = 2 \\quad \\forall v \\in V$",
+      "$\\sum_{e \\in \\text{Cut}(S, S^c)} x_e \\geq 2 \\quad \\forall S \\subset V, S \\neq \\emptyset, S \\neq V$",
+      "$x_e \\in \\{0, 1\\} \\quad \\forall e \\in E$"
+    ],
+    "variables": [
+      "$x_e$: binary decision variable indicating if edge $e$ is in the tour (1) or not (0)",
+      "$d_e$: distance (or cost) associated with edge $e$",
+      "$E$: set of all edges in the complete graph on $n$ vertices (cities)",
+      "$V$: set of all vertices (cities)"
+    ]
+  },
+  "raw_latex_model": "$$\\min_x \\sum_{e \\in E} d_e x_e \\quad \\text{s.t.}$$\n$$\\sum_{e \\in \\text{Cut}(\\{v\\}, V-\\{v\\})} x_e = 2 \\quad \\forall v \\in V$$\n$$\\sum_{e \\in \\text{Cut}(S, S^c)} x_e \\geq 2 \\quad \\forall S \\subset V, S \\neq \\emptyset, S \\neq V$$\n$$\\text{where } \\text{Cut}(A, A^c) = \\{ e_{vv'} \\text{ s.t. } v \\in A, v' \\in A^c \\}$$\n$$x_e \\in \\{0, 1\\} \\quad \\forall e \\in E$$",
+  "algorithm_description": "The paper proposes a Transformer-based neural network architecture to solve the TSP. The model is trained using Reinforcement Learning (policy gradient) with the negative tour length as the reward. The decoder uses an auto-regressive process to construct the tour sequence one city at a time, employing multi-head self-attention and cross-attention mechanisms. Inference uses greedy decoding or beam search to generate tours."
+}

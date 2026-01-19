@@ -1,0 +1,30 @@
+{
+  "paper_id": "Improving_SAT_solver_heuristics_with_graph_networks_and_rein",
+  "title": "Can $Q$-Learning with Graph Networks Learn a Generalizable Branching Heuristic for a SAT Solver?",
+  "abstract": "We present Graph-$Q$-SAT, a branching heuristic for a Boolean SAT solver trained with value-based reinforcement learning (RL) using Graph Neural Networks for function approximation. Solvers using Graph-$Q$-SAT are complete SAT solvers that either provide a satisfying assignment or proof of unsatisfiability, which is required for many SAT applications. The branching heuristics commonly used in SAT solvers make poor decisions during their warm-up period, whereas Graph-$Q$-SAT is trained to examine the structure of the particular problem instance to make better decisions early in the search. Training Graph-$Q$-SAT is data efficient and does not require elaborate dataset preparation or feature engineering. We train Graph-$Q$-SAT using RL interfacing with MiniSat solver and show that Graph-$Q$-SAT can reduce the number of iterations required to solve SAT problems by 2-3X. Furthermore, it generalizes to unsatisfiable SAT instances, as well as to problems with 5X more variables than it was trained on. We show that for larger problems, reductions in the number of iterations lead to wall clock time reductions, the ultimate goal when designing heuristics. We also show positive zero-shot transfer behavior when testing Graph-$Q$-SAT on a task family different from that used for training. While more work is needed to apply Graph-$Q$-SAT to reduce wall clock time in modern SAT solving settings, it is a compelling proof-of-concept showing that RL equipped with Graph Neural Networks can learn a generalizable branching heuristic for SAT search.",
+  "problem_description_natural": "The paper addresses the problem of improving the branching heuristic in Conflict-Driven Clause Learning (CDCL) Boolean Satisfiability (SAT) solvers. The goal is to replace hand-crafted heuristics like VSIDS with a learned policy that dynamically selects the next variable to branch on during the SAT solving process, based on the current state of the formula. This decision-making process is framed as a sequential decision problem under uncertainty, where the objective is to minimize the number of branching steps (decisions) required to either find a satisfying assignment or prove unsatisfiability. The approach uses reinforcement learning with graph neural networks to generalize across problem sizes and types without domain-specific feature engineering.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "SATLIB random 3-SAT",
+    "SATLIB flat graph coloring"
+  ],
+  "performance_metrics": [
+    "Median Relative Iteration Reduction (MRIR)",
+    "Number of MiniSat iterations",
+    "Wall-clock time",
+    "Average number of propagations per step"
+  ],
+  "lp_model": {
+    "objective": "Find an assignment to Boolean variables that satisfies the CNF formula, or prove that no such assignment exists (decision problem).",
+    "constraints": [
+      "Let $F = C_1 \\land C_2 \\land \\dots \\land C_m$ be a CNF formula with $n$ variables $x_1, \\dots, x_n \\in \\{0,1\\}$.",
+      "Each clause $C_j$ is a disjunction of literals: $C_j = (l_{j1} \\lor l_{j2} \\lor \\dots \\lor l_{jk})$, where each literal $l_{ji}$ is either $x_i$ or $\\lnot x_i$.",
+      "The formula $F$ is satisfied if and only if every clause $C_j$ is satisfied, meaning at least one literal in $C_j$ evaluates to true under the assignment."
+    ],
+    "variables": [
+      "$x_i \\in \\{0,1\\}$: Boolean decision variable for each variable in the formula, where 1 represents true and 0 represents false."
+    ]
+  },
+  "raw_latex_model": "$$\\text{Given: } F = \\bigwedge_{j=1}^m C_j, \\text{ where } C_j = \\bigvee_{i \\in I_j} l_{ji}, \\text{ and } l_{ji} \\in \\{x_i, \\lnot x_i\\} \\text{ for } x_i \\in \\{0,1\\}.$$ $$\\text{Find an assignment to } x_1, \\dots, x_n \\text{ such that } F = 1, \\text{ or prove that none exists.}$$",
+  "algorithm_description": "Graph-Q-SAT uses a Deep Q-Network (DQN) reinforcement learning agent with a Graph Neural Network (GNN) as the function approximator. The agent is trained to select branching decisions (variable and polarity) in a Conflict-Driven Clause Learning (CDCL) SAT solver (MiniSat). The state is represented as a bipartite graph of variables and clauses, and the agent learns to minimize the number of decisions (iterations) required to solve the SAT instance, using a simple negative step penalty reward."
+}

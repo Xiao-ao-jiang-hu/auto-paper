@@ -1,0 +1,33 @@
+{
+  "paper_id": "Graph-based_Deterministic_Policy_Gradient_for_Repetitive_Com",
+  "title": "GRAPH-BASED DETERMINISTIC POLICY GRADIENT FOR REPETITIVE COMBINATORIAL OPTIMIZATION PROBLEMS",
+  "abstract": "We propose an actor-critic framework for graph-based machine learning pipelines with non-differentiable blocks, and apply it to repetitive combinatorial optimization problems (COPs) under hard constraints. Repetitive COP refers to problems to be solved repeatedly on graphs of the same or slowly changing topology but rapidly changing node or edge weights. Compared to one-shot COPs, repetitive COPs often rely on fast (distributed) heuristics to solve one instance of the problem before the next one arrives, at the cost of a relatively large optimality gap. Through numerical experiments on several discrete optimization problems, we show that our approach can learn reusable policies to reduce the optimality gap of fast (distributed) heuristics for independent repetitive COPs, and can optimize the long-term objectives for repetitive COPs embedded in graph-based Markov decision processes.",
+  "problem_description_natural": "The paper addresses repetitive combinatorial optimization problems (R-COPs) that must be solved repeatedly on graphs with fixed or slowly evolving topology but rapidly changing node or edge weights, under hard feasibility constraints. These problems arise in real-world applications like task scheduling, routing, link scheduling, and energy management. Two settings are considered: (1) independent R-COPs, where each instance is statistically independent and the goal is to minimize the expected immediate cost; and (2) R-COPs embedded in a graph-based Markov decision process (MDP), where decisions affect future states and the objective is to maximize long-term cumulative reward (e.g., minimizing average queue backlog over time). The challenge is to improve fast or distributed heuristics—used due to strict runtime or communication constraints—by learning policies that reduce their optimality gap while always satisfying hard constraints.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "Generated ER Graphs",
+    "Generated BA Graphs",
+    "Generated GRP Graphs",
+    "Generated WS Graphs",
+    "Internet Backbone Topology (Knight et al., 2011)"
+  ],
+  "performance_metrics": [
+    "Approximation Ratio",
+    "Average Backlog",
+    "Runtime (seconds)",
+    "Local Communication Rounds"
+  ],
+  "lp_model": {
+    "objective": "$\\min_{\\mathbf{x}} \\mathbf{c}^\\top \\mathbf{x}$",
+    "constraints": [
+      "$\\mathbf{x}_i \\in \\{0,1\\}, \\forall i \\in \\{1,\\ldots,|\\mathcal{V}|\\}$",
+      "Problem-specific constraints defined on the graph, e.g., $\\mathbf{x}_i + \\mathbf{x}_j \\leq 1, \\forall \\{i,j\\} \\in \\mathcal{E}$ for independent set."
+    ],
+    "variables": [
+      "$\\mathbf{x}_i$: binary decision variable indicating selection of node $i$, for $i \\in \\mathcal{V}$",
+      "$\\mathbf{c}$: weight vector on nodes, given as input"
+    ]
+  },
+  "raw_latex_model": "$$ \\mathbf{x}^* = \\min_{\\mathbf{x}} \\mathbf{c}^\\top \\mathbf{x} \\\\ s.t. \\; \\mathbf{x}_i \\in \\{0,1\\}, \\forall i \\in \\{1,\\ldots,|\\mathcal{V}|\\} \\, , \\\\ \\text{other problem-specific constraints,} $$",
+  "algorithm_description": "GDPG-Twin: A graph-based deterministic policy gradient method using actor-critic reinforcement learning with a twin network to approximate outcomes of non-differentiable heuristics, enabling learning of reusable policies for repetitive combinatorial optimization problems under hard constraints and practical restrictions."
+}

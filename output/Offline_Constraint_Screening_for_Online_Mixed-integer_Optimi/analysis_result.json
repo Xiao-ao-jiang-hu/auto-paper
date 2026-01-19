@@ -1,0 +1,30 @@
+{
+  "paper_id": "Offline_Constraint_Screening_for_Online_Mixed-integer_Optimi",
+  "title": "Warm-starting constraint generation for mixed-integer optimization: A Machine Learning approach",
+  "abstract": "Mixed Integer Linear Programs (MILP) are well known to be NP-hard problems in general. While traditional constraint generation methods guarantee optimality given enough time, their computational burden limits use in online applications. This paper proposes a novel machine learning–based approach that warm-starts the constraint generation algorithm by predicting an invariant constraint set from problem parameters. The method preserves feasibility and optimality guarantees while significantly reducing online computation time. It is validated on both synthetic and real-life MILP instances.",
+  "problem_description_natural": "The paper addresses the challenge of solving Mixed Integer Linear Programs (MILPs) efficiently in online settings. MILPs are computationally demanding due to their NP-hard nature. The authors focus on accelerating the constraint generation algorithm—a method that iteratively adds violated constraints until optimality—by providing a high-quality initial set of constraints (a 'warm start'). Instead of using only binding constraints from past solutions (which is insufficient when integer variables are present), they identify and learn an 'invariant constraint set' that includes both binding and certain critical non-binding constraints. This set ensures that solving the reduced problem yields the same optimal objective value as the full problem. A machine learning model is trained offline on historical MILP instances to predict this invariant set for new problem instances, enabling faster convergence of the online constraint generation procedure.",
+  "problem_type": "Mixed Integer Linear Programming (MILP)",
+  "datasets": [
+    "Synthetic MILP",
+    "Unit Commitment"
+  ],
+  "performance_metrics": [
+    "C_min",
+    "C_max",
+    "I_min",
+    "I_max",
+    "P_1",
+    "Delta"
+  ],
+  "lp_model": {
+    "objective": "$\\min\\limits_{z \\in \\mathbb{R}^n \\times \\mathbb{Z}^q} \\mathbf{c}^\\intercal z$",
+    "constraints": [
+      "$\\mathbf{a}_j^\\intercal z \\le b_j, \\quad \\forall j \\in \\mathcal{J}$"
+    ],
+    "variables": [
+      "$z = (x, y)$ where $x \\in \\mathbb{R}^n$ are continuous variables and $y \\in \\mathbb{Z}^q$ are integer variables"
+    ]
+  },
+  "raw_latex_model": "$$\\left\\{\n\\begin{array}{ll}\n\\min\\limits_{z \\in \\mathbb{R}^n \\times \\mathbb{Z}^q} \\mathbf{c}^\\intercal z \\\\\n\\quad \\text{s.t. } \\mathbf{a}_j^\\intercal z \\le b_j, \\quad \\forall j \\in \\mathcal{J}\n\\end{array}\n\\right.$$",
+  "algorithm_description": "A machine learning approach to warm-start constraint generation for mixed-integer linear programs (MILPs). The method involves offline identification of invariant constraint sets from past MILP instances, training a machine learning model (e.g., k-nearest neighbors) to predict these sets for new instances based on problem parameters, and using the predicted set to initialize the constraint generation algorithm online. This reduces the number of iterations and computational time while preserving feasibility and optimality guarantees."
+}

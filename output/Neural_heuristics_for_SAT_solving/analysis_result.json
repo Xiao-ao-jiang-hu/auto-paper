@@ -1,0 +1,34 @@
+{
+  "paper_id": "Neural_heuristics_for_SAT_solving",
+  "title": "NEURAL HEURISTICS FOR SAT SOLVING",
+  "abstract": "We use neural graph networks with a message-passing architecture and an attention mechanism to enhance the branching heuristic in two SAT-solving algorithms. We report improvements of learned neural heuristics compared with two standard human-designed heuristics.",
+  "problem_description_natural": "The paper addresses the Boolean satisfiability problem (SAT), which involves determining whether there exists a satisfying assignment for a given propositional logic formula in conjunctive normal form (CNF). The authors focus on improving the branching heuristic—specifically the 'choose-literal' step—in complete backtracking-based SAT solvers like DPLL and CDCL. Instead of using traditional hand-crafted heuristics such as DLIS or JW-OS, they propose replacing this step with a learned policy from a neural network that predicts, for each literal, whether assigning it true leads to a satisfying solution. The goal is to reduce the number of branching decisions (i.e., search steps) required to solve SAT instances, particularly on larger problems with over 100 variables.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "SR(30)",
+    "SR(50)",
+    "SR(70)",
+    "SR(100)",
+    "SR(90)",
+    "SR(110)"
+  ],
+  "performance_metrics": [
+    "sat error",
+    "policy error",
+    "number of branching decisions",
+    "percent of instances solved within 1000 steps",
+    "number of steps to find a solution"
+  ],
+  "lp_model": {
+    "objective": "$\\min 0$ (feasibility problem for SAT)",
+    "constraints": [
+      "$\\sum_{i \\in P_j} x_i + \\sum_{i \\in N_j} (1 - x_i) \\geq 1, \\quad \\forall j=1,\\ldots,m$",
+      "$x_i \\in \\{0,1\\}, \\quad \\forall i=1,\\ldots,n$"
+    ],
+    "variables": [
+      "$x_i$: binary decision variable for Boolean variable $v_i$, where $x_i=1$ if $v_i$ is true, $x_i=0$ if false"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} & \\text{Minimize } 0 \\\\ & \\text{Subject to } \\sum_{i \\in P_j} x_i + \\sum_{i \\in N_j} (1 - x_i) \\geq 1, \\quad \\forall j=1,\\ldots,m \\\\ & x_i \\in \\{0,1\\}, \\quad \\forall i=1,\\ldots,n \\end{aligned}$$",
+  "algorithm_description": "The paper uses neural graph networks with a message-passing architecture and an attention mechanism to enhance the branching heuristic in DPLL and CDCL SAT-solving algorithms, comparing performance with standard heuristics like DLIS and JW-OS."
+}

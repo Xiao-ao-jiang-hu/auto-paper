@@ -1,0 +1,19 @@
+{
+  "paper_id": "From_Shallow_to_Deep_Interactions_Between_Knowledge_Represen",
+  "title": "From Shallow to Deep Interactions Between Knowledge Representation, Reasoning and Machine Learning",
+  "abstract": "This paper proposes a tentative and original survey of meeting points between Knowledge Representation and Reasoning (KRR) and Machine Learning (ML), two areas which have been developing quite separately in the last three decades. Some common concerns are identified and discussed such as the types of used representation, the roles of knowledge and data, the lack or the excess of information, or the need for explanations and causal understanding. Then some methodologies combining reasoning and learning are reviewed (such as inductive logic programming, neuro-symbolic reasoning, formal concept analysis, rule-based representations and ML, uncertainty in ML, or case-based reasoning and analogical reasoning), before discussing examples of synergies between KRR and ML (including topics such as belief functions on regression, EM algorithm versus revision, the semantic description of vector representations, the combination of deep learning with high level inference, knowledge graph completion, declarative frameworks for data mining, or preferences and recommendation). This paper is the first step of a work in progress aiming at a better mutual understanding of research in KRR and ML, and how they could cooperate.",
+  "problem_description_natural": "The paper does not formulate a specific computational optimization problem. Instead, it addresses the broader scientific challenge of bridging the gap between Knowledge Representation and Reasoning (KRR) and Machine Learning (ML). It explores how these two subfields of AI—traditionally developed in isolation—can be integrated by identifying shared concerns (e.g., representation, uncertainty, explanation, handling incomplete or conflicting information) and reviewing hybrid methodologies (e.g., neuro-symbolic systems, inductive logic programming, belief functions in learning). The goal is to foster mutual understanding and collaboration between the KRR and ML communities to develop more robust, explainable, and knowledge-aware AI systems.",
+  "problem_type": "Survey / Conceptual Integration (not a formal optimization problem)",
+  "datasets": [],
+  "performance_metrics": [],
+  "lp_model": {
+    "objective": "$\\min_{\\beta_0, \\beta_1, \\ldots, \\beta_p} \\frac{1}{2} \\sum_{i=1}^m \\left( y_i - \\beta_0 - \\sum_{j=1}^p \\beta_j x_{i,j} \\right)^2 + \\lambda \\sum_{j=1}^p \\| \\beta_j \\|_0$",
+    "constraints": [],
+    "variables": [
+      "$\\beta_0$: intercept (real)",
+      "$\\beta_j$: coefficient for feature $j$ (real), for $j=1,\\ldots,p$"
+    ]
+  },
+  "raw_latex_model": "$$\\min_{\\beta_0, \\beta_1, \\ldots, \\beta_p} \\frac{1}{2} \\sum_{i=1}^m \\left( y_i - \\beta_0 - \\sum_{j=1}^p \\beta_j x_{i,j} \\right)^2 + \\lambda \\sum_{j=1}^p \\| \\beta_j \\|_0$$",
+  "algorithm_description": "The paper does not focus on solving this specific optimization problem. It is presented as an example of incorporating prior knowledge (via regularization) into learning. The L0 regularization term makes the problem NP-hard; typical solutions involve approximation methods or convex relaxations (e.g., L1 regularization)."
+}

@@ -1,0 +1,34 @@
+{
+  "paper_id": "Learning_to_Solve_Combinatorial_Graph_Partitioning_Problems_",
+  "title": "Learning to Solve Combinatorial Graph Partitioning Problems via Efficient Exploration",
+  "abstract": "From logistics to the natural sciences, combinatorial optimisation on graphs underpins numerous real-world applications. Reinforcement learning (RL) has shown particular promise in this setting as it can adapt to specific problem structures and does not require pre-solved instances for these, often NP-hard, problems. However, state-of-the-art (SOTA) approaches typically suffer from severe scalability issues, primarily due to their reliance on expensive graph neural networks (GNNs) at each decision step. We introduce ECORD; a novel RL algorithm that alleviates this expense by restricting the GNN to a single pre-processing step, before entering a fast-acting exploratory phase directed by a recurrent unit. Experimentally, ECORD achieves a new SOTA for RL algorithms on the Maximum Cut problem, whilst also providing orders of magnitude improvement in speed and scalability. Compared to the nearest competitor, ECORD reduces the optimality gap by up to 73% on 500 vertex graphs with a decreased wall-clock time. Moreover, ECORD retains strong performance when generalising to larger graphs with up to 10 000 vertices.",
+  "problem_description_natural": "The paper focuses on the Maximum Cut (Max-Cut) problem, a canonical combinatorial graph partitioning task. In Max-Cut, the goal is to assign a binary label (e.g., 0 or 1) to every vertex in an undirected graph such that the total weight of edges connecting vertices with different labels is maximized. This problem is NP-hard and widely applicable, as many other NP-complete problems can be reduced to it. The challenge lies in efficiently finding high-quality solutions, especially as graph size increases, since every vertex must be correctly labeled—not just a subset—and exhaustive search is infeasible for large graphs.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "ER40",
+    "BA40",
+    "ER500",
+    "BA500",
+    "GSet",
+    "ER800",
+    "ER10000"
+  ],
+  "performance_metrics": [
+    "Approximation Ratio",
+    "Optimality Gap",
+    "Wall-clock Time",
+    "Throughput",
+    "Memory Usage"
+  ],
+  "lp_model": {
+    "objective": "$\\max \\sum_{(i,j) \\in E} w_{ij} (x_i + x_j - 2x_i x_j)$",
+    "constraints": [
+      "$x_i \\in \\{0,1\\}, \\forall i \\in V$"
+    ],
+    "variables": [
+      "$x_i$: binary decision variable indicating if vertex $i$ is in the subset $S$ (where $S \\subset V$)"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} \\text{Maximize} & \\sum_{(i,j) \\in E} w_{ij} (x_i + x_j - 2x_i x_j) \\\\ \\text{Subject to} & x_i \\in \\{0,1\\}, \\quad \\forall i \\in V \\end{aligned}$$",
+  "algorithm_description": "ECORD is a reinforcement learning algorithm that uses a graph neural network for a single preprocessing step to embed graph structure, followed by fast action decoding with a recurrent unit to maintain a representation of the optimization trajectory, enabling efficient exploration to solve the Maximum Cut problem."
+}

@@ -1,0 +1,33 @@
+{
+  "paper_id": "Learning_Practically_Feasible_Policies_for_Online_3D_Bin_Pac",
+  "title": "Learning Practically Feasible Policies for Online 3D Bin Packing",
+  "abstract": "We tackle the Online 3D Bin Packing Problem, a challenging yet practically useful variant of the classical Bin Packing Problem. In this problem, the items are delivered to the agent without informing the full sequence information. Agent must directly pack these items into the target bin stably without changing their arrival order, and no further adjustment is permitted. Online 3D-BPP can be naturally formulated as Markov Decision Process (MDP). We adopt deep reinforcement learning, in particular, the on-policy actor-critic framework, to solve this MDP with constrained action space. To learn a practically feasible packing policy, we propose three critical designs. First, we propose an online analysis of packing stability based on a novel stacking tree. It attains a high analysis accuracy while reducing the computational complexity from $O(N^2)$ to $O(N \\log N)$, making it especially suited for RL training. Second, we propose a decoupled packing policy learning for different dimensions of placement which enables high-resolution spatial discretization and hence high packing precision. Third, we introduce a reward function that dictates the robot to place items in a far-to-near order and therefore simplifies the collision avoidance in movement planning of the robotic arm. Furthermore, we provide a comprehensive discussion on several key implemental issues. The extensive evaluation demonstrates that our learned policy outperforms the state-of-the-art methods significantly and is practically usable for real-world applications.",
+  "problem_description_natural": "The Online 3D Bin Packing Problem (Online 3D-BPP) involves sequentially packing arriving 3D rectangular items (e.g., boxes) into a fixed-size bin without knowledge of future items beyond a small lookahead window. Each item must be placed immediately upon arrival in a stable manner—ensuring it does not topple—and without reordering or repacking previously placed items. The goal is to maximize space utilization (i.e., minimize wasted volume) while respecting physical stability constraints and operational feasibility for robotic execution. The problem is online (partial observability of the item sequence), dynamic (decisions affect future options), and requires real-time decision-making suitable for deployment on robotic systems in logistics and warehousing.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "RS",
+    "CUT-1",
+    "CUT-2"
+  ],
+  "performance_metrics": [
+    "space utilization",
+    "number of items packed"
+  ],
+  "lp_model": {
+    "objective": "$\\max \\sum_{i=1}^{N} \\delta_i l_i w_i h_i$",
+    "constraints": [
+      "$\\delta_i \\in \\{0,1\\}$ for $i=1,\\dots,N$",
+      "If $\\delta_i = 1$, then $0 \\leq x_i \\leq L - l_i'$ and $0 \\leq y_i \\leq W - w_i'$ where $l_i' = (1-o_i)l_i + o_i w_i$, $w_i' = (1-o_i)w_i + o_i l_i$",
+      "If $\\delta_i = 1$, then $z_i = \\max_{(x,y) \\in B_i} h(x,y)$ and $z_i + h_i \\leq H$ with $B_i = [x_i, x_i+l_i') \\times [y_i, y_i+w_i')$",
+      "If $\\delta_i = 1$, then the centroid $c_i = (x_i + l_i'/2, y_i + w_i'/2)$ must be supported directly or within the convex hull of contact points from items below as per stability conditions",
+      "If $\\delta_i = 0$, then $\\delta_j = 0$ for all $j > i$"
+    ],
+    "variables": [
+      "$\\delta_i$: binary variable indicating if item $i$ is packed",
+      "$x_i, y_i$: integer coordinates for the front-left-bottom corner placement of item $i$",
+      "$o_i$: binary orientation variable for item $i$, where $o_i=0$ for dimensions $[l_i, w_i, h_i]$ and $o_i=1$ for $[w_i, l_i, h_i]$"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned}\n\\max & \\sum_{i=1}^{N} \\delta_i l_i w_i h_i \\\\\n\\text{s.t. } & \\delta_i \\in \\{0,1\\}, \\quad i=1,\\dots,N \\\\\n& \\text{If } \\delta_i = 1, \\text{ then } \\exists (x_i, y_i, o_i) \\text{ such that:} \\\\\n& \\quad 0 \\leq x_i \\leq L - l_i', \\quad 0 \\leq y_i \\leq W - w_i', \\\\\n& \\quad z_i = \\max_{(x,y) \\in B_i} h(x,y), \\quad z_i + h_i \\leq H, \\\\\n& \\quad \\text{and the centroid } c_i = (x_i + l_i'/2, y_i + w_i'/2) \\text{ is stable as per supported centroid conditions.} \\\\\n& \\text{Also, } \\delta_i = 0 \\Rightarrow \\delta_j = 0 \\text{ for all } j > i.\n\\end{aligned}$$",
+  "algorithm_description": "The paper solves the Online 3D-BPP using deep reinforcement learning, specifically an on-policy actor-critic framework (ACKTR). Key innovations include: a stacking tree for efficient online stability analysis with O(N log N) complexity, decoupled packing policy learning to handle high-resolution spatial discretization, and a reward function that encourages far-to-near placement to simplify robotic arm collision avoidance. The method also incorporates Monte Carlo Tree Search (MCTS) for lookahead in BPP-k scenarios."
+}

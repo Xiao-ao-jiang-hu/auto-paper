@@ -1,0 +1,35 @@
+{
+  "paper_id": "Two-Stage_Predict+Optimize_for_Mixed_Integer_Linear_Programs",
+  "title": "Two-Stage Predict+Optimize for Mixed Integer Linear Programs with Unknown Parameters in Constraints",
+  "abstract": "Consider the setting of constrained optimization, with some parameters unknown at solving time and requiring prediction from relevant features. Predict+Optimize is a recent framework for end-to-end training supervised learning models for such predictions, incorporating information about the optimization problem in the training process in order to yield better predictions in terms of the quality of the predicted solution under the true parameters. Almost all prior works have focused on the special case where the unknowns appear only in the optimization objective and not the constraints. Hu et al. proposed the first adaptation of Predict+Optimize to handle unknowns appearing in constraints, but the framework has somewhat ad-hoc elements, and they provided a training algorithm only for covering and packing linear programs. In this work, we give a new simpler and more powerful framework called Two-Stage Predict+Optimize, which we believe should be the canonical framework for the Predict+Optimize setting. We also give a training algorithm usable for all mixed integer linear programs, vastly generalizing the applicability of the framework. Experimental results demonstrate the superior prediction performance of our training framework over all classical and state-of-the-art methods.",
+  "problem_description_natural": "The paper addresses a constrained optimization setting where some problem parameters—appearing in both the objective function and, crucially, the constraints—are unknown at decision time and must be predicted from historical feature data. A prediction model is trained so that when its estimates are plugged into the optimization problem, the resulting solution remains high-quality even after the true parameters are revealed. The key challenge arises when unknown parameters appear in constraints: the solution computed using predicted parameters may become infeasible once true parameters are known. The authors propose a two-stage framework: in Stage 1, a solution is computed using predicted parameters as a 'soft commitment'; in Stage 2, after true parameters are revealed, a corrected final solution is obtained by re-optimizing with the true parameters while penalizing deviation from the Stage 1 solution. The penalty function encodes real-world costs of modification (e.g., surcharges for last-minute order changes). The goal is to train the predictor end-to-end to minimize post-hoc regret, defined as the difference between the corrected solution’s total cost (objective plus penalty) and the true optimal cost.",
+  "problem_type": "Mixed Integer Linear Program (MILP)",
+  "datasets": [
+    "Brass alloy production",
+    "Titanium-alloy production",
+    "0-1 knapsack",
+    "Nurse scheduling problem",
+    "NSPLib",
+    "ICON scheduling competition"
+  ],
+  "performance_metrics": [
+    "Post-hoc regret",
+    "True Optimal Value (TOV)",
+    "Feasibility%"
+  ],
+  "lp_model": {
+    "objective": "$\\min c^{\\top} x$",
+    "constraints": [
+      "$Ax = b$",
+      "$Gx \\geq h$",
+      "$x \\geq 0$",
+      "$x_S \\in \\mathbb{Z}$ (where $S$ is the set of indices for integer variables)"
+    ],
+    "variables": [
+      "$x \\in \\mathbb{R}^d$: vector of decision variables",
+      "$x_S$: subset of variables that are integer"
+    ]
+  },
+  "raw_latex_model": "$$x^* = \\arg\\min_x c^{\\top} x \\quad \\text{s.t. } Ax = b, \\; Gx \\geq h, \\; x \\geq 0, \\; x_S \\in \\mathbb{Z}$$",
+  "algorithm_description": "The paper proposes a two-stage Predict+Optimize framework for mixed integer linear programs (MILPs) with unknown parameters in constraints. A neural network is trained to predict the unknown parameters from features. In Stage 1, the MILP is solved with predicted parameters to obtain a soft-commitment solution. In Stage 2, after the true parameters are revealed, the MILP is solved again with the true parameters and an added penalty term in the objective for deviating from the Stage 1 solution. The neural network is trained end-to-end by minimizing the post-hoc regret (the difference between the Stage 2 solution cost and the true optimal cost, plus the penalty) using a gradient-based method that differentiates through a relaxed version of the MILP."
+}

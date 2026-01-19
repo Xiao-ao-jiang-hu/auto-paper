@@ -1,0 +1,28 @@
+{
+  "paper_id": "Sample_Complexity_Bounds_for_Score-Matching_Causal_Discovery",
+  "title": "Sample Complexity Bounds for Score-Matching: Causal Discovery and Generative Modeling",
+  "abstract": "This paper provides statistical sample complexity bounds for score-matching and its applications in causal discovery. The authors demonstrate that accurate estimation of the score function is achievable by training a standard deep ReLU neural network using stochastic gradient descent. They establish bounds on the error rate of recovering causal relationships using the score-matching-based causal discovery method of Rolland et al. [2022], assuming a sufficiently good estimation of the score function. Additionally, they analyze the upper bound of score-matching estimation within score-based generative modeling, which is also of independent interest in generative models.",
+  "problem_description_natural": "The paper addresses the problem of estimating the score function (the gradient of the log probability density) from finite observational data using deep ReLU neural networks trained via stochastic gradient descent. This estimation is used in two contexts: (1) causal discovery under non-linear additive Gaussian noise models, where the goal is to recover the topological ordering of a directed acyclic graph (DAG) representing causal relationships; and (2) score-based generative modeling (e.g., ScoreSDE), where accurate score estimation enables sampling from complex data distributions via reverse stochastic differential equations. The core optimization problem is minimizing the expected squared error between the true score function and a neural network approximation—either through explicit score matching (ESM) or denoising score matching (DSM). The work focuses on deriving finite-sample statistical guarantees (sample complexity bounds) for this estimation and analyzing how estimation errors propagate to downstream tasks like causal structure recovery.",
+  "problem_type": "Statistical learning with neural networks; finite-sample analysis of non-convex optimization; causal structure learning",
+  "datasets": [
+    "Generated ER Graphs"
+  ],
+  "performance_metrics": [
+    "Structural Hamming Distance (SHD)"
+  ],
+  "lp_model": {
+    "objective": "To find the topological order $\\pi$ that correctly identifies the causal structure from observational data",
+    "constraints": [
+      "Data generated from the non-linear additive Gaussian noise model: $x^{(i)} = f_i(\\text{PA}_i(\\boldsymbol{x})) + \\epsilon_i, \\quad i \\in [d], \\epsilon_i \\sim \\mathcal{N}(0, \\sigma_i^2)$",
+      "The causal graph must be a directed acyclic graph (DAG)",
+      "For leaf nodes $i$ in the true DAG, $\\operatorname{Var}\\left( \\frac{\\partial s_i(\\boldsymbol{x})}{\\partial x^{(i)}} \\right) = 0$",
+      "For non-leaf nodes $j$ in the true DAG, $\\operatorname{Var}\\left( \\frac{\\partial s_j(\\boldsymbol{x})}{\\partial x^{(j)}} \\right) \\geq C_m$"
+    ],
+    "variables": [
+      "$\\pi$: a permutation of $[d]$ representing the topological order",
+      "$\\text{PA}_i$: set of parents for node $i$ in the DAG, determined by $\\pi$ and subsequent pruning"
+    ]
+  },
+  "raw_latex_model": "The causal discovery problem is defined by the generative model: $$x^{(i)} = f_i(\\text{PA}_i(\\boldsymbol{x})) + \\epsilon_i, \\quad i \\in [d],$$ with $\\epsilon_i \\sim \\mathcal{N}(0, \\sigma_i^2)$. The goal is to recover the topological order $\\pi$ and the parent sets $\\text{PA}_i$ that form a DAG, leveraging properties of the score function such that for leaf nodes $i$, $\\operatorname{Var}\\left( \\frac{\\partial s_i(\\boldsymbol{x})}{\\partial x^{(i)}} \\right) = 0$, and for non-leaf nodes $j$, $\\operatorname{Var}\\left( \\frac{\\partial s_j(\\boldsymbol{x})}{\\partial x^{(j)}} \\right) \\geq C_m$.",
+  "algorithm_description": "Algorithm 1 (SCORE) uses deep ReLU neural networks trained with stochastic gradient descent (SGD) to estimate the score function via denoising score matching. It then iteratively computes the empirical variance of the diagonal elements of the score Jacobian to identify leaf nodes, removes them, and constructs the"
+}

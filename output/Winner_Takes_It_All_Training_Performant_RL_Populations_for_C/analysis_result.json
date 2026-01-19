@@ -1,0 +1,34 @@
+{
+  "paper_id": "Winner_Takes_It_All_Training_Performant_RL_Populations_for_C",
+  "title": "Winner Takes It All: Training Performant RL Populations for Combinatorial Optimization",
+  "abstract": "Applying reinforcement learning (RL) to combinatorial optimization problems is attractive as it removes the need for expert knowledge or pre-solved instances. However, it is unrealistic to expect an agent to solve these (often NP-hard) problems in a single shot at inference due to their inherent complexity. Thus, leading approaches often implement additional search strategies, from stochastic sampling and beam-search to explicit fine-tuning. In this paper, we argue for the benefits of learning a population of complementary policies, which can be simultaneously rolled out at inference. To this end, we introduce Poppy, a simple training procedure for populations. Instead of relying on a predefined or hand-crafted notion of diversity, Poppy induces an unsupervised specialization targeted solely at maximizing the performance of the population. We show that Poppy produces a set of complementary policies, and obtains state-of-the-art RL results on four popular NP-hard problems: traveling salesman, capacitated vehicle routing, 0-1 knapsack, and job-shop scheduling.",
+  "problem_description_natural": "The paper addresses combinatorial optimization (CO) problems, which involve finding the maximum or minimum of an objective function over a finite set of discrete variables. These problems are often NP-hard and include practical challenges such as the Traveling Salesman Problem (TSP), Capacitated Vehicle Routing Problem (CVRP), 0-1 Knapsack Problem (KP), and Job-Shop Scheduling Problem (JSSP). The authors propose using a population of reinforcement learning agents trained with a novel objective that encourages specialization without explicit diversity constraints, enabling better exploration of the solution space during inference by rolling out multiple complementary policies in parallel.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "TSP100",
+    "CVRP100",
+    "TSP125",
+    "TSP150",
+    "CVRP125",
+    "CVRP150"
+  ],
+  "performance_metrics": [
+    "Optimality Gap",
+    "Average Tour Length",
+    "Total Runtime"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\sum_{i=1}^n \\sum_{j=1}^n d_{ij} x_{ij}$",
+    "constraints": [
+      "$\\sum_{j=1, j\\neq i}^n x_{ij} = 1$ for each $i=1,...,n$",
+      "$\\sum_{i=1, i\\neq j}^n x_{ij} = 1$ for each $j=1,...,n$",
+      "$u_i - u_j + n x_{ij} \\leq n-1$ for $i,j=2,...,n$, $i \\neq j$"
+    ],
+    "variables": [
+      "$x_{ij}$: binary variable, 1 if the tour goes from city $i$ to city $j$, 0 otherwise",
+      "$u_i$: arbitrary real numbers for $i=2,...,n$"
+    ]
+  },
+  "raw_latex_model": "$$\\min \\sum_{i=1}^n \\sum_{j=1}^n d_{ij} x_{ij}$$ subject to $$\\sum_{j=1, j\\neq i}^n x_{ij} = 1 \\quad \\forall i=1,...,n$$ $$\\sum_{i=1, i\\neq j}^n x_{ij} = 1 \\quad \\forall j=1,...,n$$ $$u_i - u_j + n x_{ij} \\leq n-1 \\quad \\forall i,j=2,...,n, i \\neq j$$ $$x_{ij} \\in \\{0,1\\}, u_i \\geq 0$$",
+  "algorithm_description": "Poppy is a population-based reinforcement learning method that trains a set of agents (policies) to solve combinatorial optimization problems. It uses a two-phase training: first, a single agent is pre-trained using REINFORCE; then, the agent is cloned K times to form a population, and the population is trained with an objective that only updates the best agent for each problem instance, encouraging specialization."
+}

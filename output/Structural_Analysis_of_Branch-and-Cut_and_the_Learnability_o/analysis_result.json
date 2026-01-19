@@ -1,0 +1,29 @@
+{
+  "paper_id": "Structural_Analysis_of_Branch-and-Cut_and_the_Learnability_o",
+  "title": "Structural Analysis of Branch-and-Cut and the Learnability of Gomory Mixed Integer Cuts",
+  "abstract": "The incorporation of cutting planes within the branch-and-bound algorithm, known as branch-and-cut, forms the backbone of modern integer programming solvers. These solvers are the foremost method for solving discrete optimization problems and have a vast array of applications in machine learning, operations research, and many other fields. Choosing cutting planes effectively is a major research topic in the theory and practice of integer programming. We conduct a novel structural analysis of branch-and-cut that pins down how every step of the algorithm is affected by changes in the parameters defining the cutting planes added to an integer program. Our main application of this analysis is to derive sample complexity guarantees for using machine learning to determine which cutting planes to apply during branch-and-cut. These guarantees apply to infinite families of cutting planes, such as the family of Gomory mixed integer cuts, which are responsible for the main breakthrough speedups of integer programming solvers. We exploit geometric and combinatorial structure of branch-and-cut in our analysis, which provides a key missing piece for the recent generalization theory of branch-and-cut.",
+  "problem_description_natural": "The paper studies the problem of selecting effective cutting planes—specifically Gomory Mixed Integer (GMI) cuts—in the branch-and-cut algorithm for solving integer programs. The goal is to understand how the choice of cut parameters influences the structure and size of the branch-and-cut search tree, and to provide theoretical guarantees (sample complexity bounds) for learning high-performing cut selection policies from data. The underlying optimization problem involves maximizing a linear objective over integer-constrained variables subject to linear constraints, i.e., a mixed-integer linear program (MILP). The challenge lies in the fact that there are uncountably infinitely many possible GMI cuts, and infinitesimal changes in cut parameters can drastically alter the algorithm's behavior. The authors analyze how the LP relaxation solutions and branching/fathoming decisions evolve as functions of continuous cut parameters, enabling generalization guarantees for machine learning approaches to cut selection.",
+  "problem_type": "MILP",
+  "datasets": [
+    "Facility location with 40 locations and 40 clients",
+    "Facility location with 80 locations, 80 clients, and random Euclidean distance costs"
+  ],
+  "performance_metrics": [
+    "Average number of nodes B&C expands"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\sum_{j \\in J} f_j y_j + \\sum_{i \\in I} \\sum_{j \\in J} c_{ij} x_{ij}$",
+    "constraints": [
+      "$\\sum_{j \\in J} x_{ij} = 1 \\quad \\forall i \\in I$",
+      "$x_{ij} \\leq y_j \\quad \\forall i \\in I, j \\in J$",
+      "$x_{ij} \\in \\{0,1\\} \\quad \\forall i \\in I, j \\in J$",
+      "$y_j \\in \\{0,1\\} \\quad \\forall j \\in J$"
+    ],
+    "variables": [
+      "$x_{ij}$: binary decision variable indicating if client $i$ is assigned to facility $j$",
+      "$y_j$: binary decision variable indicating if facility $j$ is opened"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned}\\min & \\sum_{j \\in J} f_j y_j + \\sum_{i \\in I} \\sum_{j \\in J} c_{ij} x_{ij} \\\\\\text{s.t.} & \\sum_{j \\in J} x_{ij} = 1, \\quad \\forall i \\in I \\\\& x_{ij} \\leq y_j, \\quad \\forall i \\in I, j \\in J \\\\& x_{ij} \\in \\{0,1\\}, \\quad \\forall i \\in I, j \\in J \\\\& y_j \\in \\{0,1\\}, \\quad \\forall j \\in J\\end{aligned}$$",
+  "algorithm_description": "The paper uses machine learning to learn parameters for selecting Gomory mixed integer cuts within the branch-and-cut algorithm. Sample complexity guarantees are derived for learning cut policies from a distribution of integer programming instances, with experimental evaluation on facility location problems."
+}

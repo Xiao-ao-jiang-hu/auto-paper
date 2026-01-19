@@ -1,0 +1,26 @@
+{
+  "paper_id": "Optimizing_Solution-Samplers_for_Combinatorial_Problems_The_",
+  "title": "Optimizing Solution-Samplers for Combinatorial Problems: The Landscape of Policy-Gradient Methods",
+  "abstract": "Deep Neural Networks and Reinforcement Learning methods have empirically shown great promise in tackling challenging combinatorial problems. In those methods a deep neural network is used as a solution generator which is then trained by gradient-based methods (e.g., policy gradient) to successively obtain better solution distributions. In this work we introduce a novel theoretical framework for analyzing the effectiveness of such methods. We ask whether there exist generative models that (i) are expressive enough to generate approximately optimal solutions; (ii) have a tractable, i.e. polynomial in the size of the input, number of parameters; (iii) their optimization landscape is benign in the sense that it does not contain sub-optimal stationary points. Our main contribution is a positive answer to this question. Our result holds for a broad class of combinatorial problems including Max- and Min-Cut, Max-$k$-CSP, Maximum-Weight-Bipartite-Matching, and the Traveling Salesman Problem. As a byproduct of our analysis we introduce a novel regularization process over vanilla gradient descent and provide theoretical and experimental evidence that it helps address vanishing-gradient issues and escape bad stationary points.",
+  "problem_description_natural": "The paper studies the design of parametric solution generators (samplers) for combinatorial optimization problems that can be trained using policy-gradient methods. The goal is to find a generative model with a polynomial number of parameters that can represent near-optimal solutions and whose loss landscape is free of bad local minima or vanishing gradients, ensuring efficient optimization via gradient descent. The framework applies to problems where solutions and instances can be mapped to bounded feature spaces such that the cost function is bilinear in these features and the solution features are sufficiently 'spread out' (variance-preserving).",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "Random G(n, p) graphs with n=15, p=0.5",
+    "Random d-regular graphs with n=600"
+  ],
+  "performance_metrics": [
+    "Max-Cut value",
+    "Normalized cut-value"
+  ],
+  "lp_model": {
+    "objective": "$\\max_{s \\in \\{\\pm 1\\}^n} \\frac{1}{4} s^{\\top} L_G s$",
+    "constraints": [
+      "$s_i \\in \\{-1, 1\\}, \\quad \\forall i \\in [n]$"
+    ],
+    "variables": [
+      "$s_i$: binary variable indicating the partition assignment of node $i$ (e.g., $s_i = 1$ for one side, $s_i = -1$ for the other)"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} \\text{Maximize} \\quad & \\frac{1}{4} s^{\\top} L_G s \\\\ \\text{subject to} \\quad & s_i \\in \\{-1, 1\\}, \\quad \\forall i \\in [n] \\end{aligned}$$",
+  "algorithm_description": "The paper proposes a policy-gradient method to train a parametric solution sampler (e.g., an exponential family distribution) that generates candidate solutions. The sampler is optimized via gradient descent on a regularized loss function that includes entropy regularization and a fast/slow mixture scheme to ensure a benign optimization landscape and avoid vanishing gradients. The method is applied to Max-Cut and other combinatorial problems."
+}

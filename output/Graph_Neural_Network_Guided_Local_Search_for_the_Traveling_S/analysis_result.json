@@ -1,0 +1,30 @@
+{
+  "paper_id": "Graph_Neural_Network_Guided_Local_Search_for_the_Traveling_S",
+  "title": "GRAPH NEURAL NETWORK GUIDED LOCAL SEARCH FOR THE TRAVELING SALESPERSON PROBLEM",
+  "abstract": "Solutions to the Traveling Salesperson Problem (TSP) have practical applications to processes in transportation, logistics, and automation, yet must be computed with minimal delay to satisfy the real-time nature of the underlying tasks. However, solving large TSP instances quickly without sacrificing solution quality remains challenging for current approximate algorithms. To close this gap, we present a hybrid data-driven approach for solving the TSP based on Graph Neural Networks (GNNs) and Guided Local Search (GLS). Our model predicts the regret of including each edge of the problem graph in the solution; GLS uses these predictions in conjunction with the original problem graph to find solutions. Our experiments demonstrate that this approach converges to optimal solutions at a faster rate than three recent learning based approaches for the TSP. Notably, we reduce the mean optimality gap on the 100-node problem set from 1.534% to 0.705%, a 2× improvement. When generalizing from 20-node instances to the 100-node problem set, we reduce the optimality gap from 18.845% to 2.622%, a 7× improvement.",
+  "problem_description_natural": "The paper addresses the Euclidean Traveling Salesperson Problem (TSP), where the goal is to find the shortest possible tour (Hamiltonian cycle) that visits each city (node) exactly once and returns to the starting city. The challenge lies in quickly computing high-quality approximate solutions for large TSP instances under real-time constraints. The authors propose a hybrid method that combines a Graph Neural Network (GNN) to predict the 'global regret' of including each edge in the solution—defined as the relative cost increase when forcing an edge into the tour compared to the optimal solution—and uses these predictions to guide a Guided Local Search (GLS) metaheuristic. This allows the algorithm to escape local optima more effectively and converge faster to near-optimal tours.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "TSP20",
+    "TSP50",
+    "TSP100",
+    "TSPLIB"
+  ],
+  "performance_metrics": [
+    "Optimality Gap",
+    "Computation Time",
+    "Percentage of Optimally Solved Problems"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\sum_{e \\in E} c_e x_e$",
+    "constraints": [
+      "$\\sum_{e \\in \\delta(i)} x_e = 2$ for all $i \\in V$",
+      "$\\sum_{e \\in E(S)} x_e \\leq |S| - 1$ for all $S \\subset V$ with $S \\neq \\emptyset$ and $S \\neq V$"
+    ],
+    "variables": [
+      "$x_e \\in \\{0,1\\}$ for each edge $e \\in E$, where $x_e = 1$ if edge $e$ is included in the tour"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} \\min & \\sum_{e \\in E} c_e x_e \\\\ \\text{s.t.} & \\sum_{e \\in \\delta(i)} x_e = 2 \\quad \\forall i \\in V \\\\ & \\sum_{e \\in E(S)} x_e \\leq |S| - 1 \\quad \\forall S \\subset V, S \\neq \\emptyset, S \\neq V \\\\ & x_e \\in \\{0,1\\} \\quad \\forall e \\in E \\end{aligned}$$",
+  "algorithm_description": "The paper uses a hybrid data-driven approach combining Graph Neural Networks (GNNs) and Guided Local Search (GLS). A GNN-based model is trained to approximate the global regret of including each edge in the solution, and GLS utilizes these predictions to guide the local search process, enabling faster convergence to high-quality solutions for the TSP."
+}

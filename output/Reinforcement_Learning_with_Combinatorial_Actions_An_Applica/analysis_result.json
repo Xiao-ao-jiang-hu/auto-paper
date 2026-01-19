@@ -1,0 +1,33 @@
+{
+  "paper_id": "Reinforcement_Learning_with_Combinatorial_Actions_An_Applica",
+  "title": "Reinforcement Learning with Combinatorial Actions: An Application to Vehicle Routing",
+  "abstract": "Value-function-based methods have long played an important role in reinforcement learning. However, finding the best next action given a value function of arbitrary complexity is nontrivial when the action space is too large for enumeration. We develop a framework for value-function-based deep reinforcement learning with a combinatorial action space, in which the action selection problem is explicitly formulated as a mixed-integer optimization problem. As a motivating example, we present an application of this framework to the capacitated vehicle routing problem (CVRP), a combinatorial optimization problem in which a set of locations must be covered by a single vehicle with limited capacity. On each instance, we model an action as the construction of a single route, and consider a deterministic policy which is improved through a simple policy iteration algorithm. Our approach is competitive with other reinforcement learning methods and achieves an average gap of 1.7% with state-of-the-art OR methods on standard library instances of medium size.",
+  "problem_description_natural": "The paper addresses the Capacitated Vehicle Routing Problem (CVRP), where a single vehicle with limited capacity must service a set of customer locations, each with a specific demand, starting and ending at a depot. The goal is to construct one or more feasible routes that collectively visit every customer exactly once while minimizing total travel distance and respecting the vehicle’s capacity constraint. The authors formulate this as a sequential decision problem: each state represents the set of unvisited cities, and each action corresponds to selecting a feasible route (a tour from the depot covering a subset of unvisited cities without exceeding capacity). The challenge lies in efficiently selecting the best combinatorial action at each step using a learned value function that estimates future costs. Action selection is cast as a Prize Collecting TSP with a knapsack constraint and a nonlinear cost term derived from a neural network value estimator.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "CVRPLIB",
+    "Random Euclidean CVRP instances from Nazari et al. [12]"
+  ],
+  "performance_metrics": [
+    "Average gap against OR-Tools",
+    "Mean total distance",
+    "Standard error on the mean",
+    "Optimality gap"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\sum_{i=0}^{n-1} \\sum_{j=0, j\\neq i}^{n-1} \\Delta_{ij} x_{ij}$",
+    "constraints": [
+      "$\\sum_{j=0, j\\neq i}^{n-1} x_{ij} = 1, \\quad \\forall i \\in V \\setminus \\{0\\}$",
+      "$\\sum_{j=0, j\\neq i}^{n-1} x_{ji} = 1, \\quad \\forall i \\in V \\setminus \\{0\\}$",
+      "$\\sum_{j=1}^{n-1} x_{0j} = \\sum_{j=1}^{n-1} x_{j0}$",
+      "$u_i - u_j + Q x_{ij} \\leq Q - d_j, \\quad \\forall i,j \\in V \\setminus \\{0\\}, i \\neq j$",
+      "$d_i \\leq u_i \\leq Q, \\quad \\forall i \\in V \\setminus \\{0\\}$"
+    ],
+    "variables": [
+      "$x_{ij}$: binary variable that equals 1 if arc $(i,j)$ is used in the solution, 0 otherwise.",
+      "$u_i$: continuous variable representing the cumulative demand on the route up to city $i$ (for $i>0$)."
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} \\min & \\sum_{i=0}^{n-1} \\sum_{j=0, j\\neq i}^{n-1} \\Delta_{ij} x_{ij} \\\\ \\text{s.t.} & \\sum_{j=0, j\\neq i}^{n-1} x_{ij} = 1, \\quad \\forall i \\in V \\setminus \\{0\\} \\\\ & \\sum_{j=0, j\\neq i}^{n-1} x_{ji} = 1, \\quad \\forall i \\in V \\setminus \\{0\\} \\\\ & \\sum_{j=1}^{n-1} x_{0j} = \\sum_{j=1}^{n-1} x_{j0} \\\\ & u_i - u_j + Q x_{ij} \\leq Q - d_j, \\quad \\forall i,j \\in V \\setminus \\{0\\}, i \\neq j \\\\ & d_i \\leq u_i \\leq Q, \\quad \\forall i \\in V \\setminus \\{0\\} \\\\ & x_{ij} \\in \\{0,1\\}, \\quad \\forall i,j \\in V, i \\neq j \\\\ & u_i \\geq 0, \\quad \\forall i \\in V \\setminus \\{0\\} \\end{aligned}$$",
+  "algorithm_description": "The paper uses a reinforcement learning (RL) framework with policy iteration. The action space consists of feasible routes (combinatorial). The value function is approximated by a small neural network with ReLU activations. The policy improvement step involves solving an action selection problem formulated as a mixed-integer program (MIP) that combines the route cost and the neural network value function, which is a Prize Collecting TSP (PC-TSP) with a knapsack constraint. The MIP is solved using branch-and-cut (e.g., with SCIP or Gurobi)."
+}

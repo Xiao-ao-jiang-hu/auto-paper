@@ -1,0 +1,30 @@
+{
+  "paper_id": "SimGNN_-_A_Neural_Network_Approach_to_Fast_Graph_Similarity_",
+  "title": "SimGNN: A Neural Network Approach to Fast Graph Similarity Computation",
+  "abstract": "Graph similarity search is among the most important graph-based applications, e.g. finding the chemical compounds that are most similar to a query compound. Graph similarity/distance computation, such as Graph Edit Distance (GED) and Maximum Common Subgraph (MCS), is the core operation of graph similarity search and many other applications, but very costly to compute in practice. Inspired by the recent success of neural network approaches to several graph applications, such as node or graph classification, we propose a novel neural network based approach to address this classic yet challenging graph problem, aiming to alleviate the computational burden while preserving a good performance.",
+  "problem_description_natural": "The paper addresses the problem of efficiently computing graph similarity metrics—specifically Graph Edit Distance (GED)—which is known to be NP-complete and computationally expensive for even moderately sized graphs. The goal is to learn a fast, differentiable function using neural networks that can predict graph similarity scores with high accuracy while significantly reducing computation time compared to exact or heuristic combinatorial methods. The model must be representation-invariant (independent of node ordering), inductive (generalize to unseen graphs), and adaptable to different similarity metrics through training.",
+  "problem_type": "Graph Matching",
+  "datasets": [
+    "AIDS",
+    "LINUX",
+    "IMDB"
+  ],
+  "performance_metrics": [
+    "Mean Squared Error",
+    "Spearman’s Rank Correlation Coefficient",
+    "Kendall’s Rank Correlation Coefficient",
+    "Precision at k"
+  ],
+  "lp_model": {
+    "objective": "$\\min_{A} |A|$, where $A$ is a sequence of edit operations that transforms $\\mathcal{G}_1$ into $\\mathcal{G}_2$",
+    "constraints": [
+      "$A$ consists of valid edit operations: insertions, deletions, or relabelings of vertices/edges",
+      "$\\text{apply}(A, \\mathcal{G}_1) = \\mathcal{G}_2$, i.e., applying the sequence $A$ to graph $\\mathcal{G}_1$ results in graph $\\mathcal{G}_2$"
+    ],
+    "variables": [
+      "$A$: sequence of edit operations, where each operation is a decision to insert, delete, or relabel a vertex or edge"
+    ]
+  },
+  "raw_latex_model": "$$\\text{GED}(\\mathcal{G}_1, \\mathcal{G}_2) = \\min_{A \\in \\mathcal{A}} |A|$$ where $\\mathcal{A}$ is the set of all sequences of edit operations that transform $\\mathcal{G}_1$ into $\\mathcal{G}_2$, $|A|$ is the number of operations in $A$, and edit operations are defined as insertions, deletions, or relabelings of vertices or edges.",
+  "algorithm_description": "SimGNN uses graph neural networks (GCNs) with a novel attention mechanism and pairwise node comparison to learn a function that maps pairs of graphs to similarity scores, approximating Graph Edit Distance without directly solving the combinatorial optimization problem."
+}

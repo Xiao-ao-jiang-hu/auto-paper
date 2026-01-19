@@ -1,0 +1,33 @@
+{
+  "paper_id": "Erdos_Goes_Neural_an_Unsupervised_Learning_Framework_for_Com",
+  "title": "Erdős Goes Neural: an Unsupervised Learning Framework for Combinatorial Optimization on Graphs",
+  "abstract": "Combinatorial optimization (CO) problems are notoriously challenging for neural networks, especially in the absence of labeled instances. This work proposes an unsupervised learning framework for CO problems on graphs that can provide integral solutions of certified quality. Inspired by Erdős’ probabilistic method, we use a neural network to parametrize a probability distribution over sets. Crucially, we show that when the network is optimized w.r.t. a suitably chosen loss, the learned distribution contains, with controlled probability, a low-cost integral solution that obeys the constraints of the combinatorial problem. The probabilistic proof of existence is then derandomized to decode the desired solutions. We demonstrate the efficacy of this approach to obtain valid solutions to the maximum clique problem and to perform local graph clustering. Our method achieves competitive results on both real datasets and synthetic hard instances.",
+  "problem_description_natural": "The paper addresses combinatorial optimization problems on graphs that involve selecting a subset of nodes minimizing a cost function subject to structural constraints. Two specific NP-hard problems are considered: (1) the maximum clique problem, which seeks the clique (a fully connected subgraph) with the largest total weight; and (2) a constrained min-cut problem used for local graph clustering, which aims to find a node set with small cut size relative to its volume (i.e., good conductance) while satisfying certain size or boundary constraints. The proposed method uses a neural network to define a probability distribution over node subsets and optimizes a probabilistic penalty loss that ensures—via the probabilistic method—the existence of a valid, low-cost integral solution within the support of the learned distribution. This solution is then recovered deterministically using the method of conditional expectation.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "IMDB",
+    "COLLAB",
+    "TWITTER",
+    "RB (Train)",
+    "RB (Test)",
+    "RB (Large Inst.)",
+    "SF-295",
+    "FACEBOOK"
+  ],
+  "performance_metrics": [
+    "Approximation Ratio",
+    "Conductance",
+    "Constraint Violation Percentage"
+  ],
+  "lp_model": {
+    "objective": "$\\min_{S \\subseteq V} -w(S)$ where $w(S) = \\sum_{v_i, v_j \\in S} w_{ij}$",
+    "constraints": [
+      "$S \\in \\Omega_{\\text{clique}}$, the family of cliques of graph $G$, meaning for all $v_i, v_j \\in S$ with $i \\neq j$, $(v_i, v_j) \\in E$"
+    ],
+    "variables": [
+      "$S \\subseteq V$: a subset of nodes to be selected as the clique"
+    ]
+  },
+  "raw_latex_model": "$$\\min_{S \\subseteq V} -w(S) \\quad \\text{subject to} \\quad S \\in \\Omega_{\\text{clique}}$$ with $w(S) = \\sum_{v_i, v_j \\in S} w_{ij}$.",
+  "algorithm_description": "The paper proposes an unsupervised learning framework for combinatorial optimization on graphs, inspired by Erdős' probabilistic method. A graph neural network (GNN) is used to parametrize a probability distribution over node sets (via Bernoulli variables for each node). The network is trained by minimizing a probabilistic penalty loss function that guarantees, with controlled probability, the existence of low-cost integral solutions satisfying the problem constraints. After training, valid solutions are decoded deterministically using the method of conditional expectation or via sampling. The framework is applied to two NP-hard problems: the maximum clique problem (as extracted above) and a constrained min-cut problem for local graph clustering, defined as $\\min_S \\text{cut}(S)$ subject to $\\text{vol}(S) \\in [v_l, v_h]$, where $\\text{cut}(S) = \\sum_{v_i \\in S, v_j \\notin S} w_{ij}$ and $\\text{vol}(S) = \\sum_{v_i \\in S} d_i$."
+}

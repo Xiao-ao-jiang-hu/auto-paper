@@ -1,0 +1,27 @@
+{
+  "paper_id": "Neural_Multi-Objective_Combinatorial_Optimization_with_Diver",
+  "title": "Neural Multi-Objective Combinatorial Optimization with Diversity Enhancement",
+  "abstract": "Most of existing neural methods for multi-objective combinatorial optimization (MOCO) problems solely rely on decomposition, which often leads to repetitive solutions for the respective subproblems, thus a limited Pareto set. Beyond decomposition, we propose a novel neural heuristic with diversity enhancement (NHDE) to produce more Pareto solutions from two perspectives. On the one hand, to hinder duplicated solutions for different subproblems, we propose an indicator-enhanced deep reinforcement learning method to guide the model, and design a heterogeneous graph attention mechanism to capture the relations between the instance graph and the Pareto front graph. On the other hand, to excavate more solutions in the neighborhood of each subproblem, we present a multiple Pareto optima strategy to sample and preserve desirable solutions. Experimental results on classic MOCO problems show that our NHDE is able to generate a Pareto front with higher diversity, thereby achieving superior overall performance. Moreover, our NHDE is generic and can be applied to different neural methods for MOCO.",
+  "problem_description_natural": "The paper addresses multi-objective combinatorial optimization (MOCO) problems, which involve optimizing multiple conflicting objectives over a discrete decision space. Instead of seeking a single optimal solution as in single-objective optimization, MOCO aims to find a set of Pareto-optimal solutions that represent trade-offs among the objectives. The challenge lies in generating a diverse and high-quality approximation of the Pareto set efficiently. Existing neural approaches often decompose the problem into independent single-objective subproblems, leading to redundant or duplicated solutions and poor diversity. The proposed method enhances diversity by integrating hypervolume-based indicators into deep reinforcement learning and using a heterogeneous graph attention mechanism to jointly model the problem instance and the evolving Pareto front, while also sampling multiple candidate solutions per subproblem.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "KroAB100",
+    "KroAB150",
+    "KroAB200"
+  ],
+  "performance_metrics": [
+    "Hypervolume (HV)",
+    "Number of non-dominated solutions (|NDS|)"
+  ],
+  "lp_model": {
+    "objective": "$\\min_{\\boldsymbol{x} \\in \\mathcal{X}} \\boldsymbol{f}(\\boldsymbol{x}) = (f_1(\\boldsymbol{x}), f_2(\\boldsymbol{x}), \\ldots, f_M(\\boldsymbol{x}))$",
+    "constraints": [
+      "$\\boldsymbol{x} \\in \\mathcal{X}$, where $\\mathcal{X}$ is the feasible set defined by problem-specific combinatorial constraints (e.g., for MOTSP: all Hamiltonian cycles; for MOCVRP: all routes satisfying vehicle capacity and depot constraints; for MOKP: all item subsets not exceeding knapsack capacity)."
+    ],
+    "variables": [
+      "$\\boldsymbol{x}$: a vector of discrete decision variables representing a solution to the combinatorial optimization problem (e.g., permutation of nodes for TSP, set of routes for CVRP, binary selection vector for KP)."
+    ]
+  },
+  "raw_latex_model": "$$\\min_{\\boldsymbol{x} \\in \\mathcal{X}} \\boldsymbol{f}(\\boldsymbol{x}) = (f_1(\\boldsymbol{x}), f_2(\\boldsymbol{x}), \\ldots, f_M(\\boldsymbol{x}))$$",
+  "algorithm_description": "Neural Heuristic with Diversity Enhancement (NHDE) uses indicator-enhanced deep reinforcement learning with a heterogeneous graph attention mechanism to capture relations between instance and Pareto front graphs, guiding solution construction for decomposed subproblems via weighted sum scalarization. It employs a multiple Pareto optima strategy to sample and preserve diverse solutions, enhancing Pareto front diversity without requiring multiple models."
+}

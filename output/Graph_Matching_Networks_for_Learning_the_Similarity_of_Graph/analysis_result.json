@@ -1,0 +1,30 @@
+{
+  "paper_id": "Graph_Matching_Networks_for_Learning_the_Similarity_of_Graph",
+  "title": "Graph Matching Networks for Learning the Similarity of Graph Structured Objects",
+  "abstract": "This paper addresses the challenging problem of retrieval and matching of graph structured objects. It demonstrates how Graph Neural Networks (GNNs) can be trained to produce embeddings of graphs in vector spaces that enable efficient similarity reasoning. Additionally, it proposes a novel Graph Matching Network (GMN) model that computes a similarity score between a pair of graphs by jointly reasoning over them through a cross-graph attention-based matching mechanism. The models are evaluated on several tasks, including control-flow-graph based function similarity search for vulnerability detection in software systems, and outperform both structure-agnostic models and hand-engineered domain-specific baselines.",
+  "problem_description_natural": "The paper tackles the problem of learning a similarity metric between graph-structured objects. Given two graphs (which may include node and edge features), the goal is to compute a similarity score that reflects both structural and semantic resemblance. This is particularly important in applications like binary function similarity search, where control-flow graphs from compiled code must be compared to detect vulnerabilities, even when they exhibit syntactic differences due to different compilers or optimizations. The challenge lies in designing a model that can effectively exploit graph topology while also adapting learned semantics to a data-driven notion of similarity, rather than relying on rigid, hand-coded graph matching rules.",
+  "problem_type": "Graph Matching",
+  "datasets": [
+    "Generated ER Graphs",
+    "ffmpeg CFGs",
+    "COIL-DEL",
+    "unrar CFGs"
+  ],
+  "performance_metrics": [
+    "Pair AUC",
+    "Triplet Accuracy"
+  ],
+  "lp_model": {
+    "objective": "$\\min_{\\pi} |E_1 \\Delta \\pi(E_2)|$",
+    "constraints": [
+      "$\\pi$ is a permutation on the node set $V$, where $|V_1| = |V_2| = |V|$",
+      "Edit operations are limited to edge substitutions (as in the specific experiment)"
+    ],
+    "variables": [
+      "$\\pi$: a permutation variable mapping nodes from $G_1$ to $G_2$",
+      "Alternatively, binary assignment variables $x_{ij}$ indicating if node $i$ in $G_1$ is matched to node $j$ in $G_2$"
+    ]
+  },
+  "raw_latex_model": "$$\\min_{\\pi} |E_1 \\Delta \\pi(E_2)|$$ subject to $\\pi$ is a permutation on $V$, where $G_1 = (V, E_1)$, $G_2 = (V, E_2)$, and $\\pi(E_2) = \\{ (\\pi(i), \\pi(j)) : (i,j) \\in E_2 \\}$. This defines the graph edit distance with edge substitutions only, assuming identical node sets and no node features, as used in the graph edit distance learning experiment.",
+  "algorithm_description": "The paper proposes Graph Neural Networks (GNNs) for learning graph embeddings and Graph Matching Networks (GMNs) for computing similarity scores directly through cross-graph attention. These models are trained using pairwise or triplet loss functions to approximate the graph edit distance or other similarity metrics for tasks like binary function similarity search and mesh retrieval."
+}

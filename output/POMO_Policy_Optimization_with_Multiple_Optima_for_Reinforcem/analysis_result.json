@@ -1,0 +1,38 @@
+{
+  "paper_id": "POMO_Policy_Optimization_with_Multiple_Optima_for_Reinforcem",
+  "title": "POMO: Policy Optimization with Multiple Optima for Reinforcement Learning",
+  "abstract": "In neural combinatorial optimization (CO), reinforcement learning (RL) can turn a deep neural net into a fast, powerful heuristic solver of NP-hard problems. This approach has a great potential in practical applications because it allows near-optimal solutions to be found without expert guides armed with substantial domain knowledge. We introduce Policy Optimization with Multiple Optima (POMO), an end-to-end approach for building such a heuristic solver. POMO is applicable to a wide range of CO problems. It is designed to exploit the symmetries in the representation of a CO solution. POMO uses a modified REINFORCE algorithm that forces diverse rollouts towards all optimal solutions. Empirically, the low-variance baseline of POMO makes RL training fast and stable, and it is more resistant to local minima compared to previous approaches. We also introduce a new augmentation-based inference method, which accompanies POMO nicely. We demonstrate the effectiveness of POMO by solving three popular NP-hard problems, namely, traveling salesman (TSP), capacitated vehicle routing (CVRP), and 0-1 knapsack (KP). For all three, our solver based on POMO shows a significant improvement in performance over all recent learned heuristics. In particular, we achieve the optimality gap of 0.14% with TSP100 while reducing inference time by more than an order of magnitude.",
+  "problem_description_natural": "The paper addresses combinatorial optimization (CO) problems, specifically focusing on NP-hard problems such as the Traveling Salesman Problem (TSP), Capacitated Vehicle Routing Problem (CVRP), and 0-1 Knapsack Problem (KP). These problems involve finding optimal or near-optimal sequences or selections under constraints—e.g., finding the shortest tour visiting all cities exactly once (TSP), determining efficient delivery routes for vehicles with capacity limits (CVRP), or selecting items with maximum total value without exceeding a weight capacity (KP). The authors propose a reinforcement learning framework that leverages symmetries in problem representations (e.g., cyclic permutations of tours in TSP) to improve training stability, solution quality, and inference speed without relying on hand-crafted heuristics.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "TSP20",
+    "TSP50",
+    "TSP100",
+    "CVRP20",
+    "CVRP50",
+    "CVRP100",
+    "KP50",
+    "KP100",
+    "KP200"
+  ],
+  "performance_metrics": [
+    "Optimality Gap",
+    "Solution Length (Len.)",
+    "Inference Time",
+    "Total Value (Score)"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\sum_{i=1}^{N} \\sum_{j=1}^{N} d_{ij} x_{ij}$",
+    "constraints": [
+      "$\\sum_{j=1}^{N} x_{ij} = 1 \\quad \\forall i = 1,\\ldots,N$",
+      "$\\sum_{i=1}^{N} x_{ij} = 1 \\quad \\forall j = 1,\\ldots,N$",
+      "$\\sum_{i \\in S} \\sum_{j \\notin S} x_{ij} \\geq 1 \\quad \\forall S \\subset \\{1,\\ldots,N\\}, S \\neq \\emptyset$"
+    ],
+    "variables": [
+      "$x_{ij} \\in \\{0,1\\}$: binary decision variable indicating if edge from node $i$ to node $j$ is used in the tour",
+      "$d_{ij} = \\sqrt{(x_i - x_j)^2 + (y_i - y_j)^2}$: Euclidean distance between nodes $i$ and $j$, where $(x_i, y_i)$ are coordinates sampled uniformly from the unit square $[0,1]^2$"
+    ]
+  },
+  "raw_latex_model": "$$ \\begin{aligned} \\text{Minimize} & \\quad \\sum_{i=1}^{N} \\sum_{j=1}^{N} d_{ij} x_{ij} \\\\ \\text{Subject to} & \\quad \\sum_{j=1}^{N} x_{ij} = 1, \\quad \\forall i = 1,\\ldots,N \\\\ & \\quad \\sum_{i=1}^{N} x_{ij} = 1, \\quad \\forall j = 1,\\ldots,N \\\\ & \\quad \\sum_{i \\in S} \\sum_{j \\notin S} x_{ij} \\geq 1, \\quad \\forall S \\subset \\{1,\\ldots,N\\}, S \\neq \\emptyset \\\\ & \\quad x_{ij} \\in \\{0,1\\}, \\quad \\forall i,j \\\\ & \\quad d_{ij} = \\sqrt{(x_i - x_j)^2 + (y_i - y_j)^2}, \\quad \\text{with } (x_i, y_i) \\in [0,1]^2 \\end{aligned} $$",
+  "algorithm_description": "POMO (Policy Optimization with Multiple Optima) is a reinforcement learning method that exploits symmetries in combinatorial optimization problems. It uses multiple starting nodes for parallel rollouts during training, a shared baseline for policy gradients to reduce variance and avoid local minima, and an inference method with multiple greedy trajectories and instance augmentation. The policy network is based on the Attention Model, which uses encoder-decoder architecture with dot-product attention."
+}

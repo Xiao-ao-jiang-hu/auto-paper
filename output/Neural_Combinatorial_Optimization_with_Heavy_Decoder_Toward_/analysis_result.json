@@ -1,0 +1,39 @@
+{
+  "paper_id": "Neural_Combinatorial_Optimization_with_Heavy_Decoder_Toward_",
+  "title": "Neural Combinatorial Optimization with Heavy Decoder: Toward Large Scale Generalization",
+  "abstract": "Neural combinatorial optimization (NCO) is a promising learning-based approach for solving challenging combinatorial optimization problems without specialized algorithm design by experts. However, most constructive NCO methods cannot solve problems with large-scale instance sizes, which significantly diminishes their usefulness for real-world applications. In this work, we propose a novel Light Encoder and Heavy Decoder (LEHD) model with a strong generalization ability to address this critical issue. The LEHD model can learn to dynamically capture the relationships between all available nodes of varying sizes, which is beneficial for model generalization to problems of various scales. Moreover, we develop a data-efficient training scheme and a flexible solution construction mechanism for the proposed LEHD model. By training on small-scale problem instances, the LEHD model can generate nearly optimal solutions for the Travelling Salesman Problem (TSP) and the Capacitated Vehicle Routing Problem (CVRP) with up to 1000 nodes, and also generalizes well to solve real-world TSPLib and CVRPLib problems. These results confirm our proposed LEHD model can significantly improve the state-of-the-art performance for constructive NCO.",
+  "problem_description_natural": "The paper addresses the challenge of solving large-scale combinatorial optimization problems—specifically the Travelling Salesman Problem (TSP) and the Capacitated Vehicle Routing Problem (CVRP)—using neural network models. Traditional neural combinatorial optimization approaches struggle to generalize from small training instances to large real-world problem sizes due to architectural limitations (e.g., static node embeddings in Heavy Encoder–Light Decoder models) and training inefficiencies. The authors propose a new Light Encoder and Heavy Decoder (LEHD) architecture that dynamically captures relationships among nodes during solution construction, enabling better scale-invariant learning. The model is trained via a supervised, data-efficient scheme that leverages partial optimal solutions and uses a flexible inference mechanism (Random Re-Construct) to iteratively improve solution quality.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "TSP100",
+    "CVRP100",
+    "TSP200",
+    "TSP500",
+    "TSP1000",
+    "CVRP200",
+    "CVRP500",
+    "CVRP1000",
+    "TSPLib",
+    "CVRPLib"
+  ],
+  "performance_metrics": [
+    "Optimality Gap",
+    "Inference Time"
+  ],
+  "lp_model": {
+    "objective": "For TSP: $\\min \\sum_{t=1}^{n} \\| \\mathbf{s}_{\\pi_t} - \\mathbf{s}_{\\pi_{t+1}} \\|_2$; for CVRP: $\\min \\sum_{k=1}^{m} \\sum_{t=1}^{l_k} \\| \\mathbf{s}_{i_{k,t}} - \\mathbf{s}_{i_{k,t+1}} \\|_2$",
+    "constraints": [
+      "For TSP: $\\pi$ is a permutation of $\\{1,\\ldots,n\\}$",
+      "For TSP: $\\pi_{n+1} = \\pi_1$",
+      "For CVRP: The set of customers $\\{1,\\ldots,n\\}$ is partitioned into routes, each represented as a sequence $i_{k,1},\\ldots,i_{k,l_k}$",
+      "For CVRP: Each route starts and ends at the depot: $i_{k,1} = i_{k,l_k} = 0$ for all routes $k$",
+      "For CVRP: Capacity constraint: $\\sum_{t=2}^{l_k-1} q_{i_{k,t}} \\leq Q$ for all routes $k$, where $q_i$ is demand of customer $i$ and $Q$ is vehicle capacity"
+    ],
+    "variables": [
+      "For TSP: $\\pi_t$: index of the node visited at position $t$ in the tour, for $t=1,\\ldots,n$",
+      "For CVRP: $i_{k,t}$: index of the node visited at position $t$ in route $k$, for $k=1,\\ldots,m$ and $t=1,\\ldots,l_k$"
+    ]
+  },
+  "raw_latex_model": "The paper solves the Travelling Salesman Problem (TSP) and the Capacitated Vehicle Routing Problem (CVRP). For TSP, given nodes with coordinates $\\mathbf{s}_i$ for $i=1,\\ldots,n$, find a permutation $\\pi$ to minimize total Euclidean distance: $$\\min_{\\pi} \\sum_{t=1}^{n} \\| \\mathbf{s}_{\\pi_t} - \\mathbf{s}_{\\pi_{t+1}} \\|_2, \\quad \\text{with } \\pi_{n+1} = \\pi_1.$$ For CVRP, with depot $\\mathbf{s}_0$, customer demands $q_i$ for $i=1,\\ldots,n$, and vehicle capacity $Q$, find a set of $m$ routes (sequences including depot) covering all customers, minimizing total distance. Let route $k$ be $i_{k,1},\\ldots,i_{k,l_k}$ with $i_{k,1}=i_{k,l_k}=0$. The formulation is: $$\\min \\sum_{k=1}^{m} \\sum_{t=1}^{l_k-1} \\| \\mathbf{s}_{i_{k,t}} - \\mathbf{s}_{i_{k,t+1}} \\|_2$$ subject to: \\begin{itemize} \\item The customers $\\{1,\\ldots,n\\}$ are partitioned into the sets $\\{i_{k,2},\\ldots,i_{k,l_k-1}\\}$ for $k=1,\\ldots,m$, \\item Each route starts and ends at the depot: $i_{k,1} = i_{k,l_k} = 0$ for all $k$, \\item Capacity constraints: $\\sum_{t=2}^{l_k-1} q_{i_{k,t}} \\leq Q$ for all $k$. \\end{itemize}",
+  "algorithm_description": "The paper proposes a Light Encoder and Heavy Decoder (LEHD) neural network model for constructive neural combinatorial optimization. It is trained via supervised learning on partial solutions extracted from optimal tours (using data augmentation based on optimality invariance). During inference, it uses a greedy step-by-step construction and a Random Re-Construct (RRC) mechanism to iteratively improve solutions by reconstructing random partial segments."
+}

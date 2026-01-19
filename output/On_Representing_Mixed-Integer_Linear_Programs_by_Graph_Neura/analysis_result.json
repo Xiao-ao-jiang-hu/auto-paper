@@ -1,0 +1,31 @@
+{
+  "paper_id": "On_Representing_Mixed-Integer_Linear_Programs_by_Graph_Neura",
+  "title": "On Representing Mixed-Integer Linear Programs by Graph Neural Networks",
+  "abstract": "While Mixed-integer linear programming (MILP) is NP-hard in general, practical MILP has received roughly 100-fold speedup in the past twenty years. Still, many classes of MILPs quickly become unsolvable as their sizes increase, motivating researchers to seek new acceleration techniques for MILPs. With deep learning, they have obtained strong empirical results, and many results were obtained by applying graph neural networks (GNNs) to making decisions in various stages of MILP solution processes. This work discovers a fundamental limitation: there exist feasible and infeasible MILPs that all GNNs will, however, treat equally, indicating GNN’s lacking power to express general MILPs. Then, we show that, by restricting the MILPs to unfoldable ones or by adding random features, there exist GNNs that can reliably predict MILP feasibility, optimal objective values, and optimal solutions up to prescribed precision. We conducted small-scale numerical experiments to validate our theoretical findings.",
+  "problem_description_natural": "The paper studies the use of Graph Neural Networks (GNNs) to represent and solve Mixed-Integer Linear Programs (MILPs), which are optimization problems that minimize a linear objective function subject to linear constraints, with some variables constrained to take integer values. The authors investigate whether GNNs can reliably predict key properties of MILP instances—specifically, feasibility (whether a solution exists), the optimal objective value, and an optimal solution. They identify a fundamental limitation: certain pairs of MILPs (one feasible, one infeasible) produce identical graph representations that GNNs cannot distinguish. They introduce the concept of 'foldable' vs. 'unfoldable' MILPs and show that GNNs succeed on unfoldable instances or when random features are added to break symmetries.",
+  "problem_type": "MILP",
+  "datasets": [
+    "MIPLIB 2017",
+    "D1",
+    "D2"
+  ],
+  "performance_metrics": [
+    "Feasibility prediction error rate",
+    "Optimal objective value approximation error",
+    "Optimal solution approximation error"
+  ],
+  "lp_model": {
+    "objective": "$\\min_{x \\in \\mathbb{R}^n} c^{\\top} x$",
+    "constraints": [
+      "$Ax \\circ b$, where $\\circ \\in \\{\\leq, =, \\geq\\}^m$",
+      "$l \\leq x \\leq u$, with $l \\in (\\mathbb{R} \\cup \\{-\\infty\\})^n$, $u \\in (\\mathbb{R} \\cup \\{+\\infty\\})^n$",
+      "$x_j \\in \\mathbb{Z}, \\forall j \\in I$, where $I \\subset \\{1, 2, \\dots, n\\}$"
+    ],
+    "variables": [
+      "$x \\in \\mathbb{R}^n$: vector of decision variables",
+      "For $j \\in I$, $x_j$ is constrained to be an integer"
+    ]
+  },
+  "raw_latex_model": "$$ \\min_{x \\in \\mathbb{R}^n} c^{\\top} x, \\quad \\text{s.t. } Ax \\circ b, \\; l \\leq x \\leq u, \\; x_j \\in \\mathbb{Z}, \\forall j \\in I, $$",
+  "algorithm_description": "The paper uses Graph Neural Networks (GNNs) to approximate mappings from MILP instances to their feasibility, optimal objective value, and optimal solutions. GNNs are applied to MILP-induced bipartite graphs to learn these properties, with theoretical analysis on separation and representation power."
+}

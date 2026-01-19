@@ -1,0 +1,34 @@
+{
+  "paper_id": "Neural_DAG_Scheduling_via_One-Shot_Priority_Sampling",
+  "title": "NEURAL DAG SCHEDULING VIA ONE-SHOT PRIORITY SAMPLING",
+  "abstract": "We consider the problem of scheduling operations/nodes, the dependency among which is characterized by a Directed Acyclic Graph (DAG). Due to its NP-hard nature, heuristic algorithms were traditionally used to acquire reasonably good solutions, and more recent works have proposed Machine Learning (ML) heuristics that can generalize to unseen graphs and outperform the non-ML heuristics. However, it is computationally costly to generate solutions using existing ML schedulers since they adopt the episodic reinforcement learning framework that necessitates multi-round neural network processing. We propose a novel ML scheduler that uses a one-shot neural network encoder to sample node priorities which are converted by list scheduling to the final schedules. Since the one-shot encoder can efficiently sample the priorities in parallel, our algorithm runs significantly faster than existing ML baselines and has comparable run time with the fast traditional heuristics. We empirically show that our algorithm generates better schedules than both non-neural and neural baselines across various real-world and synthetic scheduling tasks.",
+  "problem_description_natural": "The problem involves scheduling operations represented as nodes in a Directed Acyclic Graph (DAG), where edges encode precedence constraints. Each node has an execution duration, resource requirements, and must be assigned to a specific machine type (homogeneous or heterogeneous). The goal is to assign start times to all nodes such that all precedence and resource capacity constraints are satisfied, and the makespan—the total time to complete all operations—is minimized. This is a classic NP-hard combinatorial optimization problem arising in domains like job shop scheduling, data center task scheduling, and ML compiler graph scheduling.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "Synthetic JSSP Instances (Zhang et al., 2020)",
+    "TPC-H-50",
+    "TPC-H-100",
+    "TPC-H-150",
+    "Layered Graphs (Gagrani et al., 2022)",
+    "Erdos-Renyi Graphs",
+    "Stochastic Block Model Graphs",
+    "Real-world Computation Graphs (proprietary)"
+  ],
+  "performance_metrics": [
+    "Makespan",
+    "Speedup"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\max_{v \\in \\mathcal{V}} \\{\\tau(v) + \\delta(v)\\}$",
+    "constraints": [
+      "$\\tau(v) \\geq 0, \\quad \\forall v \\in \\mathcal{V}$",
+      "$\\tau(v_1) + \\delta(v_1) \\leq \\tau(v_2), \\quad \\forall (v_1, v_2) \\in \\mathcal{E}$",
+      "$\\sum_{v \\in \\mathcal{V}: \\mu(v) = m, \\tau(v) \\leq t < \\tau(v) + \\delta(v)} \\rho(v) \\leq \\lambda(m), \\quad \\forall m \\in \\mathcal{M}, \\forall t \\geq 0$"
+    ],
+    "variables": [
+      "$\\tau(v)$: start time of node $v$, for all $v \\in \\mathcal{V}$"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned}\n\\text{Minimize} \\quad & C = \\max_{v \\in \\mathcal{V}} \\{\\tau(v) + \\delta(v)\\} \\\\\n\\text{subject to} \\quad & \\tau(v) \\geq 0, \\quad \\forall v \\in \\mathcal{V} \\\\\n& \\tau(v_1) + \\delta(v_1) \\leq \\tau(v_2), \\quad \\forall (v_1, v_2) \\in \\mathcal{E} \\\\\n& \\sum_{v \\in \\mathcal{V}: \\mu(v) = m, \\tau(v) \\leq t < \\tau(v) + \\delta(v)} \\rho(v) \\leq \\lambda(m), \\quad \\forall m \\in \\mathcal{M}, \\forall t \\geq 0\n\\end{aligned}$$",
+  "algorithm_description": "The paper proposes a neural scheduler that uses a one-shot graph neural network encoder (Topoformer) to generate logits for nodes, samples node priorities via the Gumbel-Top-k trick, and then applies list scheduling to convert priorities into valid schedules. The model is trained using REINFORCE with logit norm regularization and cost standardization to optimize for minimal makespan."
+}

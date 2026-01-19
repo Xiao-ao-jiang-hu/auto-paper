@@ -1,0 +1,38 @@
+{
+  "paper_id": "Preference_Conditioned_Neural_Multi-objective_Combinatorial_",
+  "title": "Pareto Set Learning for Neural Multi-Objective Combinatorial Optimization",
+  "abstract": "Multiobjective combinatorial optimization (MOCO) problems can be found in many real-world applications. However, exactly solving these problems would be very challenging, particularly when they are NP-hard. Many handcrafted heuristic methods have been proposed to tackle different MOCO problems over the past decades. In this work, we generalize the idea of neural combinatorial optimization, and develop a learning-based approach to approximate the whole Pareto set for a given MOCO problem without further search procedure. We propose a single preference-conditioned model to directly generate approximate Pareto solutions for any trade-off preference, and design an efficient multiobjective reinforcement learning algorithm to train this model. Our proposed method can be treated as a learning-based extension for the widely-used decomposition-based multiobjective evolutionary algorithm (MOEA/D). It uses a single model to accommodate all the possible preferences, whereas other methods use a finite number of solutions to approximate the Pareto set. Experimental results show that our proposed method significantly outperforms some other methods on the multiobjective traveling salesman problem, multiobjective vehicle routing problem, and multiobjective knapsack problem in terms of solution quality, speed, and model efficiency.",
+  "problem_description_natural": "The paper addresses multiobjective combinatorial optimization (MOCO) problems, where multiple conflicting objectives must be optimized simultaneously over a discrete search space. Examples include the multiobjective traveling salesman problem (MOTSP), multiobjective vehicle routing problem (MOVRP), and multiobjective knapsack problem (MOKP). Since no single solution can optimize all objectives at once, the goal is to find or approximate the Pareto set—the set of all non-dominated solutions representing optimal trade-offs among objectives. The challenge lies in efficiently generating high-quality Pareto-optimal solutions for any user-specified preference without running a new optimization or search each time.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "MOTSP20",
+    "MOTSP50",
+    "MOTSP100",
+    "MOCVRP20",
+    "MOCVRP50",
+    "MOCVRP100",
+    "MOKP50",
+    "MOKP100",
+    "MOKP200",
+    "Fonseca OOD MOTSP"
+  ],
+  "performance_metrics": [
+    "Hypervolume (HV)",
+    "Gap (hypervolume difference ratio)",
+    "Running Time"
+  ],
+  "lp_model": {
+    "objective": "$\\min_{\\pi} (L_1(\\pi), L_2(\\pi), \\dots, L_m(\\pi))$ where $L_i(\\pi) = \\sum_{t=1}^{n} d_i(\\pi_t, \\pi_{t+1})$ with $\\pi_{n+1} = \\pi_1$, and $d_i(u,v)$ is the distance for objective $i$ between cities $u$ and $v$.",
+    "constraints": [
+      "$\\pi = (\\pi_1, \\pi_2, \\dots, \\pi_n)$ is a permutation of $\\{1, 2, \\dots, n\\}$, meaning each city $j \\in \\{1, \\dots, n\\}$ appears exactly once in $\\pi$.",
+      "$\\pi_t \\in \\{1, \\dots, n\\}$ for all $t = 1, \\dots, n$.",
+      "$\\pi_t \\neq \\pi_{t'}$ for all $t \\neq t'$."
+    ],
+    "variables": [
+      "$\\pi_t$: the city visited at position $t$ in the tour, for $t = 1, \\dots, n$.",
+      "$\\pi$: the complete tour represented as a permutation of cities."
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} \\min_{\\pi} & \\quad F(\\pi) = (f_1(\\pi), f_2(\\pi), \\dots, f_m(\\pi)) \\\\ \\text{s.t.} & \\quad f_i(\\pi) = \\sum_{t=1}^{n} d_i(\\pi_t, \\pi_{t+1}), \\quad i = 1, \\dots, m, \\\\ & \\quad \\pi_{n+1} = \\pi_1, \\\\ & \\quad \\pi \\text{ is a permutation of } \\{1, 2, \\dots, n\\}. \\end{aligned}$$",
+  "algorithm_description": "A single preference-conditioned neural model (based on an attention encoder-decoder architecture) is trained using multi-objective reinforcement learning (REINFORCE with weighted-Tchebycheff scalarization) to directly generate approximate Pareto solutions for any trade-off preference without further search, approximating the whole Pareto set for multi-objective combinatorial optimization problems like MOTSP, MOVRP, and MOKP."
+}

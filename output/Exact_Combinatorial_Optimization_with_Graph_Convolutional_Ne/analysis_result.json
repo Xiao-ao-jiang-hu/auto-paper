@@ -1,0 +1,33 @@
+{
+  "paper_id": "Exact_Combinatorial_Optimization_with_Graph_Convolutional_Ne",
+  "title": "Exact Combinatorial Optimization with Graph Convolutional Neural Networks",
+  "abstract": "Combinatorial optimization problems are typically tackled by the branch-and-bound paradigm. We propose a new graph convolutional neural network model for learning branch-and-bound variable selection policies, which leverages the natural variable-constraint bipartite graph representation of mixed-integer linear programs. We train our model via imitation learning from the strong branching expert rule, and demonstrate on a series of hard problems that our approach produces policies that improve upon state-of-the-art machine-learning methods for branching and generalize to instances significantly larger than seen during training. Moreover, we improve for the first time over expert-designed branching rules implemented in a state-of-the-art solver on large problems.",
+  "problem_description_natural": "The paper addresses the variable selection (branching) problem within the branch-and-bound algorithm for solving mixed-integer linear programs (MILPs). The goal is to learn a policy that selects which fractional variable to branch on at each node of the search tree, with the aim of minimizing the size of the tree and thus the total solving time. The authors frame this as a sequential decision-making problem and use imitation learning to mimic the high-quality but computationally expensive strong branching rule. Their approach encodes the MILP state as a bipartite graph between variables and constraints and uses a graph convolutional neural network to predict branching decisions.",
+  "problem_type": "Mixed-Integer Linear Programming (MILP)",
+  "datasets": [
+    "Generated Set Covering Instances",
+    "Generated Combinatorial Auction Instances",
+    "Generated Capacitated Facility Location Instances",
+    "Generated Maximum Independent Set Instances on Erdős-Rényi Graphs"
+  ],
+  "performance_metrics": [
+    "acc@1",
+    "acc@5",
+    "1-shifted geometric mean of solving time",
+    "Number of B&B nodes",
+    "Wins (fastest method) / Number of solved instances"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\mathbf{c}^\\top \\mathbf{x}$",
+    "constraints": [
+      "$\\mathbf{A}\\mathbf{x} \\leq \\mathbf{b}$",
+      "$\\mathbf{l} \\leq \\mathbf{x} \\leq \\mathbf{u}$",
+      "$\\mathbf{x} \\in \\mathbb{Z}^p \\times \\mathbb{R}^{n-p}$"
+    ],
+    "variables": [
+      "$\\mathbf{x} \\in \\mathbb{R}^n$: decision variables, with $p$ integer variables and $n-p$ continuous variables"
+    ]
+  },
+  "raw_latex_model": "$$\\arg\\min_{\\mathbf{x}} \\left\\{ \\mathbf{c}^\\top \\mathbf{x} \\mid \\mathbf{A}\\mathbf{x} \\leq \\mathbf{b},\\; \\mathbf{l} \\leq \\mathbf{x} \\leq \\mathbf{u},\\; \\mathbf{x} \\in \\mathbb{Z}^p \\times \\mathbb{R}^{n-p} \\right\\}$$",
+  "algorithm_description": "The paper uses a Graph Convolutional Neural Network (GCNN) trained via imitation learning (behavioral cloning) from the strong branching expert rule to learn a variable selection policy for branch-and-bound in mixed-integer linear programming. The method is evaluated on four specific NP-hard problem classes: set covering, combinatorial auction, capacitated facility location, and maximum independent set, but the underlying optimization problem is a general MILP as defined above."
+}

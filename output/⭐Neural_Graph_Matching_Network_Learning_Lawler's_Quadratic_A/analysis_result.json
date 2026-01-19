@@ -1,0 +1,29 @@
+{
+  "paper_id": "⭐Neural_Graph_Matching_Network_Learning_Lawler's_Quadratic_A",
+  "title": "Neural Graph Matching Network: Learning Lawler's Quadratic Assignment Problem with Extension to Hypergraph and Multiple-graph Matching",
+  "abstract": "Graph matching involves combinatorial optimization based on edge-to-edge affinity matrix, which can be generally formulated as Lawler’s Quadratic Assignment Problem (QAP). This paper presents a QAP network directly learning with the affinity matrix (equivalently the association graph) whereby the matching problem is translated into a constrained vertex classification task. The association graph is learned by an embedding network for vertex classification, followed by Sinkhorn normalization and a cross-entropy loss for end-to-end learning. We further improve the embedding model on association graph by introducing Sinkhorn based matching-aware constraint, as well as dummy nodes to deal with unequal sizes of graphs. To our best knowledge, this is one of the first network to directly learn with the general Lawler’s QAP. In contrast, recent deep matching methods focus on the learning of node/edge features in two graphs respectively. We also show how to extend our network to hypergraph matching, and matching of multiple graphs. Experimental results on both synthetic graphs and real-world images show its effectiveness. For pure QAP tasks on synthetic data and QAPLIB benchmark, our method can perform competitively and even surpass state-of-the-art graph matching and QAP solvers with notable less time cost.",
+  "problem_description_natural": "The paper addresses the graph matching problem, which seeks to establish node correspondences between two graphs by maximizing an objective function defined over a quadratic affinity matrix that encodes both node-to-node and edge-to-edge similarities. This is mathematically formulated as Lawler’s Quadratic Assignment Problem (QAP), a general NP-complete combinatorial optimization problem. The goal is to find a (partial) permutation matrix that maximizes the quadratic form vec(X)^T K vec(X), where K is the affinity matrix and X satisfies assignment constraints. The authors propose a neural network that operates directly on the affinity matrix—treated as an association graph—and learns to classify vertices (i.e., potential matches) under matching constraints. The approach is extended to higher-order (hypergraph) matching using affinity tensors and to multiple-graph matching via differentiable spectral synchronization.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "QAPLIB",
+    "Generated 2D Point Sets with Delaunay Triangulation"
+  ],
+  "performance_metrics": [
+    "Matching Accuracy",
+    "Objective Score"
+  ],
+  "lp_model": {
+    "objective": "$\\max_{\\mathbf{X}} \\text{vec}(\\mathbf{X})^\\top \\mathbf{K} \\text{vec}(\\mathbf{X})$",
+    "constraints": [
+      "$\\mathbf{X} \\in \\{0,1\\}^{n_1 \\times n_2}$",
+      "$\\mathbf{X}\\mathbf{1}_{n_2} = \\mathbf{1}_{n_1}$",
+      "$\\mathbf{X}^\\top\\mathbf{1}_{n_1} \\leq \\mathbf{1}_{n_2}$"
+    ],
+    "variables": [
+      "$\\mathbf{X}$: binary (partial) permutation matrix encoding node-to-node correspondence between two graphs, of size $n_1 \\times n_2$",
+      "$\\text{vec}(\\mathbf{X})$: column-vectorized version of $\\mathbf{X}$"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} J(\\mathbf{X}) &= \\text{vec}(\\mathbf{X})^\\top \\mathbf{K} \\text{vec}(\\mathbf{X}) \\\\ s.t.\\quad & \\mathbf{X} \\in \\{0,1\\}^{n_1 \\times n_2}, \\mathbf{X}\\mathbf{1}_{n_2} = \\mathbf{1}_{n_1}, \\mathbf{X}^\\top\\mathbf{1}_{n_1} \\leq \\mathbf{1}_{n_2} \\end{aligned}$$",
+  "algorithm_description": "The paper proposes a neural network (Neural Graph Matching, NGM) that directly learns to solve Lawler's Quadratic Assignment Problem (QAP) by transforming the matching problem into a constrained vertex classification task on an association graph. The network uses an embedding network (GCN) for vertex classification, followed by Sinkhorn normalization to enforce assignment constraints, and is trained end-to-end with a cross-entropy loss. Extensions to hypergraph matching (NHGM) and multiple-graph matching (NMGM) are also presented."
+}

@@ -1,0 +1,30 @@
+{
+  "paper_id": "⭐Learning_deep_graph_matching_with_channel-independent_embed",
+  "title": "LEARNING DEEP GRAPH MATCHING VIA CHANNEL-INDEPENDENT EMBEDDING AND HUNGARIAN ATTENTION",
+  "abstract": "Graph matching aims to establishing node-wise correspondence between two graphs, which is a classic combinatorial problem and in general NP-complete. Until very recently, deep graph matching methods start to resort to deep networks to achieve unprecedented matching accuracy. Along this direction, this paper makes two complementary contributions which can also be reused as plugin in existing works: i) a novel node and edge embedding strategy which stimulates the multi-head strategy in attention models and allows the information in each channel to be merged independently. In contrast, only node embedding is encoded in previous works; ii) a general masking mechanism over the loss function is devised to improve the smoothness of objective learning for graph matching. Using Hungarian algorithm, it dynamically constructs a structured and sparsely connected layer, taking into account the most contributing matching pairs as hard attention. Our approach performs competitively, and can also improve state-of-the-art methods as plugin, regarding with matching accuracy on three public benchmarks.",
+  "problem_description_natural": "The paper addresses the graph matching problem, which seeks to find a one-to-one node correspondence between two graphs of equal size by maximizing a quadratic assignment objective. Specifically, given two graphs, the goal is to find a permutation matrix X that maximizes x^T K x, where x is the vectorized form of X and K is an affinity matrix encoding both node and edge similarities. This formulation corresponds to Lawler’s Quadratic Assignment Problem (QAP), which is NP-complete. The work focuses on improving deep learning approaches for this task by better incorporating edge attributes into embeddings and refining the training loss using a Hungarian algorithm-based attention mechanism.",
+  "problem_type": "Graph Matching",
+  "datasets": [
+    "CUB2011",
+    "Pascal VOC keypoint matching",
+    "Willow Object Class",
+    "Generated synthetic graphs (Cho et al., 2010 protocol)"
+  ],
+  "performance_metrics": [
+    "Mean matching accuracy"
+  ],
+  "lp_model": {
+    "objective": "$\\max_{\\mathbf{x}} \\mathbf{x}^\\top \\mathbf{K} \\mathbf{x}$",
+    "constraints": [
+      "$\\sum_{a=1}^n x_{ia} = 1, \\quad \\forall i \\in \\{1,\\dots,n\\}$",
+      "$\\sum_{i=1}^n x_{ia} = 1, \\quad \\forall a \\in \\{1,\\dots,n\\}$",
+      "$x_{ia} \\in \\{0,1\\}, \\quad \\forall i,a \\in \\{1,\\dots,n\\}$"
+    ],
+    "variables": [
+      "$x_{ia}$: binary variable indicating whether node $i$ in graph $\\mathcal{G}_1$ is matched to node $a$ in graph $\\mathcal{G}_2$",
+      "$\\mathbf{x} = \\mathrm{vec}(\\mathbf{X}) \\in \\{0,1\\}^{n^2}$: vectorized form of the permutation matrix $\\mathbf{X}$"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} \\max_{\\mathbf{x}} & \\quad \\mathbf{x}^\\top \\mathbf{K} \\mathbf{x} \\\\ \\text{s.t.} & \\quad \\sum_{a=1}^n x_{ia} = 1, \\quad \\forall i = 1,\\dots,n \\\\ & \\quad \\sum_{i=1}^n x_{ia} = 1, \\quad \\forall a = 1,\\dots,n \\\\ & \\quad x_{ia} \\in \\{0,1\\}, \\quad \\forall i,a = 1,\\dots,n \\end{aligned}$$",
+  "algorithm_description": "The paper proposes a deep learning approach for graph matching. It uses a Siamese graph neural network (GNN) with a novel channel-independent embedding (CIE) module to simultaneously learn node and edge features. These features are used to compute a cross-graph similarity matrix, which is then normalized by a differentiable Sinkhorn layer to produce a doubly-stochastic matrix. During training, a Hungarian attention mechanism is applied to the loss function to focus on the most contributing matching pairs. At test time, the Hungarian algorithm discretizes the doubly-stochastic matrix to obtain the final permutation matrix."
+}

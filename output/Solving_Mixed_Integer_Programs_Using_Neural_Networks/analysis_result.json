@@ -1,0 +1,34 @@
+{
+  "paper_id": "Solving_Mixed_Integer_Programs_Using_Neural_Networks",
+  "title": "Solving Mixed Integer Programs Using Neural Networks",
+  "abstract": "This paper presents a machine learning approach to improve Mixed Integer Programming (MIP) solvers by learning heuristics from data. It introduces two neural network-based components: Neural Diving, which generates high-quality feasible variable assignments by predicting partial integer assignments and solving resulting sub-MIPs, and Neural Branching, which learns a branching policy for the branch-and-bound algorithm by imitating a scalable GPU-accelerated variant of Full Strong Branching. Integrated into the SCIP solver, these components form a 'Neural Solver' that significantly outperforms tuned SCIP on large-scale real-world MIP datasets—including two from Google production systems and MIPLIB—with up to 10^4× better primal-dual gap at large time limits on some datasets. This is the first learning-based method to demonstrate such substantial improvements over SCIP on both application-specific and heterogeneous benchmark instances.",
+  "problem_description_natural": "The optimization problem addressed is Mixed Integer Linear Programming (MILP), where the goal is to minimize a linear objective function subject to linear constraints, with some variables constrained to take integer values. The paper focuses on improving practical solver performance on large-scale instances by learning two key components: (1) a primal heuristic (Neural Diving) that produces high-quality feasible solutions by generating partial assignments of integer variables and solving the reduced problems, and (2) a branching policy (Neural Branching) that guides the branch-and-bound search tree to tighten dual bounds more efficiently. Both components are trained on datasets of MIP instances—either homogeneous (same problem structure, varying parameters) or heterogeneous (e.g., MIPLIB)—and integrated into the SCIP solver to accelerate convergence in terms of primal-dual gap.",
+  "problem_type": "Mixed Integer Linear Programming (MILP)",
+  "datasets": [
+    "CORLAT",
+    "NN Verification",
+    "Google Production Packing",
+    "Google Production Planning",
+    "Electric Grid Optimization",
+    "MIPLIB"
+  ],
+  "performance_metrics": [
+    "primal gap",
+    "dual gap",
+    "primal-dual gap",
+    "fraction of instances solved"
+  ],
+  "lp_model": {
+    "objective": "$\\min c^{\\top} x$",
+    "constraints": [
+      "$Ax \\leq b$",
+      "$l \\leq x \\leq u$",
+      "$x_i \\in \\mathbb{Z}, \\quad i \\in \\mathcal{I}$"
+    ],
+    "variables": [
+      "$x \\in \\mathbb{R}^n$: decision variables, with $x_i$ integer for $i \\in \\mathcal{I}$"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned}\\text{minimize} \\quad & c^{\\top} x \\\\\\text{subject to} \\quad & Ax \\leq b \\\\& l \\leq x \\leq u \\\\& x_i \\in \\mathbb{Z}, \\quad i \\in \\mathcal{I}\\end{aligned}$$",
+  "algorithm_description": "The paper proposes Neural Diving and Neural Branching, which use graph neural networks to learn heuristics for solving Mixed Integer Programs (MIPs). Neural Diving learns a generative model to predict partial variable assignments, and Neural Branching learns a policy to imitate Full Strong Branching for variable selection in branch-and-bound. These are integrated into the SCIP solver to improve performance on specific datasets."
+}

@@ -1,0 +1,38 @@
+{
+  "paper_id": "Variational_Annealing_on_Graphs_for_Combinatorial_Optimizati",
+  "title": "Variational Annealing on Graphs for Combinatorial Optimization",
+  "abstract": "Several recent unsupervised learning methods use probabilistic approaches to solve combinatorial optimization (CO) problems based on the assumption of statistically independent solution variables. We demonstrate that this assumption imposes performance limitations in particular on difficult problem instances. Our results corroborate that an autoregressive approach which captures statistical dependencies among solution variables yields superior performance on many popular CO problems. We introduce subgraph tokenization in which the configuration of a set of solution variables is represented by a single token. This tokenization technique alleviates the drawback of the long sequential sampling procedure which is inherent to autoregressive methods without sacrificing expressivity. Importantly, we theoretically motivate an annealed entropy regularization and show empirically that it is essential for efficient and stable learning.",
+  "problem_description_natural": "The paper addresses combinatorial optimization (CO) problems by reformulating them as energy minimization tasks using the Ising model framework. Each problem instance is represented by an energy function E(σ) over binary spin variables σ ∈ {−1, 1}^N, where the goal is to find the configuration σ that minimizes the energy. The energy function includes pairwise interactions (J_ij) and local fields (B_i). The authors frame the solution process as a variational learning problem: training a neural network to approximate the Boltzmann distribution associated with the energy function at low temperature (high inverse temperature β), which concentrates probability mass on near-optimal solutions. The method uses autoregressive modeling with graph neural networks to capture dependencies among variables, enhanced by subgraph tokenization and dynamic graph pruning for efficiency.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "ENZYMES",
+    "PROTEINS",
+    "IMDB-BINARY",
+    "COLLAB",
+    "MUTAG",
+    "TWITTER",
+    "RRG-100",
+    "RB-200",
+    "RB-100",
+    "BA 200–300"
+  ],
+  "performance_metrics": [
+    "best approximation ratio (AR^*)",
+    "average approximation ratio (\\widehat{AR})",
+    "average maximum cut value (\\widehat{MCut})",
+    "relative error (\\epsilon_{\\text{rel}})",
+    "best relative error (\\epsilon_{\\text{rel}}^*)",
+    "average relative error (\\bar{\\epsilon}_{\\text{rel}})"
+  ],
+  "lp_model": {
+    "objective": "$\\min_q -\\sum_{i=1}^N q_i$",
+    "constraints": [
+      "$q_i + q_j \\leqslant 1 \\quad \\forall (i,j) \\in \\mathcal{E}$"
+    ],
+    "variables": [
+      "$q_i \\in \\{0,1\\}$ for $i=1,\\dots,N$"
+    ]
+  },
+  "raw_latex_model": "$$\\min_q \\quad -\\sum_{i=1}^N q_i \\quad \\text{s.t.} \\quad q_i + q_j \\leqslant 1 \\text{ for all } (i,j) \\in \\mathcal{E}$$",
+  "algorithm_description": "VAG-CO (Variational Annealing on Graphs for Combinatorial Optimization) is an autoregressive method that uses graph neural networks (GNNs) and the PPO reinforcement learning algorithm, with annealed entropy regularization and subgraph tokenization, to generate solutions for combinatorial optimization problems like MIS, MVC, MaxCl, and MaxCut."
+}

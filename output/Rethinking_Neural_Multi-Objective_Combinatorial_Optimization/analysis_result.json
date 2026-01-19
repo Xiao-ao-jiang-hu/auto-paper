@@ -1,0 +1,31 @@
+{
+  "paper_id": "Rethinking_Neural_Multi-Objective_Combinatorial_Optimization",
+  "title": "Rethinking Neural Multi-Objective Combinatorial Optimization via Neat Weight Embedding",
+  "abstract": "Recent decomposition-based neural multi-objective combinatorial optimization (MOCO) methods struggle to achieve desirable performance. Even equipped with complex learning techniques, they often suffer from significant optimality gaps in weight-specific subproblems. To address this challenge, we propose a neat weight embedding method to learn weight-specific representations, which captures weight-instance interaction for the subproblems and was overlooked by most current methods. We demonstrate the potentials of our method in two instantiations. First, we introduce a succinct addition model to learn weight-specific node embeddings, which surpassed most existing neural methods. Second, we design an enhanced conditional attention model to simultaneously learn the weight embedding and node embeddings, which yielded new state-of-the-art performance. Experimental results on classic MOCO problems verified the superiority of our method. Remarkably, our method also exhibits favorable generalization performance across problem sizes, even outperforming the neural method specialized for boosting size generalization.",
+  "problem_description_natural": "The paper addresses multi-objective combinatorial optimization (MOCO) problems, where multiple conflicting objectives must be optimized simultaneously over a discrete decision space. The goal is to find a set of Pareto optimal solutions that balance convergence (optimality) and diversity. The authors focus on decomposition-based approaches, which transform the MOCO problem into multiple scalarized subproblems, each associated with a specific weight (preference) vector. The core challenge is effectively solving these weight-specific subproblems by capturing the interaction between the weight vector and the problem instance (e.g., a graph or set of nodes).",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "TSPLIB"
+  ],
+  "performance_metrics": [
+    "Hypervolume (HV)",
+    "Optimality Gap",
+    "Solving Time"
+  ],
+  "lp_model": {
+    "objective": "$\\min_{\\boldsymbol{x} \\in \\mathcal{X}} \\boldsymbol{f}(\\boldsymbol{x}) = (f_1(\\boldsymbol{x}), f_2(\\boldsymbol{x}), \\ldots, f_M(\\boldsymbol{x}))$",
+    "constraints": [
+      "$\\boldsymbol{x} \\in \\mathcal{X}$, where $\\mathcal{X}$ is a discrete decision space defined by problem-specific combinatorial constraints.",
+      "For the multi-objective traveling salesman problem (MOTSP): $\\sum_j x_{ij} = 1$ for all nodes $i$, $\\sum_i x_{ij} = 1$ for all nodes $j$, and subtour elimination constraints (e.g., $\\sum_{i \\in S, j \\notin S} x_{ij} \\geq 1$ for all subsets $S$ of nodes), with $x_{ij} \\in \\{0,1\\}$ indicating if edge $(i,j)$ is used.",
+      "For the multi-objective capacitated vehicle routing problem (MOCVRP): Similar to MOTSP with additional vehicle capacity constraints, e.g., $\\sum_{i} q_i y_{ik} \\leq Q$ for each vehicle $k$, where $q_i$ is demand, $y_{ik}$ indicates if node $i$ is served by vehicle $k$, and $Q$ is capacity.",
+      "For the multi-objective knapsack problem (MOKP): $\\sum_{i=1}^n w_i x_i \\leq W$, where $w_i$ is weight, $x_i \\in \\{0,1\\}$ indicates if item $i$ is selected, and $W$ is capacity."
+    ],
+    "variables": [
+      "$\\boldsymbol{x}$: a decision vector in the discrete space $\\mathcal{X}$, representing a solution (e.g., a tour for TSP, a routing for VRP, or item selection for KP).",
+      "For MOTSP and MOCVRP: $x_{ij} \\in \\{0,1\\}$ for edges between nodes $i$ and $j$.",
+      "For MOKP: $x_i \\in \\{0,1\\}$ for items $i$."
+    ]
+  },
+  "raw_latex_model": "$$\\min_{\\boldsymbol{x} \\in \\mathcal{X}} \\boldsymbol{f}(\\boldsymbol{x}) = (f_1(\\boldsymbol{x}), f_2(\\boldsymbol{x}), \\ldots, f_M(\\boldsymbol{x}))$$ where $\\mathcal{X}$ is defined by problem-specific constraints. For example, for bi-objective TSP with objectives $f_1(\\boldsymbol{x}) = \\sum_{i,j} c_{ij}^1 x_{ij}$ and $f_2(\\boldsymbol{x}) = \\sum_{i,j} c_{ij}^2 x_{ij}$, subject to $\\sum_j x_{ij} = 1 \\ \\forall i$, $\\sum_i x_{ij} = 1 \\ \\forall j$, and subtour elimination constraints.",
+  "algorithm_description": "The paper proposes a neat weight embedding method for neural multi-objective combinatorial optimization. It uses decomposition (e.g., weighted sum scalarization $g_{ws}(\\boldsymbol{x}|\\boldsymbol{\\lambda}) = \\sum_{m=1}^{M} \\lambda_m f_m(\\boldsymbol{x})$) to convert the MOCO problem into scalarized subproblems. Then, neural networks (based on encoder-decoder architectures like POMO) with weight embedding (via addition or conditional attention) are trained using reinforcement learning to learn policies for solving these subproblems, approximating the Pareto set."
+}

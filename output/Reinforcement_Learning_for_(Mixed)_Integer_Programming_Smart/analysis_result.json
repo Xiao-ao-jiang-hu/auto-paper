@@ -1,0 +1,29 @@
+{
+  "paper_id": "Reinforcement_Learning_for_(Mixed)_Integer_Programming_Smart",
+  "title": "Reinforcement Learning for (Mixed) Integer Programming: Smart Feasibility Pump",
+  "abstract": "Mixed integer programming (MIP) is a general optimization technique with various real-world applications. Finding feasible solutions for MIP problems is critical because many successful heuristics rely on a known initial feasible solution. However, it is in general NP-hard. In this work, we propose a deep reinforcement learning (DRL) model that efficiently finds a feasible solution for a general type of MIPs. In particular, we develop a smart feasibility pump (SFP) method empowered by DRL, inspired by Feasibility Pump (FP), a popular heuristic for searching feasible MIP solutions. Numerical experiments on various problem instances show that SFP significantly outperforms the classic FP in terms of the number of steps required to reach the first feasible solution. We consider two different structures for the policy network. The classic perception (MLP) and a novel convolution neural network (CNN) structure. The CNN captures the hidden information of the constraint matrix of the MIP problem and relieves the burden of calculating the projection of the current solution as the input at each time step. This highlights the representational power of the CNN structure.",
+  "problem_description_natural": "The paper addresses the problem of finding a feasible solution to a generic Mixed Integer Linear Program (MILP). The MILP involves minimizing a linear objective function subject to linear inequality constraints and integrality requirements on a subset of variables. The challenge lies in the fact that finding any feasible solution—not necessarily optimal—is NP-hard, especially for large or complex instances. The authors aim to improve upon the classical Feasibility Pump heuristic by replacing its deterministic rounding and projection steps with a learned policy via deep reinforcement learning, thereby reducing the number of iterations needed to reach feasibility.",
+  "problem_type": "MILP",
+  "datasets": [
+    "Generated IP/MIP instances"
+  ],
+  "performance_metrics": [
+    "EpLenMean",
+    "EpLenStd",
+    "EpLenMax",
+    "90 Quant",
+    "10 Quant"
+  ],
+  "lp_model": {
+    "objective": "$\\min c^T x$",
+    "constraints": [
+      "$Ax \\leq b$",
+      "$x_i \\in \\mathbb{Z}, \\forall i \\in I$"
+    ],
+    "variables": [
+      "$x \\in \\mathbb{R}^n$: vector of decision variables, with $x_i$ required to be integer for indices $i \\in I$"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned}\\min \\quad & c^T x \\\\\\text{s.t.} \\quad & Ax \\leq b \\\\& x_i \\in \\mathbb{Z}, \\forall i \\in I\\end{aligned}$$",
+  "algorithm_description": "Smart Feasibility Pump (SFP) is a deep reinforcement learning method inspired by the Feasibility Pump heuristic. It uses actor-critic with proximal policy optimization (PPO) to learn a policy that iteratively updates and rounds solutions to find feasible points for mixed integer programs. Two policy network structures are evaluated: a multi-layer perceptron (SFP-MLP) and a convolutional neural network (SFP-CNN) designed to capture hidden structure in the constraint matrix."
+}

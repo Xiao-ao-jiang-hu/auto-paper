@@ -1,0 +1,40 @@
+{
+  "paper_id": "ScheduleNet_Learn_to_Solve_Multi-agent_Scheduling_Problems_w",
+  "title": "ScheduleNet: Learn to solve multi-agent scheduling problems with reinforcement learning",
+  "abstract": "We propose ScheduleNet, a RL-based real-time scheduler, that can solve various types of multi-agent scheduling problems. We formulate these problems as a semi-MDP with episodic reward (makespan) and learn ScheduleNet, a decentralized decision-making policy that can effectively coordinate multiple agents to complete tasks. The decision making procedure of ScheduleNet includes: (1) representing the state of a scheduling problem with the agent-task graph, (2) extracting node embeddings for agent and tasks nodes, the important relational information among agents and tasks, by employing the type-aware graph attention (TGA), and (3) computing the assignment probability with the computed node embeddings. We validate the effectiveness of ScheduleNet as a general learning-based scheduler for solving various types of multi-agent scheduling tasks, including multiple salesman traveling problem (mTSP) and job shop scheduling problem (JSP).",
+  "problem_description_natural": "The paper addresses multi-agent scheduling problems (mSPs), where the goal is to assign multiple autonomous agents to distributed tasks in a way that minimizes the total completion time (makespan). Examples include coordinating multiple salesmen to visit cities (mTSP) or sequencing operations on machines in manufacturing (JSP). The challenge lies in enabling decentralized, real-time coordination among agents without centralized control, while scaling to large problem instances and directly optimizing the global objective (makespan) using only sparse, delayed rewards.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "mTSPLib",
+    "Taillard's 80",
+    "ORB",
+    "SWV",
+    "FT",
+    "LA",
+    "YN",
+    "random mTSP",
+    "random JSP"
+  ],
+  "performance_metrics": [
+    "makespan",
+    "optimality gap",
+    "normalized makespan",
+    "scheduling performance",
+    "average scheduling gaps"
+  ],
+  "lp_model": {
+    "objective": "$\\min C$ where $C$ is the makespan (total completion time)",
+    "constraints": [
+      "Each city $i$ is visited exactly once: $\\sum_{k=1}^{m} \\sum_{j} x_{ijk} = 1$ for $i = 1,\\ldots,N$",
+      "Each salesman $k$ starts and ends at depot: $\\sum_{j} x_{0jk} = 1$ and $\\sum_{i} x_{i0k} = 1$",
+      "Flow conservation for each salesman: $\\sum_{j} x_{ijk} = \\sum_{j} x_{jik}$ for all $i$ and $k$",
+      "Makespan constraint: $C \\geq \\sum_{i,j} d_{ij} x_{ijk}$ for each $k$"
+    ],
+    "variables": [
+      "$x_{ijk}$: binary variable indicating if salesman $k$ travels from city $i$ to city $j$",
+      "$C$: continuous variable for makespan"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} \\min \\quad & C \\\\ \\text{s.t.} \\quad & \\sum_{k=1}^{m} \\sum_{j} x_{ijk} = 1, \\quad \\forall i = 1,\\ldots,N \\\\ & \\sum_{j} x_{0jk} = 1, \\quad \\forall k \\\\ & \\sum_{i} x_{i0k} = 1, \\quad \\forall k \\\\ & \\sum_{j} x_{ijk} = \\sum_{j} x_{jik}, \\quad \\forall i,k \\\\ & C \\geq \\sum_{i,j} d_{ij} x_{ijk}, \\quad \\forall k \\\\ & x_{ijk} \\in \\{0,1\\}, \\quad \\forall i,j,k \\end{aligned}$$",
+  "algorithm_description": "ScheduleNet uses reinforcement learning with a type-aware graph attention network to learn a decentralized policy for sequentially assigning idle agents to tasks, minimizing the makespan through episodic rewards."
+}

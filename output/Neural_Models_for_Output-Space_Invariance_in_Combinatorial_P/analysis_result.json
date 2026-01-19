@@ -1,0 +1,29 @@
+{
+  "paper_id": "Neural_Models_for_Output-Space_Invariance_in_Combinatorial_P",
+  "title": "Neural Models for Output-Space Invariance in Combinatorial Problems",
+  "abstract": "Recently many neural models have been proposed to solve combinatorial puzzles by implicitly learning underlying constraints using their solved instances, such as sudoku or graph coloring (GCP). One drawback of the proposed architectures, which are often based on Graph Neural Networks (GNN), is that they cannot generalize across the size of the output space from which variables are assigned a value, for example, set of colors in a GCP, or board-size in sudoku. We call the output space for the variables as ‘value-set’. While many works have demonstrated generalization of GNNs across graph size, there has been no study on how to design a GNN for achieving value-set invariance for problems that come from the same domain. For example, learning to solve 16×16 sudoku after being trained on only 9×9 sudokus, or coloring a 7 colorable graph after training on 4 colorable graphs. In this work, we propose novel methods to extend GNN based architectures to achieve value-set invariance. Specifically, our model builds on recently proposed Recurrent Relational Networks (RRN). Our first approach exploits the graph-size invariance of GNNs by converting a multi-class node classification problem into a binary node classification problem. Our second approach works directly with multiple classes by adding multiple nodes corresponding to the values in the value-set, and then connecting variable nodes to value nodes depending on the problem initialization. Our experimental evaluation on three different combinatorial problems demonstrates that both our models perform well on our novel problem, compared to a generic neural reasoner. Between two of our models, we observe an inherent trade-off: while the binarized model gives better performance when trained on smaller value-sets, multi-valued model is much more memory efficient, resulting in improved performance when trained on larger value-sets, where binarized model fails to train.",
+  "problem_description_natural": "The paper addresses the challenge of enabling neural models—specifically Graph Neural Network (GNN)-based architectures like Recurrent Relational Networks (RRNs)—to generalize across different sizes of the output space (called the 'value-set') in combinatorial constraint satisfaction problems (CSPs). Typically, such models are trained on problems with a fixed number of possible values (e.g., 9 colors in Sudoku or graph coloring) and fail when tested on instances requiring a different (usually larger) number of values (e.g., 16×16 Sudoku). The goal is to design neural architectures that can learn from solved instances of a CSP with a value-set of size k and generalize to unseen instances from the same problem family but with a value-set of size k' ≠ k, without explicit access to the underlying logical constraints. The authors frame this as achieving 'value-set invariance' using the concept of Lifted CSPs, which abstractly define families of related CSPs. The optimization task is to predict a complete valid assignment of values to variables given a partial assignment and the problem’s constraint graph, even when the test-time value-set differs from the training one.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "Generated Futoshiki puzzles",
+    "Generated Graph Coloring (GCP) instances",
+    "Palm et al. (2018) 9x9 Sudoku dataset"
+  ],
+  "performance_metrics": [
+    "Board Accuracy",
+    "Pointwise Accuracy"
+  ],
+  "lp_model": {
+    "objective": "$\\min 0$",
+    "constraints": [
+      "$\\sum_{v \\in V} y_{j,v} = 1, \\forall j \\in O$",
+      "$y_{j, x_j} = 1, \\forall j \\in \\bar{O}$, where $\\bar{O} \\subseteq O$ is the set of pre-assigned variables",
+      "For each binary constraint between variables $j$ and $j'$, and for each disallowed value pair $(v,v')$, we have: $y_{j,v} + y_{j',v'} \\le 1$"
+    ],
+    "variables": [
+      "$y_{j,v}$: binary variable indicating whether variable $j \\in O$ is assigned value $v \\in V$"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} & \\min 0 \\\\ & \\text{s.t.} \\\\ & \\sum_{v \\in V} y_{j,v} = 1, \\quad \\forall j \\in O \\\\ & y_{j, x_j} = 1, \\quad \\forall j \\in \\bar{O} \\\\ & y_{j,v} + y_{j',v'} \\le 1, \\quad \\forall \\text{ binary constraints between } j \\text{ and } j', \\forall (v,v') \\text{ disallowed} \\\\ & y_{j,v} \\in \\{0,1\\}, \\quad \\forall j \\in O, v \\in V \\end{aligned}$$",
+  "algorithm_description": "The paper proposes two neural models based on Recurrent Relational Networks (RRNs) to solve constraint satisfaction problems (CSPs) with value-set invariance. The binarized model converts the CSP into a binary graph by creating a binary variable for each (variable, value) pair and uses message passing on this graph to predict assignments. The multi-valued model explicitly introduces value nodes and uses two-stage message passing: first on a relation graph to generate value embeddings, then on a constraint graph to predict variable assignments. Both models are trained on solved instances of CSPs with a fixed value-set and generalize to larger value-sets."
+}

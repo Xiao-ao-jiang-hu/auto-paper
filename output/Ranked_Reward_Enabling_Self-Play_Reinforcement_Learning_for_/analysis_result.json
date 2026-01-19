@@ -1,0 +1,29 @@
+{
+  "paper_id": "Ranked_Reward_Enabling_Self-Play_Reinforcement_Learning_for_",
+  "title": "Ranked Reward: Enabling Self-Play Reinforcement Learning for Combinatorial Optimization",
+  "abstract": "Adversarial self-play in two-player games has delivered impressive results when used with reinforcement learning algorithms that combine deep neural networks and tree search. Algorithms like AlphaZero and Expert Iteration learn tabula rasa, producing highly informative training data on the fly. However, the self-play training strategy is not directly applicable to single-player games. Recently, several practically important combinatorial optimization problems, such as the traveling salesman problem and the bin packing problem, have been reformulated as reinforcement learning problems, increasing the importance of enabling the benefits of self-play beyond two-player games. We present the Ranked Reward (R2) algorithm which accomplishes this by ranking the rewards obtained by a single agent over multiple games to create a relative performance metric. Results from applying the R2 algorithm to instances of a two-dimensional and three-dimensional bin packing problems show that it outperforms generic Monte Carlo tree search, heuristic algorithms and integer programming solvers. We also present an analysis of the ranked reward mechanism, in particular, the effects of problem instances with varying difficulty and different ranking thresholds.",
+  "problem_description_natural": "The paper addresses variants of the bin packing problem (BPP) in two and three dimensions. Instead of minimizing the number of bins used, the objective is to pack all given items into a single bin while minimizing the surface area (in 3D) or perimeter (in 2D) of the smallest enclosing bin that contains all non-overlapping items. Items are cuboid-shaped (or rectangular in 2D), can be rotated in discrete orientations, must be physically supported (center of gravity constraint), and cannot overlap. The problem is formulated as a single-player Markov Decision Process where the agent sequentially places items, and the final reward reflects the quality of the packing solution relative to an ideal compact shape.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "Generated Bin Packing Instances via Cube/Square Splitting"
+  ],
+  "performance_metrics": [
+    "Mean Reward",
+    "Optimality Percentage"
+  ],
+  "lp_model": {
+    "objective": "$\\min C$ where for 3D bin packing, $C = LW + WH + LH$, and for 2D bin packing, $C = W + H$",
+    "constraints": [
+      "Placement inside bin: for each item $i$, $0 \\leq x_i \\leq L - l_i'$, $0 \\leq y_i \\leq W - w_i'$, $0 \\leq z_i \\leq H - h_i'$, where $(l_i', w_i', h_i')$ are dimensions after orientation $o_i$",
+      "Non-overlap: for any two items $i$ and $j$, their placed cuboids (or rectangles in 2D) do not intersect",
+      "Support: each item's center of gravity must be physically supported, implying constraints on placement relative to other items or the bin floor"
+    ],
+    "variables": [
+      "$x_i, y_i, z_i$: placement coordinates for item $i$ (in 3D; for 2D, $z_i$ is omitted)",
+      "$o_i$: orientation of item $i$, with $o_i \\in \\{0,1,2,3,4,5\\}$ for 3D or fewer for 2D",
+      "$L, W, H$: dimensions of the bin to be minimized (for 2D, $H$ is omitted and bin is $(W, H)$)"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned}\\text{Minimize} & \\quad C = \\begin{cases} LW + WH + LH, & \\text{for 3D bin packing} \\\\ W + H, & \\text{for 2D bin packing} \\end{cases} \\\\ \\text{subject to} & \\quad \\text{Placement constraints: } 0 \\leq x_i \\leq L - l_i', \\, 0 \\leq y_i \\leq W - w_i', \\, 0 \\leq z_i \\leq H - h_i' \\quad \\forall i \\in \\{1,\\dots,N\\} \\\\ & \\quad \\text{Non-overlap constraints: } \\text{For all } i \\neq j, \\text{ the items' placed volumes do not overlap} \\\\ & \\quad \\text{Support constraints: } \\text{For each item } i, \\text{ its center of gravity must be supported from below} \\end{aligned}$$",
+  "algorithm_description": "The Ranked Reward (R2) algorithm uses deep reinforcement learning with a neural network for policy and value estimation, Monte Carlo tree search for policy improvement, and a reward ranking mechanism to create a relative performance metric, enabling self-play-like training for single-player combinatorial optimization problems."
+}

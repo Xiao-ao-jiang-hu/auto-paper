@@ -1,0 +1,42 @@
+{
+  "paper_id": "Generalize_Learned_Heuristics_to_Solve_Large-scale_Vehicle_R",
+  "title": "GENERALIZE LEARNED HEURISTICS TO SOLVE LARGE-SCALE VEHICLE ROUTING PROBLEMS IN REAL-TIME",
+  "abstract": "Large-scale Vehicle Routing Problems (VRPs) are widely used in logistics, transportation, supply chain, and robotic systems. Recently, data-driven VRP heuristics are proposed to generate real-time VRP solutions with up to 100 nodes. Despite this progress, current heuristics for large-scale VRPs still face three major challenges: 1) Difficulty in generalizing the heuristics learned on small-scale VRPs to large-scale VRPs without retraining; 2) Challenge in generating real-time solutions for large-scale VRPs; 3) Difficulty in embedding global constraints into learned heuristics. We contribute in the three directions: We propose a Two-stage Divide Method (TAM) to generate sub-route sequence rather than node sequence for generalizing the heuristics learned on small-scale VRPs to solve large-scale VRPs in real-time. A two-step reinforcement learning method with new reward and padding techniques is proposed to train our TAM. A global mask function is proposed to keep the global constraints satisfied when dividing a large-scale VRP into several small-scale Traveling Salesman Problems (TSPs). As result, we can solve the small-scale TSPs in parallel quickly. The experiments on synthetic and real-world large-scale VRPs show our method could generalize the learned heuristics trained on datasets of VRP 100 to solve VRPs with over 5000 nodes in real-time while keeping the solution quality better than data-driven heuristics and competitive with traditional heuristics.",
+  "problem_description_natural": "The paper addresses the Capacitated Vehicle Routing Problem (CVRP) with a constraint on the maximum number of vehicles. Given a depot and a set of customers each with a location and demand, the goal is to find a set of routes that start and end at the depot, such that each customer is visited exactly once, the total demand served by any vehicle does not exceed its capacity, the total number of vehicles used does not exceed a predefined limit, and the total travel distance is minimized. The challenge lies in solving this problem efficiently for very large instances (thousands of customers) in real-time, while leveraging heuristics learned on much smaller instances without retraining.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "CVRP100",
+    "CVRP400",
+    "CVRP1000",
+    "CVRP2000",
+    "CVRP5000",
+    "CVRP7000",
+    "TSP20",
+    "TSP50",
+    "TSP100",
+    "CVRPLIB"
+  ],
+  "performance_metrics": [
+    "Route Length",
+    "Solving Time (seconds)",
+    "Optimality Gap"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\sum_{i \\in V} \\sum_{j \\in V} c_{ij} x_{ij}$",
+    "constraints": [
+      "$\\sum_{j \\in V, j \\neq i} x_{ij} = 1, \\quad \\forall i \\in N$",
+      "$\\sum_{j \\in V, j \\neq i} x_{ji} = 1, \\quad \\forall i \\in N$",
+      "$\\sum_{j \\in N} x_{0j} \\leq l_m$",
+      "$\\sum_{j \\in V} x_{ij} = \\sum_{j \\in V} x_{ji}, \\quad \\forall i \\in V$",
+      "$u_i - u_j + C x_{ij} \\leq C - d_j, \\quad \\forall i,j \\in N, i \\neq j$",
+      "$d_i \\leq u_i \\leq C, \\quad \\forall i \\in N$",
+      "$u_0 = 0$"
+    ],
+    "variables": [
+      "$x_{ij}$: binary decision variable indicating if arc (i,j) is used in the route",
+      "$u_i$: continuous variable representing the load after visiting customer i"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned}\n\\min & \\sum_{i \\in V} \\sum_{j \\in V} c_{ij} x_{ij} \\\\\n\\text{s.t.} & \\sum_{j \\in V, j \\neq i} x_{ij} = 1, \\quad \\forall i \\in N \\\\\n& \\sum_{j \\in V, j \\neq i} x_{ji} = 1, \\quad \\forall i \\in N \\\\\n& \\sum_{j \\in N} x_{0j} \\leq l_m \\\\\n& \\sum_{j \\in V} x_{ij} = \\sum_{j \\in V} x_{ji}, \\quad \\forall i \\in V \\\\\n& u_i - u_j + C x_{ij} \\leq C - d_j, \\quad \\forall i,j \\in N, i \\neq j \\\\\n& d_i \\leq u_i \\leq C, \\quad \\forall i \\in N \\\\\n& u_0 = 0 \\\\\n& x_{ij} \\in \\{0,1\\}, \\quad \\forall i,j \\in V\n\\end{aligned}$$",
+  "algorithm_description": "TAM (Two-stage Divide Method) uses a reinforcement learning-trained sequence-to-sequence model (based on Attention Model) to partition the large-scale CVRP into multiple small-scale TSPs while satisfying constraints via a global mask function. The sub-TSPs are then solved in parallel using traditional heuristics (e.g., LKH3, Ortools) or learned heuristics (e.g., AM)."
+}

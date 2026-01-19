@@ -1,0 +1,37 @@
+{
+  "paper_id": "Learning_to_Run_Heuristics_in_Tree_Search",
+  "title": "Learning to Run Heuristics in Tree Search",
+  "abstract": "“Primal heuristics” are a key contributor to the improved performance of exact branch-and-bound solvers for combinatorial optimization and integer programming. Perhaps the most crucial question concerning primal heuristics is that of at which nodes they should run, to which the typical answer is via hard-coded rules or fixed solver parameters tuned, offline, by trial-and-error. Alternatively, a heuristic should be run when it is most likely to succeed, based on the problem instance’s characteristics, the state of the search, etc. In this work, we study the problem of deciding at which node a heuristic should be run, such that the overall (primal) performance of the solver is optimized. To our knowledge, this is the first attempt at formalizing and systematically addressing this problem. Central to our approach is the use of Machine Learning (ML) for predicting whether a heuristic will succeed at a given node. We give a theoretical framework for analyzing this decision-making process in a simplified setting, propose a ML approach for modeling heuristic success likelihood, and design practical rules that leverage the ML models to dynamically decide whether to run a heuristic at each node of the search tree. Experimentally, our approach improves the primal performance of a state-of-the-art Mixed Integer Programming solver by up to 6% on a set of benchmark instances, and by up to 60% on a family of hard Independent Set instances.",
+  "problem_description_natural": "The paper addresses the problem of dynamically deciding at which nodes of a branch-and-bound search tree a primal heuristic should be executed to optimize the solver's primal performance—i.e., the speed and quality with which feasible solutions are found. Instead of using static, hard-coded rules for heuristic invocation, the authors propose a machine learning-based approach that predicts the likelihood of a heuristic succeeding at a given node, based on features of the problem instance and the current search state. The goal is to minimize the primal integral—a performance metric that captures both how quickly good feasible solutions are found and how their quality improves over time—by selecting the best subset of nodes at which to run the heuristic during the search.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "MIPLIB2010 Benchmark",
+    "Generalized Independent Set Problem (GISP) instances from DIMACS Challenge 1993"
+  ],
+  "performance_metrics": [
+    "Primal Integral",
+    "Time to first incumbent",
+    "Time to best incumbent",
+    "Success Rate",
+    "Number of incumbents per hour second",
+    "Primal-dual Integral",
+    "Precision",
+    "Recall",
+    "AUC-ROC"
+  ],
+  "lp_model": {
+    "objective": "$\\max \\sum_{v \\in V} r_v x_v - \\sum_{e \\in E'} c_e y_e$",
+    "constraints": [
+      "$x_u + x_v \\leq 1 \\quad \\forall (u,v) \\in E \\setminus E'$",
+      "$x_u + x_v \\leq 1 + y_{(u,v)} \\quad \\forall (u,v) \\in E'$",
+      "$x_v \\in \\{0,1\\} \\quad \\forall v \\in V$",
+      "$y_e \\in \\{0,1\\} \\quad \\forall e \\in E'$"
+    ],
+    "variables": [
+      "$x_v$: binary decision variable indicating if vertex $v$ is selected",
+      "$y_e$: binary decision variable indicating if removable edge $e$ is removed"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} \\text{Maximize} & \\quad \\sum_{v \\in V} r_v x_v - \\sum_{e \\in E'} c_e y_e \\\\ \\text{Subject to} & \\quad x_u + x_v \\leq 1 \\quad \\forall (u,v) \\in E \\setminus E' \\\\ & \\quad x_u + x_v \\leq 1 + y_{(u,v)} \\quad \\forall (u,v) \\in E' \\\\ & \\quad x_v \\in \\{0,1\\} \\quad \\forall v \\in V \\\\ & \\quad y_e \\in \\{0,1\\} \\quad \\forall e \\in E' \\end{aligned}$$",
+  "algorithm_description": "The paper proposes a machine learning approach to dynamically decide when to run primal heuristics during branch-and-bound tree search for Mixed Integer Programming (MIP). It uses logistic regression to learn a binary classifier that predicts whether a heuristic will find an incumbent solution at a given node, based on features describing the node, instance, and search state. The learned model serves as a success oracle, which is combined with the Run-When-Successful rule to run heuristics only when they are predicted to succeed, optimizing the primal integral performance measure."
+}

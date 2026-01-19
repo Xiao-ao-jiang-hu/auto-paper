@@ -1,0 +1,33 @@
+{
+  "paper_id": "Large-Scale_Differentiable_Causal_Discovery_of_Factor_Graphs",
+  "title": "Large-Scale Differentiable Causal Discovery of Factor Graphs",
+  "abstract": "A common theme in causal inference is learning causal relationships between observed variables, also known as causal discovery. This is usually a daunting task, given the large number of candidate causal graphs and the combinatorial nature of the search space. Perhaps for this reason, most research has so far focused on relatively small causal graphs, with up to hundreds of nodes. However, recent advances in fields like biology enable generating experimental data sets with thousands of interventions followed by rich profiling of thousands of variables, raising the opportunity and urgent need for large causal graph models. Here, we introduce the notion of factor directed acyclic graphs ($f$-DAGs) as a way to restrict the search space to non-linear low-rank causal interaction models. Combining this novel structural assumption with recent advances that bridge the gap between causal discovery and continuous optimization, we achieve causal discovery on thousands of variables. Additionally, as a model for the impact of statistical noise on this estimation procedure, we study a model of edge perturbations of the $f$-DAG skeleton based on random graphs and quantify the effect of such perturbations on the $f$-DAG rank. This theoretical analysis suggests that the set of candidate $f$-DAGs is much smaller than the whole DAG space and thus may be more suitable as a search space in the high-dimensional regime where the underlying skeleton is hard to assess. We propose Differentiable Causal Discovery of Factor Graphs (DCD-FG), a scalable implementation of $f$-DAG constrained causal discovery for high-dimensional interventional data. DCD-FG uses a Gaussian non-linear low-rank structural equation model and shows significant improvements compared to state-of-the-art methods in both simulations as well as a recent large-scale single-cell RNA sequencing data set with hundreds of genetic interventions.",
+  "problem_description_natural": "The paper addresses the problem of causal discovery in high-dimensional settings with thousands of variables and interventions. The core optimization problem involves learning a causal directed acyclic graph (DAG) that best explains observed interventional data under a non-linear, low-rank structural assumption. Specifically, the authors constrain the search space to factor directed acyclic graphs (f-DAGs), which are induced by bipartite factor graphs with a small number of latent factors. This reduces the effective complexity of the model by assuming shared parent-child structures among variables. The method, DCD-FG, optimizes a differentiable loss combining a Gaussian non-linear structural equation model likelihood with a novel acyclicity constraint that exploits the low-rank factorization to achieve linear complexity in the number of variables. The goal is to recover the causal structure (i.e., the adjacency matrix of the DAG) while remaining scalable to thousands of nodes and millions of samples.",
+  "problem_type": "continuous optimization with non-convex constraints (differentiable causal discovery)",
+  "datasets": [
+    "Generated ER Graphs",
+    "Perturb-CITE-seq"
+  ],
+  "performance_metrics": [
+    "Interventional NLL",
+    "Structural Hamming Distance",
+    "Precision",
+    "Recall",
+    "F1-score",
+    "Mean Absolute Error"
+  ],
+  "lp_model": {
+    "objective": "$\\max_{\\Phi,\\Theta} \\mathcal{S}(\\Phi, \\Theta)$",
+    "constraints": [
+      "$\\mathcal{C}(\\mathbb{E}[\\mathbf{M}(\\Phi)]) = 0$",
+      "$\\mathbf{M}(\\Phi) = [\\mathbf{U}(\\Phi), \\mathbf{V}(\\Phi)]$ where $\\mathbf{U} \\in [0,1]^{d \\times m}$, $\\mathbf{V} \\in [0,1]^{m \\times d}$",
+      "The induced half-square graph over variables $G = G_f^2[V]$ must be acyclic"
+    ],
+    "variables": [
+      "$\\Phi$: parameters of the Gumbel-softmax distribution over factor graph adjacency matrices $\\mathbf{U}$ and $\\mathbf{V}$",
+      "$\\Theta$: parameters of the conditional distributions (neural network weights for factor variables and linear weights for variable distributions)"
+    ]
+  },
+  "raw_latex_model": "$$\\max_{\\Phi,\\Theta} \\mathcal{S}(\\Phi, \\Theta) \\quad \\text{subject to} \\quad \\mathcal{C}(\\mathbb{E}[\\mathbf{M}(\\Phi)]) = 0,$$ where $$\\mathcal{S}(\\Phi, \\Theta)=\\mathbb{E}_{\\mathbf{M}^{\\prime} \\sim \\mathbf{M}(\\Phi)}\\left[\\sum_{k=1}^{K} \\mathbb{E}_{X \\sim P_{\\text {data }}^{(k)}} \\sum_{j \\notin \\mathcal{I}_{k}} \\log p_{\\Theta}^{j}\\left(X_{j} ; \\mathbf{M}_{j}^{\\prime}, X_{-j}\\right)\\right]-\\lambda\\left\\|\\mathbb{E}\\left[\\mathbf{M}(\\Phi)\\right]\\right\\|_{1},$$ and $\\mathcal{C}$ is an acyclicity constraint (e.g., $\\operatorname{Tr} \\exp\\{\\mathbb{E}[\\mathbf{V}] \\mathbb{E}[\\mathbf{U}]\\} = m$ or $\\rho(\\mathbb{E}[\\mathbf{V}] \\mathbb{E}[\\mathbf{U}]) = 0$).",
+  "algorithm_description": "DCD-FG uses a continuous relaxation of the combinatorial problem, parameterizing the factor graph adjacency matrices with a correlated Gumbel-softmax distribution to avoid self-loops. It employs a hybrid likelihood model where factor variables are computed by MLPs and variable distributions are linear in the factor variables. The optimization is performed using the augmented Lagrangian method with gradient-based updates, and the acyclicity constraint is enforced via either the trace exponential or spectral radius penalty applied to the expected adjacency matrix of the half-square graph over factors."
+}

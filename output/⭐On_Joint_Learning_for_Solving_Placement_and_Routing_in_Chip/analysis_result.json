@@ -1,0 +1,30 @@
+{
+  "paper_id": "⭐On_Joint_Learning_for_Solving_Placement_and_Routing_in_Chip",
+  "title": "On Joint Learning for Solving Placement and Routing in Chip Design",
+  "abstract": "Machine learning, particularly reinforcement learning, is emerging as a powerful tool for tackling placement and routing—two critical and interdependent stages in chip design. This paper introduces DeepPlace, an end-to-end joint learning method for placing both macros and standard cells by combining reinforcement learning with gradient-based optimization. It also proposes DeepPR, a novel approach that jointly addresses macro placement and routing through reinforcement learning. A key innovation is a multi-view embedding model that integrates global (CNN-based) and local node-level (GNN-based) representations of the netlist, along with random network distillation to promote exploration. Experiments on public benchmarks demonstrate that the methods learn effectively within hours and outperform traditional separate placement and routing pipelines.",
+  "problem_description_natural": "The paper addresses the integrated circuit (IC) placement and routing problems. Placement involves assigning physical locations on a chip canvas to circuit components—macros (large functional blocks like SRAMs) and standard cells (basic logic gates)—to minimize power, performance, and area (PPA) metrics while satisfying constraints like density and routability. Routing then connects these placed components with wires, aiming to minimize total wirelength without violating routing resource limits. The core challenge is to jointly optimize macro placement, standard cell placement, and routing in an end-to-end learning framework, where decisions in placement directly impact routing quality. The objective combines wirelength (approximated by HPWL) and routing congestion (approximated by RUDY) into a reward signal for reinforcement learning.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "ISPD-2005"
+  ],
+  "performance_metrics": [
+    "Wirelength",
+    "Routing Congestion",
+    "Runtime",
+    "Design Density"
+  ],
+  "lp_model": {
+    "objective": "$ \\min \\left( \\sum_{i \\in E} HPWL(n_i) + \\lambda \\cdot Congestion(P, H) \\right) $",
+    "constraints": [
+      "$ \\sum_{x,y} a_{m,x,y} = 1 \\quad \\forall m \\in M $",
+      "$ \\sum_{m} a_{m,x,y} \\leq 1 \\quad \\forall x,y \\in \\{1,\\ldots,n\\} $",
+      "$ x_v, y_v \\in \\mathbb{R} \\quad \\forall v \\in S $ (for standard cells, positions are continuous and determined by gradient optimization)"
+    ],
+    "variables": [
+      "$ a_{m,x,y} \\in \\{0,1\\} $: binary variable indicating if macro $ m $ is placed at grid position $ (x,y) $",
+      "$ (x_v, y_v) $: position of node $ v $, where for macros $ v \\in M $, $ x_v, y_v $ are integers derived from $ a_{m,x,y} $, and for standard cells $ v \\in S $, $ x_v, y_v $ are real numbers"
+    ]
+  },
+  "raw_latex_model": "$$ \\begin{aligned} \\text{Minimize:} & \\quad \\sum_{i \\in E} HPWL(n_i) + \\lambda \\cdot Congestion(P, H) \\\\ \\text{where} & \\quad HPWL(n_i) = (\\max_{v \\in n_i} x_v - \\min_{v \\in n_i} x_v + 1) + (\\max_{v \\in n_i} y_v - \\min_{v \\in n_i} y_v + 1) \\\\ \\text{and} & \\quad Congestion(P, H) \\text{ is calculated using Rectangular Uniform wire Density (RUDY)}. \\\\ \\text{Subject to:} & \\quad \\sum_{x,y} a_{m,x,y} = 1 \\quad \\forall m \\in M \\\\ & \\quad \\sum_{m} a_{m,x,y} \\leq 1 \\quad \\forall x,y \\in \\{1,\\ldots,n\\} \\\\ & \\quad \\text{Positions for standard cells are optimized via gradient-based methods with density constraints.} \\end{aligned} $$",
+  "algorithm_description": "The paper proposes joint learning methods: DeepPlace uses reinforcement learning (RL) with Proximal Policy Optimization (PPO) for macro placement, combined with gradient-based optimization (DREAMPlace) for standard cell placement. DeepPR extends this to joint placement and routing via RL, employing a multi-view embedding model (CNN and GNN) and random network distillation for exploration."
+}

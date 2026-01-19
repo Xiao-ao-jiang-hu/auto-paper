@@ -1,0 +1,33 @@
+{
+  "paper_id": "Learning_to_Dispatch_for_Job_Shop_Scheduling_via_Deep_Reinfo",
+  "title": "Learning to Dispatch for Job Shop Scheduling via Deep Reinforcement Learning",
+  "abstract": "Priority dispatching rule (PDR) is widely used for solving real-world Job-shop scheduling problem (JSSP). However, the design of effective PDRs is a tedious task, requiring a myriad of specialized knowledge and often delivering limited performance. In this paper, we propose to automatically learn PDRs via an end-to-end deep reinforcement learning agent. We exploit the disjunctive graph representation of JSSP, and propose a Graph Neural Network based scheme to embed the states encountered during solving. The resulting policy network is size-agnostic, effectively enabling generalization on large-scale instances. Experiments show that the agent can learn high-quality PDRs from scratch with elementary raw features, and demonstrates strong performance against the best existing PDRs. The learned policies also perform well on much larger instances that are unseen in training.",
+  "problem_description_natural": "The Job-shop Scheduling Problem (JSSP) involves scheduling a set of jobs on a set of machines, where each job consists of a sequence of operations that must be processed in a fixed order on specific machines. Each machine can process only one operation at a time, and preemption is not allowed. The goal is to assign start times to all operations such that all precedence and machine capacity constraints are satisfied, and the makespan (i.e., the total completion time of the last operation) is minimized. This problem is NP-hard and commonly addressed using heuristics like Priority Dispatching Rules (PDRs), which prioritize eligible operations at each decision step. The paper aims to automate the design of effective PDRs using deep reinforcement learning.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "Taillard",
+    "DMU",
+    "Generated Taillard-style instances"
+  ],
+  "performance_metrics": [
+    "Makespan (C_max)",
+    "Optimality Gap (%)",
+    "Computational Time (seconds)",
+    "Optimality Rate (%)"
+  ],
+  "lp_model": {
+    "objective": "$\\min C_{\\max}$",
+    "constraints": [
+      "$C_{\\max} \\geq S_{ij} + p_{ij} \\quad \\forall i,j$",
+      "$S_{i,j} \\geq S_{i,j-1} + p_{i,j-1} \\quad \\forall i, j > 1$",
+      "For all operations $O_{ij}$ and $O_{kl}$ requiring the same machine $m$ (i.e., $m_{ij} = m_{kl}$), $S_{ij} \\geq S_{kl} + p_{kl}$ or $S_{kl} \\geq S_{ij} + p_{ij}$",
+      "$S_{ij} \\geq 0 \\quad \\forall i,j$"
+    ],
+    "variables": [
+      "$S_{ij}$: starting time of operation $O_{ij}$ of job $i$ and step $j$",
+      "$C_{\\max}$: makespan, defined as the maximum completion time $\\max_{i,j} (S_{ij} + p_{ij})$"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} \\text{minimize} \\quad & C_{\\max} \\\\ \\text{subject to} \\quad & C_{\\max} \\geq S_{ij} + p_{ij} \\quad \\forall i,j \\\\ & S_{i,j} \\geq S_{i,j-1} + p_{i,j-1} \\quad \\forall i, j > 1 \\\\ & S_{ij} \\geq S_{kl} + p_{kl} \\quad \\text{or} \\quad S_{kl} \\geq S_{ij} + p_{ij} \\quad \\forall i,j,k,l \\text{ with } m_{ij} = m_{kl} \\\\ & S_{ij} \\geq 0 \\quad \\forall i,j \\end{aligned}$$",
+  "algorithm_description": "The paper proposes a Deep Reinforcement Learning (DRL) method to automatically learn priority dispatching rules (PDRs) for Job Shop Scheduling. It formulates the scheduling process as a Markov Decision Process (MDP) where states are represented as disjunctive graphs, actions are selecting eligible operations to dispatch, and rewards are based on the reduction in the lower bound of makespan. A Graph Neural Network (GNN) based policy network is used to embed the disjunctive graph states and output action probabilities. The policy is trained end-to-end using the Proximal Policy Optimization (PPO) algorithm to minimize makespan."
+}

@@ -1,0 +1,30 @@
+{
+  "paper_id": "Position_Rethinking_Post-Hoc_Search-Based_Neural_Approaches_",
+  "title": "Rethinking Post-Hoc Search-Based Neural Approaches for Solving Large-Scale Traveling Salesman Problems",
+  "abstract": "Recent advancements in solving large-scale traveling salesman problems (TSP) utilize the heatmap-guided Monte Carlo tree search (MCTS) paradigm, where machine learning (ML) models generate heatmaps indicating the probability distribution of each edge being part of the optimal solution to guide MCTS. However, this paper raises theoretical and experimental doubts about the effectiveness of ML-based heatmap generation, demonstrating that a simple baseline method (SoftDist) can outperform complex ML approaches. The authors also question the practical value of the heatmap-guided MCTS paradigm, showing its inferiority to the LKH-3 heuristic despite using problem-specific strategies. They advocate for more theoretically sound heatmap generation methods and autonomous, generalizable ML approaches for combinatorial optimization.",
+  "problem_description_natural": "The paper addresses the 2D Euclidean Traveling Salesman Problem (TSP), where given n cities represented as points in the unit square [0,1]^2, the goal is to find the shortest possible tour that visits each city exactly once and returns to the starting city. Recent neural approaches do not directly output a tour but instead produce a heatmap—a matrix assigning probabilities or scores to edges—intended to guide a post-hoc search algorithm like Monte Carlo Tree Search (MCTS) to construct high-quality tours. The core issue examined is whether current ML-based heatmap generation methods are effective and well-aligned with the ultimate TSP objective, especially compared to classical heuristics like LKH-3.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "TSP-500",
+    "TSP-1000",
+    "TSP-10000"
+  ],
+  "performance_metrics": [
+    "Length",
+    "Gap",
+    "Time",
+    "Score"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\sum_{i \\neq j} d_{ij} x_{ij}$",
+    "constraints": [
+      "$\\sum_{j \\neq i} x_{ij} = 2$ for all $i \\in V$",
+      "$\\sum_{i \\in S, j \\notin S} x_{ij} \\geq 2$ for all $S \\subset V, S \\neq \\emptyset, V$"
+    ],
+    "variables": [
+      "$x_{ij} \\in \\{0,1\\}$ for $i,j \\in V, i \\neq j$: binary decision variable indicating if edge $(i,j)$ is included in the tour"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} \\text{Minimize} & \\quad \\sum_{i \\neq j} d_{ij} x_{ij} \\\\ \\text{Subject to} & \\quad \\sum_{j \\neq i} x_{ij} = 2 \\quad \\forall i \\in V \\\\ & \\quad \\sum_{i \\in S, j \\notin S} x_{ij} \\geq 2 \\quad \\forall S \\subset V, S \\neq \\emptyset, V \\\\ & \\quad x_{ij} \\in \\{0,1\\} \\quad \\forall i,j \\in V, i \\neq j \\end{aligned}$$",
+  "algorithm_description": "The paper uses heatmap-guided Monte Carlo Tree Search (MCTS) to solve large-scale TSP instances. Heatmaps, which assign probabilities to edges being part of the optimal solution, are generated using machine learning models (supervised, unsupervised, or reinforcement learning) or the proposed SoftDist method that applies softmax to the distance matrix. MCTS then utilizes these heatmaps as priors to guide the search for optimal tours through k-opt operations."
+}

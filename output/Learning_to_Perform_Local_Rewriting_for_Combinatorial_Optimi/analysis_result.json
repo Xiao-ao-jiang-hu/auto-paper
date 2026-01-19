@@ -1,0 +1,35 @@
+{
+  "paper_id": "Learning_to_Perform_Local_Rewriting_for_Combinatorial_Optimi",
+  "title": "Learning to Perform Local Rewriting for Combinatorial Optimization",
+  "abstract": "Search-based methods for hard combinatorial optimization are often guided by heuristics. Tuning heuristics in various conditions and situations is often time-consuming. In this paper, we propose NeuRewriter that learns a policy to pick heuristics and rewrite the local components of the current solution to iteratively improve it until convergence. The policy factorizes into a region-picking and a rule-picking component, each parameterized by a neural network trained with actor-critic methods in reinforcement learning. NeuRewriter captures the general structure of combinatorial problems and shows strong performance in three versatile tasks: expression simplification, online job scheduling and vehicle routing problems. NeuRewriter outperforms the expression simplification component in Z3; outperforms DeepRM and Google OR-tools in online job scheduling; and outperforms recent neural baselines and Google OR-tools in vehicle routing problems.",
+  "problem_description_natural": "The paper addresses combinatorial optimization problems by iteratively improving an initial feasible solution through local rewriting operations. Instead of constructing solutions from scratch or relying on manually tuned heuristics, the proposed method—NeuRewriter—learns a policy using reinforcement learning to select which part of the current solution (region) to modify and which rewriting rule to apply. This approach is applied to three domains: (1) expression simplification, where the goal is to minimize expression length while preserving semantics; (2) online job scheduling, aiming to reduce total job waiting time under resource constraints; and (3) vehicle routing, seeking to minimize total tour length. In each case, the method starts with a complete (possibly suboptimal) solution and applies learned local transformations to converge to a better solution.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "Halide expressions dataset",
+    "Generated job scheduling sequences",
+    "Generated vehicle routing problems"
+  ],
+  "performance_metrics": [
+    "Average expression length reduction",
+    "Average tree size reduction",
+    "Average job slowdown",
+    "Total tour length"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\sum_{i=0}^n \\sum_{j=0}^n d_{ij} x_{ij}$",
+    "constraints": [
+      "$\\sum_{j=1}^n x_{0j} = \\sum_{j=1}^n x_{j0}$",
+      "$\\sum_{j=0}^n x_{ij} = 1$ for each customer $i=1,\\ldots,n$",
+      "$\\sum_{i=0}^n x_{ij} = 1$ for each customer $j=1,\\ldots,n$",
+      "$u_i - u_j + Q x_{ij} \\le Q - \\delta_j$ for $i,j=1,\\ldots,n, i\\neq j$",
+      "$\\delta_i \\le u_i \\le Q$ for $i=1,\\ldots,n$",
+      "$x_{ij} \\in \\{0,1\\}$"
+    ],
+    "variables": [
+      "$x_{ij}$: binary variable indicating if the vehicle travels from node $i$ to node $j$",
+      "$u_i$: continuous variable representing the load of the vehicle after visiting node $i$"
+    ]
+  },
+  "raw_latex_model": "$$\\min \\sum_{i=0}^n \\sum_{j=0}^n d_{ij} x_{ij}$$ subject to $$\\sum_{j=1}^n x_{0j} = \\sum_{j=1}^n x_{j0}$$ $$\\sum_{j=0}^n x_{ij} = 1 \\quad \\forall i=1,\\ldots,n$$ $$\\sum_{i=0}^n x_{ij} = 1 \\quad \\forall j=1,\\ldots,n$$ $$u_i - u_j + Q x_{ij} \\le Q - \\delta_j \\quad \\forall i,j=1,\\ldots,n, i\\neq j$$ $$\\delta_i \\le u_i \\le Q \\quad \\forall i=1,\\ldots,n$$ $$x_{ij} \\in \\{0,1\\}$$",
+  "algorithm_description": "NeuRewriter: a neural network policy trained with reinforcement learning (actor-critic) to iteratively improve an existing solution by selecting a region (via a region-picking policy) and a rewriting rule (via a rule-picking policy) to apply locally until convergence. Applied to Capacitated VRP, online job scheduling, and expression simplification."
+}

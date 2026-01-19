@@ -1,0 +1,20 @@
+{
+  "paper_id": "Graph_neural_reasoning_may_fail_in_certifying_boolean_unsati",
+  "title": "Graph Neural Reasoning May Fail in Certifying Boolean Unsatisfiability",
+  "abstract": "It is feasible and practically-valuable to bridge the characteristics between graph neural networks (GNNs) and logical reasoning. Despite considerable efforts and successes witnessed to solve Boolean satisfiability (SAT), it remains a mystery of GNN-based solvers for more complex predicate logic formulae. In this work, we conjecture with some evidences, that generally-defined GNNs present several limitations to certify the unsatisfiability (UNSAT) in Boolean formulae. It implies that GNNs may probably fail in learning the logical reasoning tasks if they contain proving UNSAT as the sub-problem included by most predicate logic formulae.",
+  "problem_description_natural": "The paper investigates whether Graph Neural Networks (GNNs) can effectively learn to solve logical reasoning tasks that require proving Boolean unsatisfiability (UNSAT). While GNNs have shown success in predicting satisfiability (SAT) by simulating local search heuristics like WalkSAT, they struggle with UNSAT certification because complete SAT solvers (e.g., DPLL, CDCL) rely on recursive procedures that dynamically modify the formula structure—something GNNs cannot simulate due to their fixed message-passing architecture over a static graph representation of the input CNF formula. The core issue is that GNNs operate on a fixed bipartite graph derived from the original formula and cannot emulate the adaptive clause elimination or formula reconfiguration inherent in complete proof systems for UNSAT.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [],
+  "performance_metrics": [],
+  "lp_model": {
+    "objective": "$\\min 0$ (feasibility problem to find a satisfying assignment)",
+    "constraints": [
+      "$\\forall j = 1, \\ldots, m, \\quad \\sum_{l \\in C_j} f(l) \\geq 1$ where $f(l) = x_i$ if $l = x_i$ and $f(l) = 1 - x_i$ if $l = \\neg x_i$"
+    ],
+    "variables": [
+      "$x_i \\in \\{0,1\\}$ for $i = 1, \\ldots, n$: binary decision variable representing the truth assignment to Boolean variable $i$, with $x_i = 1$ if true and $0$ if false"
+    ]
+  },
+  "raw_latex_model": "$$ \\text{Given a CNF formula } \\Phi \\text{ with clauses } C_1, C_2, \\ldots, C_m \\text{ over Boolean variables } x_1, x_2, \\ldots, x_n, $$ $$ \\text{find an assignment } x_i \\in \\{0,1\\} \\text{ for } i = 1, \\ldots, n \\text{ such that:} $$ $$ \\forall j = 1, \\ldots, m, \\quad \\sum_{l \\in C_j} f(l) \\geq 1 $$ $$ \\text{where } f(l) = \\begin{cases} x_i & \\text{if } l = x_i \\\\ 1 - x_i & \\text{if } l = \\neg x_i \\end{cases} $$",
+  "algorithm_description": "Graph Neural Networks (GNNs) are used to learn embeddings of Conjunctive Normal Form (CNF) formulas represented as bipartite graphs, where nodes correspond to literals and clauses. The GNNs perform message-passing to predict the satisfiability or unsatisfiability of the Boolean formula, with a focus on understanding their limitations in certifying unsatisfiability."
+}

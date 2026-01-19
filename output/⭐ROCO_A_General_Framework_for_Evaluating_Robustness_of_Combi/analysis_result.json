@@ -1,0 +1,30 @@
+{
+  "paper_id": "⭐ROCO_A_General_Framework_for_Evaluating_Robustness_of_Combi",
+  "title": "ROCO: A GENERAL FRAMEWORK FOR EVALUATING ROBUSTNESS OF COMBINATORIAL OPTIMIZATION SOLVERS ON GRAPHS",
+  "abstract": "Solving combinatorial optimization (CO) on graphs has been attracting increasing interests from the machine learning community whereby data-driven approaches were recently devised to go beyond traditional manually-designated algorithms. In this paper, we study the robustness of a combinatorial solver as a blackbox regardless it is classic or learning-based though the latter can often be more interesting to the ML community. Specifically, we develop a practically feasible robustness metric for general CO solvers. A no-worse optimal cost guarantee is developed as such the optimal solutions are not required to achieve for solvers, and we tackle the non-differentiable challenge in input instance disturbance by resorting to black-box adversarial attack methods. Extensive experiments are conducted on 14 unique combinations of solvers and CO problems, and we demonstrate that the performance of state-of-the-art solvers like Gurobi can degenerate by over 20% under the given time limit bound on the hard instances discovered by our robustness metric, raising concerns about the robustness of combinatorial optimization solvers.",
+  "problem_description_natural": "The paper addresses the evaluation of robustness in combinatorial optimization (CO) solvers applied to graph-structured problems. Instead of solving a specific CO problem, the authors propose a framework (ROCO) to assess how sensitive solvers are to small, structured perturbations of the input problem instances. The perturbations—implemented as edge modifications in the underlying graph—are designed to preserve or improve the optimal objective value ('no-worse optimal cost' guarantee) while degrading the solver's performance. This allows measuring robustness without requiring access to true optimal solutions, which are typically intractable for NP-hard problems. The approach treats solvers as black boxes and uses reinforcement learning or other search methods to generate hard instances that expose solver vulnerabilities.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "TPC-H",
+    "tmat",
+    "ORLIB"
+  ],
+  "performance_metrics": [
+    "Makespan",
+    "Tour Length",
+    "Covered Weight",
+    "Robustness Ratio"
+  ],
+  "lp_model": {
+    "objective": "$\\max \\sum_{e \\in \\mathcal{E}} w(e) \\cdot \\mathbb{I}(e \\in \\bigcup_{S_i \\in \\mathcal{S}'} S_i)$",
+    "constraints": [
+      "$\\mathcal{S}' \\subseteq \\mathcal{S}$",
+      "$|\\mathcal{S}'| \\leq k$"
+    ],
+    "variables": [
+      "$\\mathcal{S}'$: a subset of the sets $\\mathcal{S} = \\{S_1, S_2, ..., S_m\\}$ to be selected, often represented with binary variables $x_i$ where $x_i = 1$ if $S_i \\in \\mathcal{S}'$ and $0$ otherwise."
+    ]
+  },
+  "raw_latex_model": "$$\\max_{\\mathcal{S}'} \\sum_{e \\in \\mathcal{E}} w(e) \\times \\mathbb{I}(e \\in \\bigcup_{S_i \\in \\mathcal{S}'} S_i) \\quad s.t. \\quad \\mathcal{S}' \\subseteq \\mathcal{S},\\ |\\mathcal{S}'| \\leq k$$",
+  "algorithm_description": "The Maximum Coverage problem is solved using a greedy algorithm with an approximation ratio of $(1-1/e)$ and integer linear programming solvers such as Gurobi, SCIP, and CBC under time limits, as part of robustness evaluation in the ROCO framework."
+}

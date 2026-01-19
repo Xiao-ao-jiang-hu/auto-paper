@@ -1,0 +1,28 @@
+{
+  "paper_id": "Sym-NCO_Leveraging_Symmetricity_for_Neural_Combinatorial_Opt",
+  "title": "Sym-NCO: Leveraging Symmetricity for Neural Combinatorial Optimization",
+  "abstract": "Deep reinforcement learning (DRL)-based combinatorial optimization (CO) methods (i.e., DRL-NCO) have shown significant merit over the conventional CO solvers as DRL-NCO is capable of learning CO solvers less relying on problem-specific expert domain knowledge (heuristic method) and supervised labeled data (supervised learning method). This paper presents a novel training scheme, Sym-NCO, which is a regularizer-based training scheme that leverages universal symmetries in various CO problems and solutions. Leveraging symmetries such as rotational and reflectional invariance can greatly improve the generalization capability of DRL-NCO because it allows the learned solver to exploit the commonly shared symmetries in the same CO problem class. Our experimental results verify that our Sym-NCO greatly improves the performance of DRL-NCO methods in four CO tasks, including the traveling salesman problem (TSP), capacitated vehicle routing problem (CVRP), prize collecting TSP (PCTSP), and orienteering problem (OP), without utilizing problem-specific expert domain knowledge. Remarkably, Sym-NCO outperformed not only the existing DRL-NCO methods but also a competitive conventional solver, the iterative local search (ILS), in PCTSP at 240× faster speed.",
+  "problem_description_natural": "The paper addresses the challenge of solving combinatorial optimization problems (COPs) using deep reinforcement learning (DRL). Specifically, it focuses on improving the generalization and performance of neural combinatorial optimization (NCO) solvers by leveraging inherent symmetries—such as rotational and reflectional invariance—that are common across many COPs defined on Euclidean graphs. The approach does not rely on problem-specific heuristics or supervised labels, and instead uses symmetry-aware regularization during training to encourage the model to produce consistent, high-quality solutions across symmetric variants of the same problem instance. The method is evaluated on four well-known routing problems: the Traveling Salesman Problem (TSP), Capacitated Vehicle Routing Problem (CVRP), Prize Collecting TSP (PCTSP), and Orienteering Problem (OP).",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "TSPLIB",
+    "benchmark dataset [21]"
+  ],
+  "performance_metrics": [
+    "Average cost",
+    "Gap",
+    "Time",
+    "Optimality gap"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\sum_{i=1}^{N-1} \\|x_{\\pi_i} - x_{\\pi_{i+1}}\\| + \\|x_{\\pi_N} - x_{\\pi_1}\\|$",
+    "constraints": [
+      "$\\pi$ is a permutation of $\\{1, \\dots, N\\}$"
+    ],
+    "variables": [
+      "$\\pi_i$: index of the $i$-th city visited in the tour, $\\pi_i \\in \\{1, \\dots, N\\}$"
+    ]
+  },
+  "raw_latex_model": "$$\\min_{\\pi \\in \\Pi_N} \\left( \\sum_{i=1}^{N-1} \\|x_{\\pi_i} - x_{\\pi_{i+1}}\\| + \\|x_{\\pi_N} - x_{\\pi_1}\\| \\right)$$ where $\\Pi_N$ is the set of all permutations of $\\{1, \\dots, N\\}$.",
+  "algorithm_description": "Sym-NCO is a regularization-based training scheme for deep reinforcement learning-based neural combinatorial optimization (DRL-NCO) methods. It leverages problem symmetries (e.g., rotational invariance) and solution symmetries by designing a REINFORCE algorithm with baselines that encourage symmetric solutions. It also includes an invariant representation loss. The method is applied to existing DRL-NCO models such as POMO and AM to improve their performance on various combinatorial optimization problems including TSP, CVRP, PCTSP, and OP."
+}

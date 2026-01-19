@@ -1,0 +1,26 @@
+{
+  "paper_id": "Online_Bayesian_Moment_Matching_based_SAT_Solver_Heuristics",
+  "title": "Online Bayesian Moment Matching based SAT Solver Heuristics",
+  "abstract": "In this paper, we present a Bayesian Moment Matching (BMM) based method aimed at solving the initialization problem in Boolean SAT solvers. The initialization problem can be stated as follows: given a SAT formula φ, compute an initial order over the variables of φ and values/polarity for these variables such that the run-time of SAT solvers on input φ is minimized. At the start of a solver run, our BMM-based methods compute a posterior probability distribution for an assignment to the variables of the input formula after analyzing the clauses, which will then be used by the solver to initialize its search. We perform extensive experiments to evaluate the efficacy of our BMM-based heuristic against 4 other initialization methods (random, survey propagation, Jeroslav-Wang, and default) in state-of-the-art solvers, MapleCOMSPS and MapleLCMDistChronoBT over the SAT competition 2018 application benchmark, as well as the best-known solvers in the cryptographic category, namely, CryptoMiniSAT, Glucose, and MapleSAT. On the cryptographic benchmark, BMM-based solvers out-perform all other initialization methods. Further, the BMM-based MapleCOMSPS significantly out-perform the same solver using all other initialization methods by 12 additional instances solved and better average runtime, over the SAT 2018 competition benchmark.",
+  "problem_description_natural": "The optimization problem addressed is the 'initialization problem' in Conflict-Driven Clause-Learning (CDCL) Boolean Satisfiability (SAT) solvers. Specifically, given a SAT formula φ, the goal is to compute an initial total order over the variables and an initial truth-value assignment (polarity) for each variable such that the runtime of the SAT solver on φ is minimized. This involves selecting both which variable to branch on first (variable ordering) and what initial value (true or false) to assign to each variable before the solver begins its search. The proposed method uses Bayesian inference with moment matching to estimate posterior probabilities for each variable being true, based on clause evidence, and uses these posteriors to guide both the initial variable ordering (by certainty) and polarity selection.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "SAT Competition 2018 Application Benchmark",
+    "Hard cryptographic instances encoding preimage of round reduced SHA-1 hash function"
+  ],
+  "performance_metrics": [
+    "Number of solved instances",
+    "Average runtime (seconds)"
+  ],
+  "lp_model": {
+    "objective": "$\\min 0$",
+    "constraints": [
+      "$\\sum_{i \\in P_j} x_i + \\sum_{i \\in N_j} (1 - x_i) \\geq 1, \\quad \\forall j = 1, \\dots, m$"
+    ],
+    "variables": [
+      "$x_i \\in \\{0,1\\}$: binary decision variable for each Boolean variable $v_i$, where $x_i = 1$ if $v_i$ is true, and $0$ if false"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} \\min \\quad & 0 \\\\ \\text{s.t.} \\quad & \\sum_{i \\in P_j} x_i + \\sum_{i \\in N_j} (1 - x_i) \\geq 1, \\quad \\forall j = 1, \\dots, m \\\\ & x_i \\in \\{0,1\\}, \\quad \\forall i = 1, \\dots, n \\end{aligned}$$",
+  "algorithm_description": "Bayesian Moment Matching (BMM) is used as a pre-processor to compute initial variable order and polarity assignments for Conflict-Driven Clause Learning (CDCL) SAT solvers. BMM assigns Beta priors to variables, updates posterior distributions using clauses as evidence via moment matching, and provides probabilities for variable assignments to initialize solver heuristics such as variable selection and value selection."
+}

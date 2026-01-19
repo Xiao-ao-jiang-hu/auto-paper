@@ -1,0 +1,41 @@
+{
+  "paper_id": "Learning_Heuristics_over_Large_Graphs_via_Deep_Reinforcement",
+  "title": "Learning Heuristics over Large Graphs via Deep Reinforcement Learning",
+  "abstract": "There has been an increased interest in discovering heuristics for combinatorial problems on graphs through machine learning. While existing techniques have primarily focused on obtaining high-quality solutions, scalability to billion-sized graphs has not been adequately addressed. In addition, the impact of budget-constraint, which is necessary for many practical scenarios, remains to be studied. In this paper, we propose a framework called GCOMB to bridge these gaps. GCOMB trains a Graph Convolutional Network (GCN) using a novel probabilistic greedy mechanism to predict the quality of a node. To further facilitate the combinatorial nature of the problem, GCOMB utilizes a Q-learning framework, which is made efficient through importance sampling. We perform extensive experiments on real graphs to benchmark the efficiency and efficacy of GCOMB. Our results establish that GCOMB is 100 times faster and marginally better in quality than state-of-the-art algorithms for learning combinatorial algorithms. Additionally, a case-study on the practical combinatorial problem of Influence Maximization (IM) shows GCOMB is 150 times faster than the specialized IM algorithm IMM with similar quality.",
+  "problem_description_natural": "The paper addresses budget-constrained set combinatorial optimization problems on large graphs, where the goal is to select a subset of nodes of a given size (budget) that maximizes a specific objective function. Examples include Maximum Coverage on bipartite graphs, Budget-constrained Maximum Vertex Cover, and Influence Maximization under a diffusion model. These problems are NP-hard, and the challenge lies in learning scalable, high-quality heuristics that generalize across graph instances drawn from the same distribution, especially when graphs are massive (up to billions of edges) and must be solved repeatedly due to dynamic changes.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "Brightkite",
+    "Twitter-ego",
+    "Gowalla",
+    "YouTube",
+    "StackOverflow",
+    "Orkut",
+    "Twitter",
+    "FriendSter",
+    "BP-500",
+    "BP-2k",
+    "BP-5k",
+    "BP-10k",
+    "BP-20k",
+    "Gowalla-900"
+  ],
+  "performance_metrics": [
+    "Coverage",
+    "Spread Difference",
+    "Speed-up",
+    "Running Time"
+  ],
+  "lp_model": {
+    "objective": "$\\max_{S \\subseteq A, |S| = b} \\frac{|\\{j \\in B : \\exists i \\in S \\text{ with } (i,j) \\in E\\}|}{|B|}$",
+    "constraints": [
+      "$S \\subseteq A$",
+      "$|S| = b$"
+    ],
+    "variables": [
+      "$S$: subset of $A$ of size $b$"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} & \\max_{S \\subseteq A} \\frac{|\\{j \\in B : \\exists i \\in S, (i,j) \\in E\\}|}{|B|} \\\\ & \\text{subject to: } |S| = b. \\end{aligned}$$",
+  "algorithm_description": "The paper proposes GCOMB, a framework that uses a Graph Convolutional Network (GCN) trained with a probabilistic greedy mechanism and a Q-learning component to learn heuristics for budget-constrained set combinatorial problems on graphs."
+}

@@ -1,0 +1,28 @@
+{
+  "paper_id": "Learning_a_SAT_solver_from_single-bit_supervision",
+  "title": "Guiding High-Performance SAT Solvers with Unsat-Core Predictions",
+  "abstract": "The NeuroSAT neural network architecture was introduced in [37] for predicting properties of propositional formulae. When trained to predict the satisfiability of toy problems, it was shown to find solutions and unsatisfiable cores on its own. However, the authors saw \"no obvious path\" to using the architecture to improve the state-of-the-art. In this work, we train a simplified NeuroSAT architecture to directly predict the unsatisfiable cores of real problems. We modify several high-performance SAT solvers to periodically replace their variable activity scores with NeuroSAT’s prediction of how likely the variables are to appear in an unsatisfiable core. The modified MiniSat solves 10% more problems on SATCOMP-2018 within the standard 5,000 second timeout than the original does. The modified Glucose solves 11% more problems than the original, while the modified Z3 solves 6% more. The gains are even greater when the training is specialized for a specific distribution of problems; on a benchmark of hard problems from a scheduling domain, the modified Glucose solves 20% more problems than the original does within a one-hour timeout. Our results demonstrate that NeuroSAT can provide effective guidance to high-performance SAT solvers on real problems.",
+  "problem_description_natural": "The paper addresses the problem of improving the performance of high-performance Boolean satisfiability (SAT) solvers by integrating machine learning predictions about unsatisfiable cores. Specifically, the authors train a neural network (a simplified version of NeuroSAT called NeuroCore) to predict which variables are likely to appear in an unsatisfiable core of a given unsatisfiable CNF formula. These predictions are then used to periodically reset the variable activity scores in Conflict-Driven Clause Learning (CDCL) SAT solvers such as MiniSat, Glucose, and Z3. This hybrid approach—termed 'periodic refocusing'—aims to guide the solver's branching decisions more effectively toward critical parts of the search space, thereby solving more problems within standard time limits.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "SATCOMP-2018",
+    "SATCOMP (through 2017)",
+    "hard scheduling problems"
+  ],
+  "performance_metrics": [
+    "Number of problems solved",
+    "Timeout (5,000 seconds)",
+    "Timeout (one-hour)"
+  ],
+  "lp_model": {
+    "objective": "$\\min 0$",
+    "constraints": [
+      "$\\sum_{i \\in P_j} x_i + \\sum_{i \\in N_j} (1 - x_i) \\geq 1, \\quad \\forall j = 1, \\ldots, n_c$"
+    ],
+    "variables": [
+      "$x_i \\in \\{0,1\\}$ for $i = 1, \\ldots, n_v$: Boolean decision variable indicating the truth assignment (1 for true, 0 for false)"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} & \\min 0 \\\\ & \\text{s.t.} \\quad \\sum_{i \\in P_j} x_i + \\sum_{i \\in N_j} (1 - x_i) \\geq 1, \\quad \\forall j = 1, \\ldots, n_c \\\\ & x_i \\in \\{0,1\\}, \\quad \\forall i = 1, \\ldots, n_v \\end{aligned}$$",
+  "algorithm_description": "The paper uses a hybrid approach where a neural network (NeuroCore) is trained to predict variables in unsatisfiable cores. This prediction is integrated into high-performance SAT solvers (MiniSat, Glucose, Z3) by periodically resetting variable activity scores based on NeuroCore's outputs, a method called periodic refocusing, to guide branching decisions in the Conflict-Driven Clause Learning (CDCL) algorithm."
+}

@@ -1,0 +1,30 @@
+{
+  "paper_id": "Learning_Combinatorial_Optimization_Algorithms_over_Graphs",
+  "title": "Learning Combinatorial Optimization Algorithms over Graphs",
+  "abstract": "The design of good heuristics or approximation algorithms for NP-hard combinatorial optimization problems often requires significant specialized knowledge and trial-and-error. Can we automate this challenging, tedious process, and learn the algorithms instead? In many real-world applications, it is typically the case that the same optimization problem is solved again and again on a regular basis, maintaining the same problem structure but differing in the data. This provides an opportunity for learning heuristic algorithms that exploit the structure of such recurring problems. In this paper, we propose a unique combination of reinforcement learning and graph embedding to address this challenge. The learned greedy policy behaves like a meta-algorithm that incrementally constructs a solution, and the action is determined by the output of a graph embedding network capturing the current state of the solution. We show that our framework can be applied to a diverse range of optimization problems over graphs, and learns effective algorithms for the Minimum Vertex Cover, Maximum Cut and Traveling Salesman problems.",
+  "problem_description_natural": "The paper addresses the challenge of automatically learning heuristic algorithms for NP-hard combinatorial optimization problems defined over graphs, where instances share the same structural form but differ in data (e.g., edge weights or node features). Specifically, it focuses on three canonical graph problems: Minimum Vertex Cover (select the smallest set of nodes such that every edge is incident to at least one selected node), Maximum Cut (partition the graph into two subsets to maximize the total weight of edges between them), and the Traveling Salesman Problem (find the shortest possible tour visiting each node exactly once in a complete weighted graph). The goal is to learn a generalizable, greedy construction policy using reinforcement learning and graph embeddings that can produce high-quality solutions without hand-crafted rules.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "Erdős-Renyi (ER) Graphs",
+    "Barabasi-Albert (BA) Graphs",
+    "DIMACS TSP Challenge Instances",
+    "MemeTracker",
+    "Physics MAXCUT Instances",
+    "TSPLIB",
+    "Set Covering Problem (SCP) on MemeTracker-derived bipartite graphs"
+  ],
+  "performance_metrics": [
+    "Approximation Ratio"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\sum_{v \\in V} x_v$",
+    "constraints": [
+      "$x_u + x_v \\geq 1 \\quad \\forall (u,v) \\in E$"
+    ],
+    "variables": [
+      "$x_v \\in \\{0,1\\}$ for all $v \\in V$"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} \\text{Minimize} & \\sum_{v \\in V} x_v \\\\ \\text{subject to} & x_u + x_v \\geq 1 \\quad \\forall (u,v) \\in E \\\\ & x_v \\in \\{0,1\\} \\quad \\forall v \\in V \\end{aligned}$$",
+  "algorithm_description": "The paper uses a reinforcement learning framework combined with a graph embedding network (structure2vec) to learn a greedy policy for incrementally constructing solutions. Specifically, it employs fitted Q-learning (S2V-DQN) to train the policy, which selects nodes based on learned evaluations to optimize the problem's objective directly."
+}

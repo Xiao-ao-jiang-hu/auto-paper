@@ -1,0 +1,34 @@
+{
+  "paper_id": "Optimistic_tree_search_strategies_for_black-box_combinatoria",
+  "title": "Optimistic tree search strategies for black-box combinatorial optimization",
+  "abstract": "The optimization of combinatorial black-box functions is pervasive in computer science and engineering. However, the combinatorial explosion of the search space and the lack of natural ordering pose significant challenges for the current techniques from both theoretical and practical perspectives. In this paper, we propose to introduce and analyze novel combinatorial black-box solvers that are based on the recent advances in tree search strategies and partitioning techniques. A first contribution is the analysis of an algorithm called Optimistic Lipschitz Tree Search (OLTS) which assumes the Lipschitz constant of the objective function to be known. We provide linear convergence rates for this algorithm which are shown to improve upon the logarithmic rates of the baselines under specific conditions. Then, an adaptive version of OLTS, called Optimistic Combinatorial Tree Search (OCTS), is introduced for a more realistic setup where we do not have any information on the Lipschitz constant of the function. Again, similar linear rates are shown to hold for OCTS. Finally, a numerical assessment is provided to illustrate the potential of tree searches with respect to state-of-the-art methods over typical benchmarks.",
+  "problem_description_natural": "The paper addresses the problem of maximizing a black-box objective function defined over the Boolean hypercube {0,1}^d, where the function lacks exploitable structure such as linearity, submodularity, or differentiability. The goal is to find a global optimum using as few function evaluations as possible, under the assumption that the function may be cheap or moderately expensive to evaluate. The approach leverages optimistic tree search strategies combined with hierarchical partitioning of the combinatorial space, and it provides theoretical guarantees under Lipschitz continuity assumptions measured with respect to the Hamming distance.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "OneMax",
+    "Harmonic",
+    "LeadingOnes",
+    "Low autocorrelation binary sequences (LABS)",
+    "Concatenated trap",
+    "Maximum independent set (MIS)",
+    "MaxSAT",
+    "Ising model",
+    "Contamination"
+  ],
+  "performance_metrics": [
+    "Approximation error",
+    "Number of function evaluations to identify global optimum",
+    "Best value observed so far"
+  ],
+  "lp_model": {
+    "objective": "$\\max f(x)$",
+    "constraints": [
+      "$x_i \\in \\{0,1\\}$ for $i=1,\\dots,d$"
+    ],
+    "variables": [
+      "$x = (x_1, \\dots, x_d)$: binary vector where each $x_i$ is a decision variable indicating the value in dimension $i$"
+    ]
+  },
+  "raw_latex_model": "$$ x^* \\in \\argmax_{x \\in \\mathcal{X}} f(x) $$ where $\\mathcal{X} = \\{0,1\\}^d$.",
+  "algorithm_description": "The paper proposes optimistic tree search algorithms: Optimistic Lipschitz Tree Search (OLTS) for known Lipschitz constant and Optimistic Combinatorial Tree Search (OCTS) for unknown Lipschitz constant. These algorithms use a hierarchical tree representation of the Boolean hypercube, sequentially evaluate points based on optimistic upper confidence bounds derived from Lipschitz assumptions, and aim to achieve linear convergence rates for black-box combinatorial optimization."
+}

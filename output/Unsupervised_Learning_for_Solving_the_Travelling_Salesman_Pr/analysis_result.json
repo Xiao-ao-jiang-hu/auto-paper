@@ -1,0 +1,36 @@
+{
+  "paper_id": "Unsupervised_Learning_for_Solving_the_Travelling_Salesman_Pr",
+  "title": "Unsupervised Learning for Solving the Travelling Salesman Problem",
+  "abstract": "We propose UTSP, an Unsupervised Learning (UL) framework for solving the Travelling Salesman Problem (TSP). We train a Graph Neural Network (GNN) using a surrogate loss. The GNN outputs a heat map representing the probability for each edge to be part of the optimal path. We then apply local search to generate our final prediction based on the heat map. Our loss function consists of two parts: one pushes the model to find the shortest path and the other serves as a surrogate for the constraint that the route should form a Hamiltonian Cycle. Experimental results show that UTSP outperforms the existing data-driven TSP heuristics. Our approach is parameter efficient as well as data efficient: the model takes ~10% of the number of parameters and ~0.2% of training samples compared with Reinforcement Learning or Supervised Learning methods.",
+  "problem_description_natural": "The paper addresses the Euclidean Travelling Salesman Problem (TSP), which involves finding the shortest possible route that visits each of n cities exactly once and returns to the starting city. The problem is symmetric and defined on a 2D plane, where distances between cities are Euclidean. The goal is to approximate near-optimal tours without relying on labeled data or reinforcement learning, by using an unsupervised Graph Neural Network to produce a probabilistic heat map over edges, which is then refined via a guided local search procedure.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "TSP20",
+    "TSP50",
+    "TSP100",
+    "TSP200",
+    "TSP500",
+    "TSP1000"
+  ],
+  "performance_metrics": [
+    "Length",
+    "Gap (%)",
+    "Time"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\sum_{i=1}^{n} \\sum_{j=1}^{n} d_{ij} x_{ij}$",
+    "constraints": [
+      "$\\sum_{j=1, j \\neq i}^{n} x_{ij} = 1, \\quad \\forall i \\in \\{1,\\ldots,n\\}$",
+      "$\\sum_{i=1, i \\neq j}^{n} x_{ij} = 1, \\quad \\forall j \\in \\{1,\\ldots,n\\}$",
+      "$\\sum_{i \\in S} \\sum_{j \\notin S} x_{ij} \\geq 1, \\quad \\forall S \\subset \\{1,\\ldots,n\\}, S \\neq \\emptyset, S \\neq \\{1,\\ldots,n\\}$",
+      "$x_{ij} \\in \\{0,1\\}, \\quad \\forall i,j \\in \\{1,\\ldots,n\\}, i \\neq j$",
+      "$x_{ii} = 0, \\quad \\forall i \\in \\{1,\\ldots,n\\}$"
+    ],
+    "variables": [
+      "$x_{ij}$: binary decision variable indicating if the tour goes from city $i$ to city $j$",
+      "$d_{ij}$: Euclidean distance between city $i$ and city $j$, defined as $\\sqrt{(x_i - x_j)^2 + (y_i - y_j)^2}$"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned}\n\\min & \\sum_{i=1}^{n} \\sum_{j=1}^{n} d_{ij} x_{ij} \\\\\n\\text{s.t.} & \\sum_{j=1, j \\neq i}^{n} x_{ij} = 1, \\quad \\forall i \\in \\{1,\\ldots,n\\} \\\\\n& \\sum_{i=1, i \\neq j}^{n} x_{ij} = 1, \\quad \\forall j \\in \\{1,\\ldots,n\\} \\\\\n& \\sum_{i \\in S} \\sum_{j \\notin S} x_{ij} \\geq 1, \\quad \\forall S \\subset \\{1,\\ldots,n\\}, S \\neq \\emptyset, S \\neq \\{1,\\ldots,n\\} \\\\\n& x_{ij} \\in \\{0,1\\}, \\quad \\forall i,j \\in \\{1,\\ldots,n\\}, i \\neq j \\\\\n& x_{ii} = 0, \\quad \\forall i \\in \\{1,\\ldots,n\\}\n\\end{aligned}$$",
+  "algorithm_description": "Unsupervised Learning framework using a Graph Neural Network (GNN), specifically Scattering Attention GNN (SAG), to generate a heat map representing edge probabilities for the TSP tour. The GNN is trained with a surrogate loss function that encourages shortest path and Hamiltonian cycle constraints without labeled data. The heat map is then used to guide a local search procedure (best-first search with k-opt moves) to find the final tour."
+}

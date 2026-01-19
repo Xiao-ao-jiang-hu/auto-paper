@@ -1,0 +1,35 @@
+{
+  "paper_id": "⭐T2T_From_Distribution_Learning_in_Training_to_Gradient_Sear",
+  "title": "T2T: From Distribution Learning in Training to Gradient Search in Testing for Combinatorial Optimization",
+  "abstract": "Extensive experiments have gradually revealed the potential performance bottleneck of modeling Combinatorial Optimization (CO) solving as neural solution prediction tasks. The neural networks, in their pursuit of minimizing the average objective score across the distribution of historical problem instances, diverge from the core target of CO of seeking optimal solutions for every test instance. This calls for an effective search on each problem instance, while the model should serve to provide supporting knowledge that benefits the search. To this end, we propose T2T (Training to Testing) framework that first leverages the generative modeling to estimate the high-quality solution distribution for each instance during training, and then conducts a gradient-based search within the solution space during testing. The proposed neural search paradigm consistently leverages generative modeling, specifically diffusion, for graduated solution improvement. It disrupts the local structure of the given solution by introducing noise and reconstructs a lower-cost solution guided by the optimization objective. Experimental results on Traveling Salesman Problem (TSP) and Maximal Independent Set (MIS) show the significant superiority of T2T, demonstrating an average performance gain of 49.15% for TSP solving and 17.27% for MIS solving compared to the previous state-of-the-art.",
+  "problem_description_natural": "The paper addresses combinatorial optimization (CO) problems, focusing on two representative NP-hard graph-based problems: the Traveling Salesman Problem (TSP) and the Maximal Independent Set (MIS). In TSP, given a complete undirected graph where nodes represent cities and edge weights represent distances, the goal is to find the shortest Hamiltonian cycle visiting each city exactly once. In MIS, given an undirected graph, the goal is to find the largest subset of vertices such that no two are adjacent. The authors argue that traditional neural approaches that directly predict solutions suffer from suboptimal generalization because they optimize average performance over a training distribution rather than tailoring search to individual test instances. Their proposed method, T2T, uses diffusion-based generative modeling to learn high-quality solution distributions during training and then performs instance-specific gradient-guided search during testing to iteratively improve candidate solutions.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "TSP-50",
+    "TSP-100",
+    "TSP-500",
+    "TSP-1000",
+    "TSPLIB",
+    "SATLIB",
+    "ER-[700-800]"
+  ],
+  "performance_metrics": [
+    "Length",
+    "Drop",
+    "Time",
+    "SIZE"
+  ],
+  "lp_model": {
+    "objective": "For TSP: $\\min \\sum_{i,j} w_{ij} x_{ij}$; for MIS: $\\max \\sum_{i} x_i$",
+    "constraints": [
+      "For TSP: $\\sum_{j} x_{ij} = 2$ for all nodes $i$ (degree constraints), and the solution must form a Hamiltonian cycle (e.g., subtour elimination constraints)",
+      "For MIS: $x_i + x_j \\leq 1$ for all edges $(i,j) \\in E$ (no adjacent vertices in the independent set)"
+    ],
+    "variables": [
+      "$x_{ij} \\in \\{0,1\\}$: binary decision variable for edge selection in TSP, indicating whether edge $(i,j)$ is included in the tour",
+      "$x_i \\in \\{0,1\\}$: binary decision variable for node selection in MIS, indicating whether vertex $i$ is included in the independent set"
+    ]
+  },
+  "raw_latex_model": "The paper focuses on two combinatorial optimization problems on graphs: Traveling Salesman Problem (TSP) and Maximal Independent Set (MIS).\n\nFor TSP on an undirected complete graph $G=(V,E)$ with weights $w_{ij}$:\n$$\\min \\sum_{i,j} w_{ij} x_{ij} \\quad \\text{s.t.} \\quad \\boldsymbol{x} \\text{ represents a Hamiltonian cycle, i.e., } \\sum_{j} x_{ij} = 2 \\ \\forall i \\in V \\text{ and no subtours.}$$\n\nFor MIS on an undirected graph $G=(V,E)$:\n$$\\max \\sum_{i \\in V} x_i \\quad \\text{s.t.} \\quad x_i + x_j \\leq 1 \\ \\forall (i,j) \\in E, \\ x_i \\in \\{0,1\\}.$$",
+  "algorithm_description": "The T2T (Training to Testing) framework leverages diffusion models for offline training to learn the distribution of high-quality solutions conditioned on problem instances. During testing, it performs a gradient-based search within the solution space, incorporating objective guidance to iteratively improve solutions for each specific instance without updating model weights."
+}

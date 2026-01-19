@@ -1,0 +1,53 @@
+{
+  "paper_id": "Solving_a_New_3D_Bin_Packing_Problem_with_Deep_Reinforcement",
+  "title": "Solving a New 3D Bin Packing Problem with Deep Reinforcement Learning Method",
+  "abstract": "In this paper, a new type of 3D bin packing problem (BPP) is proposed, in which a number of cuboid-shaped items must be put into a bin one by one orthogonally. The objective is to find a way to place these items that can minimize the surface area of the bin. This problem is based on the fact that there is no fixed-sized bin in many real business scenarios and the cost of a bin is proportional to its surface area. Our research shows that this problem is NP-hard. Based on previous research on 3D BPP, the surface area is determined by the sequence, spatial locations and orientations of items. Among these factors, the sequence of items plays a key role in minimizing the surface area. Inspired by recent achievements of deep reinforcement learning (DRL) techniques, especially Pointer Network, on combinatorial optimization problems such as TSP, a DRL-based method is applied to optimize the sequence of items to be packed into the bin. Numerical results show that the method proposed in this paper achieve about 5% improvement than heuristic method.",
+  "problem_description_natural": "The paper introduces a novel variant of the 3D bin packing problem where the goal is not to minimize the number of fixed-size bins used, but rather to pack all given cuboid-shaped items into a single bin with minimal surface area. This reflects real-world logistics scenarios—such as cross-border e-commerce—where flexible, soft packaging materials are used instead of rigid bins, and the cost is proportional to the surface area of the resulting package. The problem involves deciding the sequence in which items are packed, their orientation (from six possible orthogonal rotations), and their placement within the bin to avoid overlaps and stay within bounds. The bin dimensions (length, width, height) are variables to be minimized in terms of total surface area (L·W + L·H + W·H).",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "Bin8",
+    "Bin10",
+    "Bin12"
+  ],
+  "performance_metrics": [
+    "Average Surface Area (ASA)",
+    "Optimality Gap"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\ L \\cdot W + L \\cdot H + W \\cdot H$",
+    "constraints": [
+      "$s_{ij} + u_{ij} + b_{ij} = 1$",
+      "$\\delta_{i1} + \\delta_{i2} + \\delta_{i3} + \\delta_{i4} + \\delta_{i5} + \\delta_{i6} = 1$",
+      "$x_i - x_j + L \\cdot s_{ij} \\leq L - \\hat{l}_i$",
+      "$y_i - y_j + W \\cdot u_{ij} \\leq W - \\hat{w}_i$",
+      "$z_i - z_j + H \\cdot b_{ij} \\leq H - \\hat{h}_i$",
+      "$0 \\leq x_i \\leq L - \\hat{l}_i$",
+      "$0 \\leq y_i \\leq W - \\hat{w}_i$",
+      "$0 \\leq z_i \\leq H - \\hat{h}_i$",
+      "$\\hat{l}_i = \\delta_{i1} l_i + \\delta_{i2} l_i + \\delta_{i3} w_i + \\delta_{i4} w_i + \\delta_{i5} h_i + \\delta_{i6} h_i$",
+      "$\\hat{w}_i = \\delta_{i1} w_i + \\delta_{i2} h_i + \\delta_{i3} l_i + \\delta_{i4} h_i + \\delta_{i5} l_i + \\delta_{i6} w_i$",
+      "$\\hat{h}_i = \\delta_{i1} h_i + \\delta_{i2} w_i + \\delta_{i3} h_i + \\delta_{i4} l_i + \\delta_{i5} w_i + \\delta_{i6} l_i$",
+      "$s_{ij}, u_{ij}, b_{ij} \\in \\{0, 1\\}$",
+      "$\\delta_{i1}, \\delta_{i2}, \\delta_{i3}, \\delta_{i4}, \\delta_{i5}, \\delta_{i6} \\in \\{0, 1\\}$"
+    ],
+    "variables": [
+      "$L$: continuous variable for the length of the bin",
+      "$W$: continuous variable for the width of the bin",
+      "$H$: continuous variable for the height of the bin",
+      "$x_i$: continuous variable for the left-bottom-back coordinate of item $i$ on the x-axis",
+      "$y_i$: continuous variable for the left-bottom-back coordinate of item $i$ on the y-axis",
+      "$z_i$: continuous variable for the left-bottom-back coordinate of item $i$ on the z-axis",
+      "$s_{ij}$: binary variable indicating if item $i$ is to the left of item $j$",
+      "$u_{ij}$: binary variable indicating if item $i$ is under item $j$",
+      "$b_{ij}$: binary variable indicating if item $i$ is behind item $j$",
+      "$\\delta_{i1}$: binary variable for orientation front-down of item $i$",
+      "$\\delta_{i2}$: binary variable for orientation front-up of item $i$",
+      "$\\delta_{i3}$: binary variable for orientation side-up of item $i$",
+      "$\\delta_{i4}$: binary variable for orientation side-down of item $i$",
+      "$\\delta_{i5}$: binary variable for orientation bottom-up of item $i$",
+      "$\\delta_{i6}$: binary variable for orientation bottom-down of item $i$"
+    ]
+  },
+  "raw_latex_model": "$$\\min \\ L \\cdot W + L \\cdot H + W \\cdot H$$ $$\\text{s.t.} \\ \\begin{cases} s_{ij} + u_{ij} + b_{ij} = 1 & (1) \\\\ \\delta_{i1} + \\delta_{i2} + \\delta_{i3} + \\delta_{i4} + \\delta_{i5} + \\delta_{i6} = 1 & (2) \\\\ x_i - x_j + L \\cdot s_{ij} \\leq L - \\hat{l}_i & (3) \\\\ y_i - y_j + W \\cdot u_{ij} \\leq W - \\hat{w}_i & (4) \\\\ z_i - z_j + H \\cdot b_{ij} \\leq H - \\hat{h}_i & (5) \\\\ 0 \\leq x_i \\leq L - \\hat{l}_i & (6) \\\\ 0 \\leq y_i \\leq W - \\hat{w}_i & (7) \\\\ 0 \\leq z_i \\leq H - \\hat{h}_i & (8) \\\\ \\hat{l}_i = \\delta_{i1} l_i + \\delta_{i2} l_i + \\delta_{i3} w_i + \\delta_{i4} w_i + \\delta_{i5} h_i + \\delta_{i6} h_i & (9) \\\\ \\hat{w}_i = \\delta_{i1} w_i + \\delta_{i2} h_i + \\delta_{i3} l_i + \\delta_{i4} h_i + \\delta_{i5} l_i + \\delta_{i6} w_i & (10) \\\\ \\hat{h}_i = \\delta_{i1} h_i + \\delta_{i2} w_i + \\delta_{i3} h_i + \\delta_{i4} l_i + \\delta_{i5} w_i + \\delta_{i6} l_i & (11) \\\\ s_{ij}, u_{ij}, b_{ij} \\in \\{0, 1\\} & (12) \\\\ \\delta_{i1}, \\delta_{i2}, \\delta_{i3}, \\delta_{i4}, \\delta_{i5}, \\delta_{i6} \\in \\{0, 1\\} & (13) \\end{cases}$$",
+  "algorithm_description": "Deep reinforcement learning with a Pointer Network architecture is used to optimize the sequence of items for packing. During packing, heuristic algorithms (least surface area heuristic and least waste space heuristic) are employed to select item orientations and empty maximal spaces, while the DRL model focuses on improving the packing order."
+}

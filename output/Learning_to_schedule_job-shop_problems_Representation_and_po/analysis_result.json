@@ -1,0 +1,38 @@
+{
+  "paper_id": "Learning_to_schedule_job-shop_problems_Representation_and_po",
+  "title": "LEARNING TO SCHEDULE JOB-SHOP PROBLEMS: REPRESENTATION AND POLICY LEARNING USING GRAPH NEURAL NETWORK AND REINFORCEMENT LEARNING",
+  "abstract": "We propose a framework to learn to schedule a job-shop problem (JSSP) using a graph neural network (GNN) and reinforcement learning (RL). We formulate the scheduling process of JSSP as a sequential decision-making problem with graph representation of the state to consider the structure of JSSP. In solving the formulated problem, the proposed framework employs a GNN to learn that node features that embed the spatial structure of the JSSP represented as a graph (representation learning) and derive the optimum scheduling policy that maps the embedded node features to the best scheduling action (policy learning). We employ Proximal Policy Optimization (PPO) based RL strategy to train these two modules in an end-to-end fashion. We empirically demonstrate that the GNN scheduler, due to its superb generalization capability, outperforms practically favored dispatching rules and RL-based schedulers on various benchmark JSSP. We also confirmed that the proposed framework learns a transferable scheduling policy that can be employed to schedule a completely new JSSP (in terms of size and parameters) without further training.",
+  "problem_description_natural": "The paper addresses the Job Shop Scheduling Problem (JSSP), which involves determining the optimal sequence of operations for multiple jobs on shared machines while respecting precedence constraints within each job and machine capacity constraints. The goal is to minimize scheduling objectives such as makespan. The authors model this as a sequential decision-making problem where, at each step, a scheduling action (e.g., selecting which operation to process next on an available machine) is chosen based on the current state of the system. The state is represented as a disjunctive graph enriched with dynamic node features (e.g., operation status, processing time, waiting time). A Graph Neural Network (GNN) processes this graph to produce embeddings that capture structural and temporal information, and a policy network uses these embeddings to select actions. The entire system is trained via reinforcement learning using Proximal Policy Optimization (PPO) to maximize long-term scheduling performance.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "ORB 01-10",
+    "SWV 01-20",
+    "FT 06",
+    "FT 10",
+    "FT 20",
+    "LA 01-40",
+    "ABZ5-9",
+    "YN 1-4",
+    "TA 01-80",
+    "pyjssp random instances"
+  ],
+  "performance_metrics": [
+    "Relative Scheduling Error",
+    "Makespan (C_max)"
+  ],
+  "lp_model": {
+    "objective": "$\\min C_{max}$",
+    "constraints": [
+      "$C_{ij} \\geq C_{i,j-1} + p_{ij}$ for all jobs $i$ and operations $j > 1$ (precedence constraints within each job)",
+      "For each machine $k$, for all pairs of operations $o_{ij}$ and $o_{pq}$ with $m_{ij} = m_{pq} = k$, either $C_{ij} \\geq C_{pq} + p_{ij}$ or $C_{pq} \\geq C_{ij} + p_{pq}$ (disjunctive machine constraints, ensuring no overlapping processing on the same machine)",
+      "$C_{max} \\geq C_{i,n_i}$ for all jobs $i$ (definition of makespan as the maximum completion time)",
+      "$C_{ij} \\geq 0$ for all operations (non-negativity of completion times)"
+    ],
+    "variables": [
+      "$C_{ij}$: completion time of operation $j$ of job $i$",
+      "$C_{max}$: makespan, the maximum completion time among all jobs"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} &\\min C_{max} \\\\ &\\text{s.t.} \\\\ &C_{ij} \\geq C_{i,j-1} + p_{ij}, \\quad \\forall i, j > 1 \\\\ &\\text{For each machine } k, \\forall o_{ij}, o_{pq} \\text{ with } m_{ij} = m_{pq} = k: \\quad C_{ij} \\geq C_{pq} + p_{ij} \\text{ or } C_{pq} \\geq C_{ij} + p_{pq} \\\\ &C_{max} \\geq C_{i,n_i}, \\quad \\forall i \\\\ &C_{ij} \\geq 0, \\quad \\forall i,j \\end{aligned}$$",
+  "algorithm_description": "The paper proposes a framework that uses a Graph Neural Network (GNN) to represent the state of the job-shop scheduling problem (JSSP) as a graph, and employs Reinforcement Learning (RL) with the Proximal Policy Optimization (PPO) algorithm to learn a scheduling policy that minimizes makespan by sequentially assigning operations to machines."
+}

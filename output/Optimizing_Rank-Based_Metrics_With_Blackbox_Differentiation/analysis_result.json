@@ -1,0 +1,31 @@
+{
+  "paper_id": "Optimizing_Rank-Based_Metrics_With_Blackbox_Differentiation",
+  "title": "Optimizing Rank-based Metrics with Blackbox Differentiation",
+  "abstract": "Rank-based metrics are some of the most widely used criteria for performance evaluation of computer vision models. Despite years of effort, direct optimization for these metrics remains a challenge due to their non-differentiable and non-decomposable nature. We present an efficient, theoretically sound, and general method for differentiating rank-based metrics with mini-batch gradient descent. In addition, we address optimization instability and sparsity of the supervision signal that both arise from using rank-based metrics as optimization targets. Resulting losses based on recall and Average Precision are applied to image retrieval and object detection tasks. We obtain performance that is competitive with state-of-the-art on standard image retrieval datasets and consistently improve performance of near state-of-the-art object detectors.",
+  "problem_description_natural": "The paper addresses the challenge of directly optimizing non-differentiable and non-decomposable rank-based evaluation metrics—such as Average Precision (AP) and Recall@K—in machine learning models, particularly for computer vision tasks like image retrieval and object detection. These metrics depend on the ranking of model outputs, which is a piecewise constant function and thus has zero gradients almost everywhere, making standard gradient-based optimization infeasible. The authors reformulate the ranking operation as a combinatorial optimization problem (specifically, minimizing a linear objective over the set of permutations) and apply blackbox differentiation—a technique that enables meaningful gradient computation through discrete solvers by constructing a continuous interpolation controlled by a hyperparameter. This allows end-to-end training using the actual rank-based metric as the loss, rather than relying on surrogate losses like cross-entropy.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "CUB-200-2011",
+    "Stanford Online Products",
+    "In-shop Clothes",
+    "Pascal VOC 2007",
+    "Pascal VOC 2012"
+  ],
+  "performance_metrics": [
+    "Recall@K",
+    "mean Average Precision (mAP)",
+    "AP^{50}"
+  ],
+  "lp_model": {
+    "objective": "$\\min_{\\pi \\in \\Pi_n} \\sum_{i=1}^n y_i \\pi(i)$",
+    "constraints": [
+      "$\\pi(i) \\in \\{1,\\ldots,n\\} \\quad \\forall i$",
+      "$\\pi(i) \\neq \\pi(j) \\quad \\forall i \\neq j$"
+    ],
+    "variables": [
+      "$\\pi(i)$: integer variable representing the rank assigned to element $i$"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} \\min_{\\pi} & \\quad \\sum_{i=1}^n y_i \\pi(i) \\\\ \\text{s.t.} & \\quad \\pi(i) \\in \\{1,\\ldots,n\\} \\quad \\forall i \\\\ & \\quad \\pi(i) \\neq \\pi(j) \\quad \\forall i \\neq j \\end{aligned}$$",
+  "algorithm_description": "The paper uses blackbox backpropagation through the ranking function, implementing the RaMBO method. It employs a blackbox ranker (e.g., argsort) and applies the blackbox differentiation framework from [60] to compute gradients for optimizing rank-based metrics like recall and Average Precision in tasks such as image retrieval and object detection."
+}

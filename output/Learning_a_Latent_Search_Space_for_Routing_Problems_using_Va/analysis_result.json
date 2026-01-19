@@ -1,0 +1,31 @@
+{
+  "paper_id": "Learning_a_Latent_Search_Space_for_Routing_Problems_using_Va",
+  "title": "LEARNING A LATENT SEARCH SPACE FOR ROUTING PROBLEMS USING VARIATIONAL AUTOENCODERS",
+  "abstract": "Methods for automatically learning to solve routing problems are rapidly improving in performance. While most of these methods excel at generating solutions quickly, they are unable to effectively utilize longer run times because they lack a sophisticated search component. We present a learning-based optimization approach that allows a guided search in the distribution of high-quality solutions for a problem instance. More precisely, our method uses a conditional variational autoencoder that learns to map points in a continuous (latent) search space to high-quality, instance-specific routing problem solutions. The learned space can then be searched by any unconstrained continuous optimization method. We show that even using a standard differential evolution search strategy our approach is able to outperform existing purely machine learning based approaches.",
+  "problem_description_natural": "The paper addresses two classic routing problems: the Traveling Salesman Problem (TSP) and the Capacitated Vehicle Routing Problem (CVRP). In the TSP, the goal is to find the shortest tour that visits each city exactly once and returns to the starting city. In the CVRP, multiple vehicles with limited capacity must deliver goods to customers with known demands; all routes start and end at a central depot, and the objective is to minimize total travel cost while satisfying all customer demands and vehicle capacity constraints. Both problems assume Euclidean distances satisfying the triangle inequality.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "Generated TSP instances (Kool et al., 2019)",
+    "Generated CVRP instances (Kool et al., 2019)"
+  ],
+  "performance_metrics": [
+    "Optimality Gap",
+    "Absolute Cost",
+    "Gap to LKH3",
+    "Average Gap"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\sum_{i \\in V} \\sum_{j \\in V} c_{ij} x_{ij}$",
+    "constraints": [
+      "$\\sum_{j \\in V} x_{ij} = 1, \\quad \\forall i \\in N$",
+      "$\\sum_{i \\in V} x_{ij} = 1, \\quad \\forall j \\in N$",
+      "$\\sum_{j \\in N} x_{0j} = \\sum_{i \\in N} x_{i0}$",
+      "$\\sum_{i \\in S} \\sum_{j \\in V \\setminus S} x_{ij} \\geq \\left\\lceil \\frac{\\sum_{i \\in S} d_i}{Q} \\right\\rceil, \\quad \\forall S \\subseteq N, S \\neq \\emptyset$"
+    ],
+    "variables": [
+      "$x_{ij} \\in \\{0,1\\}$: binary decision variable indicating if arc $(i,j)$ is used in the solution for $i,j \\in V$"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned}\\min & \\sum_{i \\in V} \\sum_{j \\in V} c_{ij} x_{ij} \\\\\\text{s.t.} & \\sum_{j \\in V} x_{ij} = 1, \\quad \\forall i \\in N \\\\& \\sum_{i \\in V} x_{ij} = 1, \\quad \\forall j \\in N \\\\& \\sum_{j \\in N} x_{0j} = \\sum_{i \\in N} x_{i0} \\\\& \\sum_{i \\in S} \\sum_{j \\in V \\setminus S} x_{ij} \\geq \\left\\lceil \\frac{\\sum_{i \\in S} d_i}{Q} \\right\\rceil, \\quad \\forall S \\subseteq N, S \\neq \\emptyset \\\\& x_{ij} \\in \\{0,1\\}, \\quad \\forall i,j \\in V\\end{aligned}$$",
+  "algorithm_description": "The paper proposes CVAE-Opt, a learning-based optimization approach that uses a conditional variational autoencoder (CVAE) to learn a continuous latent search space mapping high-quality solutions to routing problem instances. This latent space is then searched using differential evolution (or random search) to find improved solutions, without relying on domain-specific search procedures."
+}

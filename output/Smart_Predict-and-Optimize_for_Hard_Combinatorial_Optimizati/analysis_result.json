@@ -1,0 +1,25 @@
+{
+  "paper_id": "Smart_Predict-and-Optimize_for_Hard_Combinatorial_Optimizati",
+  "title": "Smart Predict-and-Optimize for Hard Combinatorial Optimization Problems",
+  "abstract": "Combinatorial optimization assumes that all parameters of the optimization problem, e.g. the weights in the objective function, are fixed. Often, these weights are mere estimates and increasingly machine learning techniques are used for their estimation. Recently, Smart Predict and Optimize (SPO) has been proposed for problems with a linear objective function over the predictions, more specifically linear programming problems. It takes the regret of the predictions on the linear problem into account, by repeatedly solving it during learning. We investigate the use of SPO to solve more realistic discrete optimization problems. The main challenge is the repeated solving of the optimization problem. To this end, we investigate ways to relax the problem as well as warm-starting the learning and the solving. Our results show that even for discrete problems it often suffices to train by solving the relaxation in the SPO loss. Furthermore, this approach outperforms the state-of-the-art approach of Wilder, Dilkina, and Tambe. We experiment with weighted knapsack problems as well as complex scheduling problems, and show for the first time that a predict-and-optimize approach can successfully be used on large-scale combinatorial optimization problems.",
+  "problem_description_natural": "The paper addresses predict-and-optimize problems where some parameters of a combinatorial optimization problem—specifically, coefficients in a linear objective function—are unknown at decision time and must be predicted using machine learning from historical data. The goal is to train predictive models not just to minimize prediction error (e.g., MSE), but to directly minimize the decision regret: the difference in objective value between the solution obtained using predicted parameters and the optimal solution that would have been obtained with true parameters. The authors focus on hard discrete problems such as the 0-1 knapsack and complex scheduling tasks, where solving the optimization problem exactly during training is computationally expensive. They explore using continuous relaxations and warm-starting strategies to scale the SPO framework to large instances.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "Irish Single Electricity Market Operator (SEMO)"
+  ],
+  "performance_metrics": [
+    "regret"
+  ],
+  "lp_model": {
+    "objective": "$\\max \\sum_{i=1}^{n} V_i X_i$",
+    "constraints": [
+      "$\\sum_{i=1}^{n} W_i X_i \\leq c$",
+      "$X_i \\in \\{0,1\\}, \\forall i \\in \\{1,\\ldots,n\\}$"
+    ],
+    "variables": [
+      "$X_i$: binary decision variable indicating whether item $i$ is selected"
+    ]
+  },
+  "raw_latex_model": "$$\\max \\sum_{i=1}^{n} V_i X_i \\\\ \\text{subject to } \\sum_{i=1}^{n} W_i X_i \\leq c, \\\\ X_i \\in \\{0,1\\}, \\forall i \\in \\{1,\\ldots,n\\}$$",
+  "algorithm_description": "The paper employs the Smart Predict and Optimize (SPO) framework, where a machine learning model (e.g., linear regression) predicts unknown parameters (e.g., item values in knapsack or energy costs in scheduling). During training, a surrogate loss function (SPO+) is minimized using gradient descent, with subgradients derived from solving the optimization problem or its relaxation (e.g., SPO-full for exact solutions, SPO-relax for continuous relaxations). Techniques like warmstarting and transfer learning are used to scale to large instances."
+}

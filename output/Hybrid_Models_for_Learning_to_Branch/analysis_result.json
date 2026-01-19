@@ -1,0 +1,32 @@
+{
+  "paper_id": "Hybrid_Models_for_Learning_to_Branch",
+  "title": "Hybrid Models for Learning to Branch",
+  "abstract": "A recent Graph Neural Network (GNN) approach for learning to branch has been shown to successfully reduce the running time of branch-and-bound (B&B) algorithms for Mixed Integer Linear Programming (MILP). While the GNN relies on a GPU for inference, MILP solvers are purely CPU-based. This severely limits its application as many practitioners may not have access to high-end GPUs. In this work, we ask two key questions. First, in a more realistic setting where only a CPU is available, is the GNN model still competitive? Second, can we devise an alternate computationally inexpensive model that retains the predictive power of the GNN architecture? We answer the first question in the negative, and address the second question by proposing a new hybrid architecture for efficient branching on CPU machines. The proposed architecture combines the expressive power of GNNs with computationally inexpensive multi-layer perceptrons (MLP) for branching. We evaluate our methods on four classes of MILP problems, and show that they lead to up to 26% reduction in solver running time compared to state-of-the-art methods without a GPU, while extrapolating to harder problems than it was trained on.",
+  "problem_description_natural": "The paper addresses the variable selection (branching) problem within the branch-and-bound algorithm for solving Mixed Integer Linear Programs (MILPs). MILPs involve optimizing a linear objective subject to linear constraints with some variables constrained to be integers, making them NP-hard. The branching decision—choosing which fractional variable to split on at each node of the search tree—significantly impacts solver performance. The authors aim to develop a machine learning model that makes high-quality branching decisions efficiently on CPU-only systems, overcoming the computational overhead of prior Graph Neural Network approaches that require GPUs.",
+  "problem_type": "Mixed Integer Linear Programming (MILP)",
+  "datasets": [
+    "Capacitated Facility Location",
+    "Combinatorial Auctions",
+    "Set Covering",
+    "Maximum Independent Set"
+  ],
+  "performance_metrics": [
+    "Time",
+    "Nodes",
+    "Wins",
+    "Top-1 Accuracy",
+    "Optimality Gap"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\mathbf{c}^\\intercal \\mathbf{x}$",
+    "constraints": [
+      "$\\mathbf{A}\\mathbf{x} \\leq \\mathbf{b}$",
+      "$\\mathbf{x} \\in \\mathbb{Z}^p \\times \\mathbb{R}^{n-p}$"
+    ],
+    "variables": [
+      "$\\mathbf{x} \\in \\mathbb{R}^n$: vector of decision variables, where the first $p$ variables are integer-valued ($\\mathbb{Z}$) and the remaining $n-p$ variables are continuous ($\\mathbb{R}$)"
+    ]
+  },
+  "raw_latex_model": "$$\\min_{\\mathbf{x}} \\mathbf{c}^\\intercal \\mathbf{x} \\quad \\text{subject to} \\quad \\mathbf{A}\\mathbf{x} \\leq \\mathbf{b}, \\quad \\mathbf{x} \\in \\mathbb{Z}^p \\times \\mathbb{R}^{n-p}$$",
+  "algorithm_description": "The paper proposes hybrid machine learning models, specifically combining Graph Neural Networks (GNNs) and Multi-Layer Perceptrons (MLPs), to learn variable selection (branching) strategies within the Branch-and-Bound algorithm for solving Mixed Integer Linear Programs (MILPs). The GNN captures structural information from the MILP's bipartite graph representation at the root node, while the MLP provides fast inference at other nodes, aiming to balance decision quality and computational cost on CPU-only machines."
+}

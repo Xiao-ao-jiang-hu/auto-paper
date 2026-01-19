@@ -1,0 +1,33 @@
+{
+  "paper_id": "Simulation-guided_Beam_Search_for_Neural_Combinatorial_Optim",
+  "title": "Simulation-guided Beam Search for Neural Combinatorial Optimization",
+  "abstract": "Neural approaches for combinatorial optimization (CO) equip a learning mechanism to discover powerful heuristics for solving complex real-world problems. While neural approaches capable of high-quality solutions in a single shot are emerging, state-of-the-art approaches are often unable to take full advantage of the solving time available to them. In contrast, hand-crafted heuristics perform highly effective search well and exploit the computation time given to them, but contain heuristics that are difficult to adapt to a dataset being solved. With the goal of providing a powerful search procedure to neural CO approaches, we propose simulation-guided beam search (SGBS), which examines candidate solutions within a fixed-width tree search that both a neural net-learned policy and a simulation (rollout) identify as promising. We further hybridize SGBS with efficient active search (EAS), where SGBS enhances the quality of solutions backpropagated in EAS, and EAS improves the quality of the policy used in SGBS. We evaluate our methods on well-known CO benchmarks and show that SGBS significantly improves the quality of the solutions found under reasonable runtime assumptions.",
+  "problem_description_natural": "The paper addresses the challenge of improving solution quality in neural combinatorial optimization by enhancing inference-time search strategies. Specifically, it focuses on problems like the Traveling Salesperson Problem (TSP), Capacitated Vehicle Routing Problem (CVRP), and Flexible Flow Shop Problem (FFSP), where high-quality solutions are needed within practical time limits. The authors aim to combine the adaptability of learned neural policies with effective tree-based search guided by simulations (rollouts) to correct poor decisions made by the policy during construction.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "Kool et al. TSP/CVRP n=100",
+    "Hottung et al. CVRP n=150",
+    "Hottung et al. CVRP n=200",
+    "MatNet FFSP n=20",
+    "MatNet FFSP n=50",
+    "MatNet FFSP n=100"
+  ],
+  "performance_metrics": [
+    "Optimality Gap",
+    "Objective Value (Obj.)",
+    "Runtime (Time)"
+  ],
+  "lp_model": {
+    "objective": "$\\max \\mathcal{R}(s_N)$",
+    "constraints": [
+      "$a_i \\in X_i$ for $i = 0, 1, \\cdots, N-1$",
+      "$\\mathcal{R}(s_N) = -\\infty$ for infeasible solutions $s_N$"
+    ],
+    "variables": [
+      "$a_i$: decision variable for step $i$, with finite domain $X_i$",
+      "$s_N = (a_0, a_1, \\cdots, a_{N-1})$: complete solution vector"
+    ]
+  },
+  "raw_latex_model": "Consider a CO problem with $N$ decision variables $a_0, a_1, \\cdots, a_{N-1}$, where one can assign $a_i$ with a value from a finite domain $X_i$ for $0 \\leq i \\leq N-1$. Our goal is to find a solution that maximizes the real-valued reward $\\mathcal{R}: S \\mapsto \\mathbb{R}$. The space $S$ contains all possible solutions $s_N = (a_0, a_1, \\cdots, a_{N-1})$. Constraints on the decision variables can be embedded in $\\mathcal{R}$ by mapping infeasible solutions to negative infinity.",
+  "algorithm_description": "The paper introduces Simulation-guided Beam Search (SGBS), a tree search inference method for neural combinatorial optimization that expands nodes based on a neural network policy, uses simulations (greedy rollouts) to evaluate candidates, and prunes to maintain a beam width. It is hybridized with Efficient Active Search (EAS), which fine-tunes model parameters at test time to guide the search towards promising regions, sharing information between SGBS and EAS for improved solution quality."
+}

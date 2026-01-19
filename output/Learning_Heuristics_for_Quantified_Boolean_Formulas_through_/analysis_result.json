@@ -1,0 +1,34 @@
+{
+  "paper_id": "Learning_Heuristics_for_Quantified_Boolean_Formulas_through_",
+  "title": "LEARNING HEURISTICS FOR QUANTIFIED BOOLEAN FORMULAS THROUGH REINFORCEMENT LEARNING",
+  "abstract": "We demonstrate how to learn efficient heuristics for automated reasoning algorithms for quantified Boolean formulas through deep reinforcement learning. We focus on a backtracking search algorithm, which can already solve formulas of impressive size - up to hundreds of thousands of variables. The main challenge is to find a representation of these formulas that lends itself to making predictions in a scalable way. For a family of challenging problems, we learned a heuristic that solves significantly more formulas compared to the existing handwritten heuristics.",
+  "problem_description_natural": "The paper addresses the problem of improving the branching heuristic in backtracking search algorithms for solving Quantified Boolean Formulas (QBFs), specifically 2QBF instances of the form ∀X.∃Y.φ. The goal is to learn a policy—via deep reinforcement learning—that selects the next variable and its assignment (i.e., literal) during the search process more effectively than hand-crafted heuristics like VSIDS. This policy must generalize across formulas of varying sizes, operate under strict correctness requirements (using formal proofs), and overcome challenges such as unbounded action spaces, long and variable-length episodes, and computational overhead from neural network inference. The learned heuristic aims to maximize the number of solved instances within fixed time or step limits.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "Reductions",
+    "QBFEVAL",
+    "Boolean",
+    "Words",
+    "Words30"
+  ],
+  "performance_metrics": [
+    "Number of solved formulas",
+    "Decision limit",
+    "Wall clock time"
+  ],
+  "lp_model": {
+    "objective": "$\\text{Determine if the quantified Boolean formula } \\forall X \\exists Y \\phi \\text{ is true}$",
+    "constraints": [
+      "The formula is in prenex conjunctive normal form (CNF): $\\forall x_1 \\dots \\forall x_n \\exists y_1 \\dots \\exists y_m \\phi(x_1,\\dots,x_n,y_1,\\dots,y_m)$",
+      "$\\phi = \\bigwedge_{k=1}^{K} C_k$, where each clause $C_k = \\bigvee_{l \\in L_k} l$ is a disjunction of literals",
+      "A literal $l$ is either a variable $v$ or its negation $\\neg v$",
+      "For the formula to be true, for every assignment $x \\in \\{0,1\\}^n$ to universal variables, there exists an assignment $y \\in \\{0,1\\}^m$ to existential variables such that $\\phi(x,y) = 1$"
+    ],
+    "variables": [
+      "$x_i \\in \\{0,1\\}$ for $i=1,\\dots,n$, representing universally quantified variables",
+      "$y_j \\in \\{0,1\\}$ for $j=1,\\dots,m$, representing existentially quantified variables"
+    ]
+  },
+  "raw_latex_model": "$$ F = \\forall x_1 \\dots \\forall x_n \\exists y_1 \\dots \\exists y_m \\phi(x_1,\\dots,x_n,y_1,\\dots,y_m) $$ where $\\phi$ is a Boolean formula in conjunctive normal form (CNF), i.e., $\\phi = \\bigwedge_{k=1}^{K} C_k$ with each clause $C_k = \\bigvee_{l \\in L_k} l$ and literals $l$ being variables or their negations. The problem is to decide if $F$ is true, meaning $\\forall x \\in \\{0,1\\}^n, \\exists y \\in \\{0,1\\}^m : \\phi(x,y) = 1$.",
+  "algorithm_description": "The paper employs deep reinforcement learning to train a graph neural network (GNN) as a branching heuristic for the backtracking search algorithm CADET, which solves the TQBF problem. The GNN encodes the formula's structure, and the policy network selects variables to branch on, aiming to reduce the number of decisions and solve more formulas within time limits."
+}

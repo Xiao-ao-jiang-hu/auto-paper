@@ -1,0 +1,34 @@
+{
+  "paper_id": "Ranking_via_sinkhorn_propagation",
+  "title": "Ranking via Sinkhorn Propagation",
+  "abstract": "It is of increasing importance to develop learning methods for ranking. In contrast to many learning objectives, however, the ranking problem presents difficulties due to the fact that the space of permutations is not smooth. In this paper, we examine the class of rank-linear objective functions, which includes popular metrics such as precision and discounted cumulative gain. In particular, we observe that expectations of these gains are completely characterized by the marginals of the corresponding distribution over permutation matrices. Thus, the expectations of rank-linear objectives can always be described through locations in the Birkhoff polytope, i.e., doubly-stochastic matrices (DSMs). We propose a technique for learning DSM-based ranking functions using an iterative projection operator known as Sinkhorn normalization. Gradients of this operator can be computed via back-propagation, resulting in an algorithm we call Sinkhorn propagation, or SinkProp. This approach can be combined with a wide range of gradient-based approaches to rank learning. We demonstrate the utility of SinkProp on several information retrieval data sets.",
+  "problem_description_natural": "The paper addresses the supervised learning-to-rank problem, where the goal is to learn a function that maps query-document features to a permutation (ranking) that maximizes a given rank-based objective such as NDCG, Precision@K, or Rank Biased Precision. The core challenge is that the space of permutations is discrete and non-differentiable, making gradient-based optimization infeasible. To overcome this, the authors relax permutations to doubly-stochastic matrices (DSMs), which represent marginal probabilities of documents being assigned to each rank. They show that for rank-linear objectives, the expected value depends only on these marginals. The optimization problem becomes: learn a function that outputs a non-negative square matrix, apply (possibly incomplete) Sinkhorn normalization to convert it into a DSM, compute the expected rank-linear objective using the DSM, and backpropagate gradients through the Sinkhorn iterations to update the underlying model parameters.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "LETOR 3.0 TD2003",
+    "LETOR 3.0 TD2004",
+    "LETOR 3.0 NP2003",
+    "LETOR 3.0 NP2004",
+    "LETOR 3.0 HP2003",
+    "LETOR 3.0 HP2004",
+    "LETOR 3.0 OHSUMED"
+  ],
+  "performance_metrics": [
+    "NDCG",
+    "NDCG@K"
+  ],
+  "lp_model": {
+    "objective": "$\\max \\sum_{j=1}^J \\sum_{k=1}^J S_{j,k} \\ln \\Pi_{j,k}$",
+    "constraints": [
+      "$S_{j,k} \\in \\{0,1\\} \\quad \\forall j,k$",
+      "$\\sum_{j=1}^J S_{j,k} = 1 \\quad \\forall k$",
+      "$\\sum_{k=1}^J S_{j,k} = 1 \\quad \\forall j$"
+    ],
+    "variables": [
+      "$S_{j,k}$: binary variable indicating if document $j$ is assigned to rank $k$",
+      "$\\Pi_{j,k}$: given doubly-stochastic matrix representing marginal probabilities (treated as input parameters for this assignment problem)"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} \\max_{S} & \\sum_{j=1}^J \\sum_{k=1}^J S_{j,k} \\ln \\Pi_{j,k} \\\\ \\text{s.t.} & \\quad S_{j,k} \\in \\{0,1\\}, \\quad \\forall j,k \\\\ & \\quad \\sum_{j=1}^J S_{j,k} = 1, \\quad \\forall k \\\\ & \\quad \\sum_{k=1}^J S_{j,k} = 1, \\quad \\forall j \\end{aligned}$$",
+  "algorithm_description": "The method learns a doubly-stochastic matrix $\\Pi$ via Sinkhorn propagation (SinkProp), which backpropagates gradients through incomplete Sinkhorn normalizations to optimize expected rank-linear objectives (e.g., NDCG@K). At test time, a permutation is extracted by solving the above assignment problem (maximizing the log-likelihood) using the Hungarian algorithm or a shortcut variant that focuses on top-ranked documents."
+}

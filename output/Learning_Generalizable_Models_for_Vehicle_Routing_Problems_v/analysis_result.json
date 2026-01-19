@@ -1,0 +1,43 @@
+{
+  "paper_id": "Learning_Generalizable_Models_for_Vehicle_Routing_Problems_v",
+  "title": "Learning Generalizable Models for Vehicle Routing Problems via Knowledge Distillation",
+  "abstract": "Recent neural methods for vehicle routing problems always train and test the deep models on the same instance distribution (i.e., uniform). To tackle the consequent cross-distribution generalization concerns, we bring the knowledge distillation to this field and propose an Adaptive Multi-Distribution Knowledge Distillation (AMDKD) scheme for learning more generalizable deep models. Particularly, our AMDKD leverages various knowledge from multiple teachers trained on exemplar distributions to yield a light-weight yet generalist student model. Meanwhile, we equip AMDKD with an adaptive strategy that allows the student to concentrate on difficult distributions, so as to absorb hard-to-master knowledge more effectively. Extensive experimental results show that, compared with the baseline neural methods, our AMDKD is able to achieve competitive results on both unseen in-distribution and out-of-distribution instances, which are either randomly synthesized or adopted from benchmark datasets (i.e., TSPLIB and CVRPLIB). Notably, our AMDKD is generic, and consumes less computational resources for inference.",
+  "problem_description_natural": "The paper addresses the Vehicle Routing Problem (VRP), a class of NP-hard combinatorial optimization problems that involve finding optimal routes for vehicles to serve a set of customers under specific constraints. The focus is on two representative variants: the Traveling Salesman Problem (TSP), where a single vehicle must visit each node exactly once and return to the start, and the Capacitated Vehicle Routing Problem (CVRP), where a fleet of vehicles with limited capacity must serve customer demands while starting and ending at a central depot. The core challenge tackled is the poor cross-distribution generalization of existing deep learning models, which perform well on training distributions (e.g., uniform node placement) but degrade significantly on out-of-distribution instances (e.g., clustered, grid-like, or real-world benchmark data). The authors aim to build a single lightweight neural model that generalizes well across diverse and unseen node coordinate distributions.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "TSPLIB",
+    "CVRPLIB",
+    "Uniform",
+    "Cluster",
+    "Mixed",
+    "Expansion",
+    "Implosion",
+    "Explosion",
+    "Grid"
+  ],
+  "performance_metrics": [
+    "Optimality Gap",
+    "Average Gap",
+    "Inference Time",
+    "Model Size (Number of Parameters)"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\sum_{e(v_i, v_j) \\in \\mathcal{E}} C[e(v_i, v_j)] \\cdot x_{ij}$",
+    "constraints": [
+      "For TSP: $\\sum_{j \\neq i} x_{ij} = 1 \\quad \\forall v_i \\in \\mathcal{V}$",
+      "For TSP: $\\sum_{i \\neq j} x_{ij} = 1 \\quad \\forall v_j \\in \\mathcal{V}$",
+      "For TSP: $\\sum_{i \\in S, j \\notin S} x_{ij} \\geq 2 \\quad \\forall S \\subset \\mathcal{V}, S \\neq \\emptyset, S \\neq \\mathcal{V}$ (subtour elimination)",
+      "For CVRP: $\\sum_{j \\neq i} x_{ij} = 1 \\quad \\forall v_i \\in \\mathcal{V} \\setminus \\{v_0\\}$",
+      "For CVRP: $\\sum_{i \\neq j} x_{ij} = 1 \\quad \\forall v_j \\in \\mathcal{V} \\setminus \\{v_0\\}$",
+      "For CVRP: $\\sum_{j} x_{v_0 j} = \\sum_{i} x_{i v_0}$ (flow balance for depot $v_0$)",
+      "For CVRP: $u_i - u_j + Q x_{ij} \\leq Q - \\delta_j \\quad \\forall v_i, v_j \\in \\mathcal{V} \\setminus \\{v_0\\}, v_i \\neq v_j$ (MTZ capacity constraints)",
+      "For CVRP: $\\delta_i \\leq u_i \\leq Q \\quad \\forall v_i \\in \\mathcal{V} \\setminus \\{v_0\\}$"
+    ],
+    "variables": [
+      "$x_{ij} \\in \\{0,1\\}$: binary decision variable indicating if edge $(v_i, v_j)$ is used in the tour",
+      "$u_i \\geq 0$: continuous variable representing the cumulative demand after visiting node $v_i$ (used for CVRP capacity constraints)"
+    ]
+  },
+  "raw_latex_model": "$$\\tau^* = \\arg\\min_{\\tau' \\in \\mathcal{S}} L(\\tau'|\\mathcal{G}) = \\arg\\min_{\\tau' \\in \\mathcal{S}} \\sum_{e(v_i, v_j) \\in \\tau'} C\\left[e(v_i, v_j)\\right]$$ where $\\mathcal{S}$ is the set of feasible tours. For TSP, $\\mathcal{S}$ consists of all Hamiltonian cycles visiting each node in $\\mathcal{V}$ exactly once. For CVRP, with depot node $v_0$, capacity limit $Q$, and customer demands $\\delta_i$, $\\mathcal{S}$ consists of all tours with multiple sub-tours starting and ending at $v_0$, such that each customer node $v_i (i \\neq 0)$ is visited exactly once and the total demand $\\sum_{v_i \\in \\text{subtour}} \\delta_i \\leq Q$ for each sub-tour.",
+  "algorithm_description": "The paper proposes an Adaptive Multi-Distribution Knowledge Distillation (AMDKD) scheme that uses deep reinforcement learning models, specifically Attention Model (AM) and Policy Optimization with Multiple Optima (POMO), to learn heuristics for solving TSP and CVRP instances. It involves pre-training multiple teacher models on different instance distributions (e.g., Uniform, Cluster, Mixed), then distilling their knowledge into a lighter student model via an adaptive strategy that focuses on difficult distributions, combining task loss and knowledge distillation loss for training."
+}

@@ -1,0 +1,30 @@
+{
+  "paper_id": "Machine_learning-based_restart_policy_for_CDCL_SAT_solvers",
+  "title": "Machine Learning-based Restart Policy for CDCL SAT Solvers",
+  "abstract": "Restarts are a critically important heuristic in most modern conflict-driven clause-learning (CDCL) SAT solvers. The precise reason as to why and how restarts enable CDCL solvers to scale efficiently remains obscure. In this paper we address this question, and provide some answers that enabled us to design a new effective machine learning-based restart policy. Specifically, we provide evidence that restarts improve the quality of learnt clauses as measured by one of best known clause quality metrics, namely, literal block distance (LBD). More precisely, we show that more frequent restarts decrease the LBD of learnt clauses, which in turn improves solver performance. We also note that too many restarts can be harmful because of the computational overhead of rebuilding the search tree from scratch too frequently. With this trade-off in mind, between that of learning better clauses vs. the computational overhead of rebuilding the search tree, we introduce a new machine learning-based restart policy that predicts the quality of the next learnt clause based on the history of previously learnt clauses. The restart policy erases the solver’s search tree during its run, if it predicts that the quality of the next learnt clause is below some dynamic threshold that is determined by the solver’s history on the given input. Our machine learning-based restart policy is based on two observations gleaned from our study of LBDs of learnt clauses. First, we discover that high LBD percentiles can be approximated with z-scores of the normal distribution. Second, we find that LBDs, viewed as a sequence, are correlated and hence the LBDs of past learnt clauses can be used to predict the LBD of future ones. With these observations in place, and techniques to exploit them, our new restart policy is shown to be effective over a large benchmark from the SAT Competition 2014 to 2017.",
+  "problem_description_natural": "The paper addresses the problem of determining an optimal restart policy for Conflict-Driven Clause-Learning (CDCL) Boolean Satisfiability (SAT) solvers. Restarts—where the solver discards its current partial assignment but retains learned clauses and variable heuristics—are empirically known to improve performance, but the underlying mechanism was not well understood. The authors hypothesize and demonstrate that frequent restarts lead to a more compact assignment stack, which in turn produces higher-quality learned clauses (measured by lower Literal Block Distance, or LBD). However, excessive restarts incur computational overhead due to repeatedly rebuilding the search tree. The optimization challenge is thus to balance the benefit of learning low-LBD clauses against the cost of frequent restarts. To solve this, the authors propose a machine learning-based restart policy (MLR) that dynamically predicts the LBD of the next learned clause using historical LBD data and triggers a restart only when the predicted LBD exceeds a statistically derived, adaptive threshold.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "SAT Competition 2014",
+    "SAT Competition 2015",
+    "SAT Competition 2016",
+    "SAT Competition 2017"
+  ],
+  "performance_metrics": [
+    "Literal Block Distance (LBD)",
+    "Effective Time",
+    "Solving Time",
+    "Number of Solved Instances"
+  ],
+  "lp_model": {
+    "objective": "$\\min 0$",
+    "constraints": [
+      "$\\sum_{i \\in P_j} x_i + \\sum_{i \\in N_j} (1 - x_i) \\geq 1 \\quad \\forall j = 1,\\ldots,m$"
+    ],
+    "variables": [
+      "$x_i \\in \\{0,1\\} \\quad \\forall i = 1,\\ldots,n$"
+    ]
+  },
+  "raw_latex_model": "$$ \\begin{aligned} & \\min 0 \\\\ & \\text{s.t. } \\sum_{i \\in P_j} x_i + \\sum_{i \\in N_j} (1 - x_i) \\geq 1, \\quad j = 1,\\ldots,m \\\\ & x_i \\in \\{0,1\\}, \\quad i = 1,\\ldots,n \\end{aligned} $$",
+  "algorithm_description": "The paper introduces a machine learning-based restart policy (MLR) for conflict-driven clause-learning (CDCL) SAT solvers. MLR uses linear regression with the Adam optimizer to predict the literal block distance (LBD) of the next learnt clause based on the previous three LBDs and their pairwise products. It triggers a restart if the predicted LBD exceeds a dynamic threshold set at the 99.9th percentile, approximated using the sample mean and standard deviation of past LBDs under a normal distribution assumption."
+}

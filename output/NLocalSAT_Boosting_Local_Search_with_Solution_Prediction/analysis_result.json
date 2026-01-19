@@ -1,0 +1,30 @@
+{
+  "paper_id": "NLocalSAT_Boosting_Local_Search_with_Solution_Prediction",
+  "title": "NLocalSAT: Boosting Local Search with Solution Prediction",
+  "abstract": "The Boolean satisfiability problem (SAT) is a famous NP-complete problem in computer science. An effective way for solving a satisfiable SAT problem is the stochastic local search (SLS). However, in this method, the initialization is assigned in a random manner, which impacts the effectiveness of SLS solvers. To address this problem, we propose NLocalSAT. NLocalSAT combines SLS with a solution prediction model, which boosts SLS by changing initialization assignments with a neural network. We evaluated NLocalSAT on five SLS solvers (CCAnr, Sparrow, CPSparrow, YaSAT, and probSAT) with instances in the random track of SAT Competition 2018. The experimental results show that solvers with NLocalSAT achieve 27% ~ 62% improvement over the original SLS solvers.",
+  "problem_description_natural": "The paper addresses the Boolean satisfiability (SAT) problem, which involves determining whether there exists an assignment of truth values to Boolean variables that makes a given Boolean formula evaluate to true. Specifically, the authors focus on improving stochastic local search (SLS) solvers for satisfiable SAT instances by replacing their random initialization with a guided initialization derived from a neural network's prediction of a likely satisfying assignment. The goal is to reduce the number of steps or restarts needed to find a solution by starting the search closer to a valid solution.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "Dataset_small",
+    "Dataset_comp",
+    "Dataset_eval"
+  ],
+  "performance_metrics": [
+    "Number of instances solved",
+    "PAR-2"
+  ],
+  "lp_model": {
+    "objective": "$\\max \\sum_{j=1}^m z_j$",
+    "constraints": [
+      "$\\sum_{i \\in P_j} x_i + \\sum_{i \\in N_j} (1 - x_i) \\geq z_j$ for all clauses $j = 1, \\ldots, m$",
+      "$x_i \\in \\{0,1\\}$ for all variables $i = 1, \\ldots, n$",
+      "$z_j \\in \\{0,1\\}$ for all clauses $j = 1, \\ldots, m$"
+    ],
+    "variables": [
+      "$x_i$: binary decision variable for variable $v_i$, where 1 means true and 0 means false",
+      "$z_j$: binary auxiliary variable indicating whether clause $C_j$ is satisfied (1) or not (0)"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} \\text{Maximize} & \\quad \\sum_{j=1}^m z_j \\\\ \\text{Subject to} & \\quad \\sum_{i \\in P_j} x_i + \\sum_{i \\in N_j} (1 - x_i) \\geq z_j, \\quad \\forall j = 1, \\ldots, m \\\\ & \\quad x_i \\in \\{0,1\\}, \\quad \\forall i = 1, \\ldots, n \\\\ & \\quad z_j \\in \\{0,1\\}, \\quad \\forall j = 1, \\ldots, m \\end{aligned}$$",
+  "algorithm_description": "NLocalSAT is a method that combines stochastic local search (SLS) solvers with a neural network solution prediction model. It uses a gated graph convolutional network to predict a candidate solution for a SAT instance in conjunctive normal form (CNF), then initializes the SLS solver's assignments with this prediction to guide the search, improving performance by reducing the number of steps needed to find a satisfying assignment."
+}

@@ -1,0 +1,34 @@
+{
+  "paper_id": "Learning_to_Use_Local_Cuts",
+  "title": "Learning to Use Local Cuts",
+  "abstract": "An essential component in modern solvers for mixed-integer (linear) programs (MIPs) is the separation of additional inequalities (cutting planes) to tighten the linear programming relaxation. Various algorithmic decisions are necessary when integrating cutting plane methods into a branch-and-bound (B&B) solver as there is always the trade-off between the efficiency of the cuts and their costs, given that they tend to slow down the solution time of the relaxation. One of the most crucial questions is: Should cuts only be generated globally at the root or also locally at nodes of the tree? We address this question by a machine learning approach for which we train a regression forest to predict the speed-up (or slow-down) provided by using local cuts. We demonstrate with an open implementation that this helps to improve the performance of the FICO Xpress MIP solver on a public test set of general MIP instances. We further report on the impact of a practical implementation inside Xpress on a large, diverse set of real-world industry MIPs.",
+  "problem_description_natural": "The paper addresses the algorithmic decision in mixed-integer programming solvers of whether to generate cutting planes only at the root node (global cuts) or also at internal nodes of the branch-and-bound tree (local cuts). While local cuts can improve dual bounds and reduce the number of explored nodes, they also increase LP size, slow down LP solves, and disable conflict analysis. The authors propose a machine learning model—specifically a regression forest—that predicts, based on instance features, whether using local cuts (LC) or disabling them (NLC) will lead to faster solve times. The goal is to dynamically choose the better strategy per instance to improve overall solver performance.",
+  "problem_type": "Mixed-Integer Linear Programming (MILP)",
+  "datasets": [
+    "MIPLIB 2017",
+    "FICO internal data set"
+  ],
+  "performance_metrics": [
+    "Time",
+    "Primal-Dual Integral",
+    "Number of explored nodes"
+  ],
+  "lp_model": {
+    "objective": "$\\min c^T x$",
+    "constraints": [
+      "$A_{\\text{eq}} x = b_{\\text{eq}}$",
+      "$A_{\\text{ineq}} x \\leq b_{\\text{ineq}}$",
+      "$x_j \\in \\mathbb{Z} \\quad \\forall j \\in I$",
+      "$x_j \\in \\{0,1\\} \\quad \\forall j \\in B$",
+      "$x_k \\in \\mathbb{R} \\quad \\forall k \\in C$"
+    ],
+    "variables": [
+      "$x \\in \\mathbb{R}^n$: vector of decision variables",
+      "$x_j \\in \\mathbb{Z}$ for integer variables indexed by $j \\in I$",
+      "$x_j \\in \\{0,1\\}$ for binary variables indexed by $j \\in B$",
+      "$x_k \\in \\mathbb{R}$ for continuous variables indexed by $k \\in C$"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned}& \\min && c^T x \\\\& \\text{s.t.} && A_{\\text{eq}} x = b_{\\text{eq}} \\\\& && A_{\\text{ineq}} x \\leq b_{\\text{ineq}} \\\\& && x_j \\in \\mathbb{Z} \\quad \\forall j \\in I \\\\& && x_j \\in \\{0,1\\} \\quad \\forall j \\in B \\\\& && x_k \\in \\mathbb{R} \\quad \\forall k \\in C\\end{aligned}$$",
+  "algorithm_description": "A random forest model is trained to predict the speed-up factor between using local cuts (LC) and not using local cuts (NLC) during the branch-and-cut solve of a mixed-integer linear program. The model uses features extracted from the MIP instance, such as static problem characteristics and dynamic solver behavior, to decide whether to activate local cuts for improved performance."
+}

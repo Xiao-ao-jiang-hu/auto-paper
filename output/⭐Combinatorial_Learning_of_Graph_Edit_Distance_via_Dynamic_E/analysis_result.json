@@ -1,0 +1,31 @@
+{
+  "paper_id": "⭐Combinatorial_Learning_of_Graph_Edit_Distance_via_Dynamic_E",
+  "title": "Combinatorial Learning of Graph Edit Distance via Dynamic Embedding",
+  "abstract": "Graph Edit Distance (GED) is a popular similarity measurement for pairwise graphs and also refers to the recovery of the edit path from the source graph to the target graph. Traditional A* algorithm suffers scalability issues due to its exhaustive nature, with search heuristics heavily reliant on human prior knowledge. This paper presents a hybrid approach combining the interpretability of traditional search-based techniques for producing the edit path with the efficiency and adaptivity of deep embedding models to achieve a cost-effective GED solver. Inspired by dynamic programming, node-level embedding is designated in a dynamic reuse fashion and suboptimal branches are encouraged to be pruned. The method integrates into the A* procedure dynamically and significantly reduces computational burden with a learned heuristic. Experiments show the approach eases the A* search process without sacrificing much accuracy. To the authors' knowledge, this is the first deep learning-based GED method capable of recovering the edit path.",
+  "problem_description_natural": "The optimization problem is to compute the Graph Edit Distance (GED) between two graphs, defined as finding the optimal sequence of edit operations (node/edge insertions, deletions, or substitutions) that transforms a source graph into a target graph with minimum total cost. This problem is NP-complete and combinatorial in nature. The challenge lies in efficiently searching the space of possible edit paths while maintaining accuracy and scalability, especially for large graphs. The paper addresses the trade-off between exact but slow solvers (like A*) and fast but inexact or non-path-producing deep learning methods by introducing a learned heuristic within the A* framework that dynamically reuses graph embeddings to guide the search.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "AIDS",
+    "LINUX",
+    "Willow-Cars"
+  ],
+  "performance_metrics": [
+    "mse",
+    "Spearman’s correlation",
+    "p@10"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\sum_{i=1}^l c(e_i)$",
+    "constraints": [
+      "$(e_1, \\ldots, e_l) \\in \\gamma(\\mathcal{G}_1, \\mathcal{G}_2)$, where $\\gamma(\\mathcal{G}_1, \\mathcal{G}_2)$ is the set of all valid edit paths transforming source graph $\\mathcal{G}_1$ to target graph $\\mathcal{G}_2$.",
+      "Edit operations include node substitutions $u_i \\to v_j$, node insertions $\\epsilon \\to v_j$, node deletions $u_i \\to \\epsilon$, and edge operations induced from node assignments.",
+      "For node operations: each node in $\\mathcal{G}_1$ must be either substituted, deleted, or matched to a node in $\\mathcal{G}_2$ or void; each node in $\\mathcal{G}_2$ must be either matched from a substitution or inserted."
+    ],
+    "variables": [
+      "$e_i$: edit operation in the sequence, representing node or edge edit with cost $c(e_i)$.",
+      "Implicitly, binary variables for node assignments: $x_{ij}$ for node substitution $u_i \\to v_j$, $d_i$ for node deletion $u_i \\to \\epsilon$, $i_j$ for node insertion $\\epsilon \\to v_j$."
+    ]
+  },
+  "raw_latex_model": "$$ GED(\\mathcal{G}_1, \\mathcal{G}_2) = \\min_{(e_1, \\ldots, e_l) \\in \\gamma(\\mathcal{G}_1, \\mathcal{G}_2)} \\sum_{i=1}^l c(e_i) $$",
+  "algorithm_description": "A hybrid method that integrates a dynamic graph embedding network (Graph Edit Neural Network, GENN) into the A* search algorithm for Graph Edit Distance. GENN is used to predict heuristic scores $h(p)$ for partial edit paths, replacing traditional manually designed heuristics, to prune suboptimal branches and speed up the search while maintaining accuracy. The approach involves caching node embeddings for efficient dynamic similarity prediction during A* search."
+}

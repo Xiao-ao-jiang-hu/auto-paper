@@ -1,0 +1,31 @@
+{
+  "paper_id": "Learning_Pseudo-Backdoors_for_Mixed_Integer_Programs",
+  "title": "Learning Pseudo-Backdoors for Mixed Integer Programs",
+  "abstract": "We propose a machine learning approach for quickly solving Mixed Integer Programs (MIP) by learning to prioritize a set of decision variables, which we call pseudo-backdoors, for branching that results in faster solution times. Learning-based approaches have seen success in the area of solving combinatorial optimization problems by being able to flexibly leverage common structures in a given distribution of problems. Our approach takes inspiration from the concept of strong backdoors, which corresponds to a small set of variables such that only branching on these variables yields an optimal integral solution and a proof of optimality. Our notion of pseudo-backdoors corresponds to a small set of variables such that only branching on them leads to faster solve time (which can be solver dependent). A key advantage of pseudo-backdoors over strong backdoors is that they are much amenable to data-driven identification or prediction. Our proposed method learns to estimate the solver performance of a proposed pseudo-backdoor, using a labeled dataset collected on a set of training MIP instances. This model can then be used to identify high-quality pseudo-backdoors on new MIP instances from the same distribution. We evaluate our method on the generalized independent set problems and find that our approach can efficiently identify high-quality pseudo-backdoors. In addition, we compare our learned approach against Gurobi, a state-of-the-art MIP solver, demonstrating that our method can be used to improve solver performance.",
+  "problem_description_natural": "The paper addresses the problem of solving Mixed Integer Programs (MIPs), which involve maximizing a linear objective function subject to linear constraints, where a subset of variables must take integer values. The goal is to reduce the time required to solve such problems by identifying a small subset of integer variables—called pseudo-backdoors—that, when prioritized during the branching process in a MIP solver, lead to significantly faster solution times. The approach is data-driven: it learns from a distribution of MIP instances to predict effective pseudo-backdoors for new, unseen instances from the same distribution. The method uses two neural models: one to score candidate variable subsets based on expected solver performance, and another to decide whether to use the top-scoring subset or fall back to the default solver behavior.",
+  "problem_type": "Mixed Integer Linear Programming (MILP)",
+  "datasets": [
+    "Generalized Independent Set Problem (GISP)"
+  ],
+  "performance_metrics": [
+    "mean solve time",
+    "standard deviation of solve time",
+    "25th percentile solve time",
+    "median solve time",
+    "75th percentile solve time",
+    "win/tie/loss ratio"
+  ],
+  "lp_model": {
+    "objective": "$\\max c^T x$",
+    "constraints": [
+      "$Ax \\leq b$",
+      "$x_i \\in \\mathbb{Z} \\; \\forall i \\in \\mathcal{I}$"
+    ],
+    "variables": [
+      "$x \\in \\mathbb{R}^n$: vector of decision variables",
+      "$x_i$: component of $x$, with $x_i \\in \\mathbb{Z}$ for all $i \\in \\mathcal{I}$"
+    ]
+  },
+  "raw_latex_model": "$$\\max_x \\{ c^T x : Ax \\leq b, x_i \\in \\mathbb{Z} \\; \\forall i \\in \\mathcal{I} \\}$$",
+  "algorithm_description": "The paper proposes a machine learning approach to accelerate Mixed Integer Program (MIP) solving by learning pseudo-backdoors—subsets of integer variables that, when prioritized in branching, lead to faster solve times. It uses two learned models: a score model to rank candidate subsets based on predicted solve time, and a classification model to decide whether to use the best subset over the default solver. The models are implemented using Graph Attention Networks on a bipartite graph representation of the MIP, with variable and constraint nodes, and trained on data from MIP instances."
+}

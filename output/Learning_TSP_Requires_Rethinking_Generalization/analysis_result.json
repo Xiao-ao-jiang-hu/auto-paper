@@ -1,0 +1,30 @@
+{
+  "paper_id": "Learning_TSP_Requires_Rethinking_Generalization",
+  "title": "Learning the Travelling Salesperson Problem Requires Rethinking Generalization",
+  "abstract": "End-to-end training of neural network solvers for graph combinatorial optimization problems such as the Travelling Salesperson Problem (TSP) have seen a surge of interest recently, but remain intractable and inefficient beyond graphs with few hundreds of nodes. While state-of-the-art learning-driven approaches for TSP perform closely to classical solvers when trained on trivially small sizes, they are unable to generalize the learnt policy to larger instances at practical scales. This work presents an end-to-end neural combinatorial optimization pipeline that unifies several recent papers in order to identify the inductive biases, model architectures and learning algorithms that promote generalization to instances larger than those seen in training. Our controlled experiments provide the first principled investigation into such zero-shot generalization, revealing that extrapolating beyond training data requires rethinking the neural combinatorial optimization pipeline, from network layers and learning paradigms to evaluation protocols. Additionally, we analyze recent advances in deep learning for routing problems through the lens of our pipeline and provide new directions to stimulate future research.",
+  "problem_description_natural": "The 2D Euclidean Travelling Salesperson Problem (TSP) involves finding the shortest possible route that visits each city exactly once and returns to the origin city. Given a set of cities represented as points in the two-dimensional unit square, the goal is to determine a permutation (tour) of these cities that minimizes the total Euclidean distance traveled. The problem is NP-hard and becomes intractable to solve optimally for large numbers of cities (e.g., thousands or more), motivating the use of approximate solvers including machine learning-based approaches.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "TSP20",
+    "TSP50",
+    "TSP100",
+    "TSP200",
+    "TSPLIB"
+  ],
+  "performance_metrics": [
+    "Optimality Gap"
+  ],
+  "lp_model": {
+    "objective": "$ \\min \\left( \\|x_{\\pi_n} - x_{\\pi_1}\\|_2 + \\sum_{i=1}^{n-1} \\|x_{\\pi_i} - x_{\\pi_{i+1}}\\|_2 \\right) $",
+    "constraints": [
+      "$ \\pi_i \\in \\{1, 2, ..., n\\} $ for all $ i = 1, ..., n $",
+      "$ \\pi_i \\neq \\pi_j $ for all $ i \\neq j $"
+    ],
+    "variables": [
+      "$ \\pi_i $: the index of the i-th city visited in the tour, for $ i = 1, ..., n $",
+      "$ \\pi = (\\pi_1, \\pi_2, ..., \\pi_n) $: permutation vector representing the tour order"
+    ]
+  },
+  "raw_latex_model": "$$ \\min_{\\pi} \\left( \\|x_{\\pi_n} - x_{\\pi_1}\\|_2 + \\sum_{i=1}^{n-1} \\|x_{\\pi_i} - x_{\\pi_{i+1}}\\|_2 \\right) \\quad \\text{subject to} \\quad \\pi \\text{ is a permutation of } \\{1,2,...,n\\}. $$",
+  "algorithm_description": "End-to-end neural combinatorial optimization using Graph Neural Networks (GNNs) for graph embedding and autoregressive or non-autoregressive decoding, trained with supervised learning (imitating optimal tours from the Concorde solver) or reinforcement learning (using policy gradient methods like REINFORCE with rollout or critic baselines)."
+}

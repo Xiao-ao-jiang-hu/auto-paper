@@ -1,0 +1,28 @@
+{
+  "paper_id": "⭐Learning_Combinatorial_Embedding_Networks_for_Deep_Graph_Ma",
+  "title": "Learning Combinatorial Embedding Networks for Deep Graph Matching",
+  "abstract": "Graph matching refers to finding node correspondence between graphs, such that the corresponding node and edge’s affinity can be maximized. In addition with its NP-completeness nature, another important challenge is effective modeling of the node-wise and structure-wise affinity across graphs and the resulting objective, to guide the matching procedure effectively finding the true matching against noises. To this end, this paper devises an end-to-end differentiable deep network pipeline to learn the affinity for graph matching. It involves a supervised permutation loss regarding with node correspondence to capture the combinatorial nature for graph matching. Meanwhile deep graph embedding models are adopted to parameterize both intra-graph and cross-graph affinity functions, instead of the traditional shallow and simple parametric forms e.g. a Gaussian kernel. The embedding can also effectively capture the higher-order structure beyond second-order edges. The permutation loss model is agnostic to the number of nodes, and the embedding model is shared among nodes such that the network allows for varying numbers of nodes in graphs for training and inference. Moreover, our network is class-agnostic with some generalization capability across different categories. All these features are welcomed for real-world applications. Experiments show its superiority against state-of-the-art graph matching learning methods.",
+  "problem_description_natural": "The paper addresses the problem of graph matching, which involves establishing correspondences between nodes of two graphs such that the overall similarity—considering both node-to-node and edge-to-edge (or even higher-order hyperedge) affinities—is maximized. This is formulated as a combinatorial optimization problem, typically cast as a Quadratic Assignment Problem (QAP), which is NP-complete. The core challenge lies not only in solving this hard optimization problem but also in learning an appropriate affinity function that accurately reflects true correspondences in the presence of noise and outliers. Traditional approaches use fixed, handcrafted affinity functions (e.g., Gaussian kernels on feature distances), which lack flexibility. This work proposes to learn both intra-graph structural embeddings and cross-graph affinity functions using deep graph neural networks, and to optimize them end-to-end using a differentiable permutation loss based on the Sinkhorn algorithm, which relaxes the discrete matching problem into a continuous, differentiable assignment problem.",
+  "problem_type": "Graph Matching (Combinatorial Optimization)",
+  "datasets": [
+    "Pascal VOC Keypoint",
+    "Willow ObjectClass",
+    "Synthetic Graphs"
+  ],
+  "performance_metrics": [
+    "Matching Accuracy"
+  ],
+  "lp_model": {
+    "objective": "$\\max \\mathrm{vec}(\\mathbf{X})^{\\top} \\mathbf{K} \\mathrm{vec}(\\mathbf{X})$",
+    "constraints": [
+      "$\\mathbf{X} \\in \\{0,1\\}^{N \\times N}$",
+      "$\\mathbf{X}\\mathbf{1} = \\mathbf{1}$",
+      "$\\mathbf{X}^{\\top} \\mathbf{1} \\leq \\mathbf{1}$"
+    ],
+    "variables": [
+      "$\\mathbf{X}$: binary permutation matrix indicating node correspondence between two graphs, where $\\mathbf{X}_{i,j}=1$ if node $i$ in the first graph matches node $j$ in the second graph"
+    ]
+  },
+  "raw_latex_model": "$$\\max_{\\mathbf{X}} \\mathrm{vec}(\\mathbf{X})^{\\top} \\mathbf{K} \\mathrm{vec}(\\mathbf{X}) \\quad \\text{s.t.} \\quad \\mathbf{X} \\in \\{0,1\\}^{N \\times N}, \\quad \\mathbf{X}\\mathbf{1} = \\mathbf{1}, \\quad \\mathbf{X}^{\\top} \\mathbf{1} \\leq \\mathbf{1}$$",
+  "algorithm_description": "The paper proposes an end-to-end differentiable deep network pipeline for learning graph matching. It uses a CNN for feature extraction, graph convolutional networks (GCN) for intra-graph and cross-graph node embedding to encode higher-order affinity, an affinity metric layer to compute node-to-node similarities, and a Sinkhorn layer for differentiable permutation prediction. The model is trained with a permutation cross-entropy loss using ground truth correspondence, and during inference, the Hungarian algorithm is applied to discretize the Sinkhorn output into a permutation matrix."
+}

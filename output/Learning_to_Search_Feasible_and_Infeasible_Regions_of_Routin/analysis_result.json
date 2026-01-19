@@ -1,0 +1,33 @@
+{
+  "paper_id": "Learning_to_Search_Feasible_and_Infeasible_Regions_of_Routin",
+  "title": "Learning to Search Feasible and Infeasible Regions of Routing Problems with Flexible Neural k-Opt",
+  "abstract": "In this paper, we present Neural k-Opt (NeuOpt), a novel learning-to-search (L2S) solver for routing problems. It learns to perform flexible k-opt exchanges based on a tailored action factorization method and a customized recurrent dual-stream decoder. As a pioneering work to circumvent the pure feasibility masking scheme and enable the autonomous exploration of both feasible and infeasible regions, we then propose the Guided Infeasible Region Exploration (GIRE) scheme, which supplements the NeuOpt policy network with feasibility-related features and leverages reward shaping to steer reinforcement learning more effectively. Additionally, we equip NeuOpt with Dynamic Data Augmentation (D2A) for more diverse searches during inference. Extensive experiments on the Traveling Salesman Problem (TSP) and Capacitated Vehicle Routing Problem (CVRP) demonstrate that our NeuOpt not only significantly outstrips existing (masking-based) L2S solvers, but also showcases superiority over the learning-to-construct (L2C) and learning-to-predict (L2P) solvers. Notably, we offer fresh perspectives on how neural solvers can handle VRP constraints.",
+  "problem_description_natural": "The paper addresses combinatorial optimization problems in vehicle routing, specifically the Traveling Salesman Problem (TSP) and the Capacitated Vehicle Routing Problem (CVRP). In TSP, the goal is to find the shortest Hamiltonian cycle that visits each city exactly once and returns to the origin. In CVRP, multiple vehicles with limited capacity must serve customer demands from a central depot while minimizing total travel distance and respecting vehicle capacity constraints. The authors propose a neural search method that iteratively improves solutions using flexible k-opt moves—exchanging k edges in the current tour—and uniquely allows exploration of both feasible and infeasible solution regions to escape local optima and discover better solutions.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "TSPLIB",
+    "CVRPLIB"
+  ],
+  "performance_metrics": [
+    "Objective Value",
+    "Optimality Gap",
+    "Run Time"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\sum_{i=0}^{n} \\sum_{j=0}^{n} c_{ij} x_{ij}$",
+    "constraints": [
+      "$\\sum_{j=0}^{n} x_{ij} = 1, \\quad \\forall i = 1,\\dots,n$",
+      "$\\sum_{i=0}^{n} x_{ij} = 1, \\quad \\forall j = 1,\\dots,n$",
+      "$\\sum_{j=1}^{n} x_{0j} = \\sum_{i=1}^{n} x_{i0}$",
+      "$u_i - u_j + \\Delta x_{ij} \\leq \\Delta - d_j, \\quad \\forall i,j = 0,\\dots,n, i \\neq j$",
+      "$u_0 = 0$",
+      "$x_{ij} \\in \\{0,1\\}, \\quad u_i \\geq 0, \\quad \\forall i,j$"
+    ],
+    "variables": [
+      "$x_{ij}$: binary decision variable indicating if edge from node $i$ to $j$ is used in the solution",
+      "$u_i$: continuous variable representing the cumulative demand after visiting node $i$"
+    ]
+  },
+  "raw_latex_model": "The Capacitated Vehicle Routing Problem (CVRP) is defined on a complete directed graph $\\mathcal{G} = \\{\\mathcal{V}, \\mathcal{E}\\}$ with nodes $\\mathcal{V} = \\{0,1,\\dots,n\\}$, where $0$ is the depot, and edges $e(x_i \\to x_j) \\in \\mathcal{E}$ with cost $c_{ij}$. Each customer node $i \\geq 1$ has demand $d_i$, and the vehicle capacity is $\\Delta$. The objective is to minimize total travel cost subject to constraints: each customer visited exactly once, vehicles start and end at the depot, and the total demand per route does not exceed capacity. A standard formulation using Miller-Tucker-Zemlin constraints is:\n$$\n\\begin{aligned}\n\\min & \\sum_{i=0}^{n} \\sum_{j=0}^{n} c_{ij} x_{ij} \\\\\n\\text{s.t.} & \\sum_{j=0}^{n} x_{ij} = 1, \\quad \\forall i = 1,\\dots,n \\\\\n& \\sum_{i=0}^{n} x_{ij} = 1, \\quad \\forall j = 1,\\dots,n \\\\\n& \\sum_{j=1}^{n} x_{0j} = \\sum_{i=1}^{n} x_{i0} \\\\\n& u_i - u_j + \\Delta x_{ij} \\leq \\Delta - d_j, \\quad \\forall i,j = 0,\\dots,n, i \\neq j \\\\\n& u_0 = 0 \\\\\n& x_{ij} \\in \\{0,1\\}, \\quad u_i \\geq 0, \\quad \\forall i,j\n\\end{aligned}\n$$\nThe Traveling Salesman Problem (TSP) is a special case without depot and capacity constraints, where all nodes are customers and the solution is a single Hamiltonian cycle. Its formulation is similar but excludes the depot and capacity-related constraints.",
+  "algorithm_description": "NeuOpt is a learning-to-search (L2S) solver that uses a neural network policy trained with reinforcement learning to perform flexible k-opt exchanges for solving routing problems. It incorporates a Guided Infeasible Region Exploration (GIRE) scheme to explore both feasible and infeasible regions by supplementing feasibility-related features and using reward shaping. During inference, Dynamic Data Augmentation (D2A) is applied to enhance search diversity by generating new augmented instances when the solver stalls."
+}

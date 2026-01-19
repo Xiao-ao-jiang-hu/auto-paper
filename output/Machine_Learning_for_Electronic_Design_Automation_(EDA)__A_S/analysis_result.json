@@ -1,0 +1,50 @@
+{
+  "paper_id": "Machine_Learning_for_Electronic_Design_Automation_(EDA)__A_S",
+  "title": "Machine Learning for Electronic Design Automation: A Survey",
+  "abstract": "This paper presents a comprehensive survey of machine learning (ML) techniques applied to electronic design automation (EDA). With the increasing complexity of very large-scale integrated (VLSI) circuits due to CMOS technology scaling, traditional EDA methods face challenges in scalability, efficiency, and handling NP-complete problems. ML offers a data-driven approach to accelerate and improve various stages of the EDA flow—including high-level synthesis, logic synthesis, placement, routing, mask synthesis, analog design, testing, and verification—by enabling decision making, performance prediction, black-box optimization, and fully automated design. The survey organizes existing work according to the EDA hierarchy and also discusses methodologies from an ML perspective, covering supervised, unsupervised, active, and reinforcement learning, as well as classical and deep learning models.",
+  "problem_description_natural": "The core challenge addressed is the growing computational complexity and inefficiency of traditional EDA algorithms in handling modern integrated circuit design tasks, many of which are NP-complete and involve massive search spaces. Manual tuning, heuristic-based solvers, and brute-force exploration become infeasible as design scales increase. Machine learning is leveraged to learn patterns from historical design data or through interaction with design environments to predict outcomes (e.g., timing, area, power), guide design space exploration, replace expert heuristics, and ultimately automate parts of the chip design flow—reducing time, cost, and human effort while maintaining or improving solution quality.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "Rosetta",
+    "MachSuite",
+    "ISPD 2012 benchmark",
+    "ISPD 2019 full-chip layout",
+    "RISC-V based multi-core system",
+    "NETCARD"
+  ],
+  "performance_metrics": [
+    "Relative Absolute Error (RAE)",
+    "Relative Root Mean Squared Error (RMSE)",
+    "Relative Absolute Percentage Error (APE)",
+    "Average Distance to the Reference Set (ADRS)",
+    "Maximum Clock Frequency",
+    "Throughput",
+    "Throughput-to-Area Ratio",
+    "Wirelength",
+    "Effective Frequency",
+    "Performance Improvement",
+    "Mask Complexity",
+    "Simulation Time Reduction",
+    "Speedup",
+    "Coverage",
+    "Hold Slack",
+    "Area",
+    "Power Consumption",
+    "Timing Slack",
+    "Sign-off Timing Slack",
+    "Clock Period",
+    "Resource Utilization (LUT, FF, DSP, BRAM)"
+  ],
+  "lp_model": {
+    "objective": "$\\arg \\min_{x} \\sum_{x} q_c(x)$",
+    "constraints": [
+      "$f_h(x) \\geq y_h$"
+    ],
+    "variables": [
+      "$x \\in \\mathbb{R}^n$: design parameters (e.g., transistor sizes, capacitor values)",
+      "$y \\in \\mathbb{R}^m$: circuit specifications (rigid targets $y_h$ and optimization targets $y_o$)"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned}\\arg \\min_{x} & \\quad \\sum_{x} q_c(x), \\\\\\text{s.t.} & \\quad f_h(x) \\geq y_h,\\end{aligned}$$",
+  "algorithm_description": "Reinforcement Learning (RL) is used to automate device sizing. An RL agent interacts with a circuit simulator (environment) by taking actions to adjust device parameters and receiving rewards based on circuit performance. The agent is trained to maximize cumulative reward, effectively learning to optimize the objective while satisfying constraints."
+}

@@ -1,0 +1,40 @@
+{
+  "paper_id": "Ensemble-based_Deep_Reinforcement_Learning_for_Vehicle_Routi",
+  "title": "Ensemble-based Deep Reinforcement Learning for Vehicle Routing Problems under Distribution Shift",
+  "abstract": "While performing favourably on the independent and identically distributed (i.i.d.) instances, most of the existing neural methods for vehicle routing problems (VRPs) struggle to generalize in the presence of a distribution shift. To tackle this issue, we propose an ensemble-based deep reinforcement learning method for VRPs, which learns a group of diverse sub-policies to cope with various instance distributions. In particular, to prevent convergence of the parameters to the same one, we enforce diversity across sub-policies by leveraging Bootstrap with random initialization. Moreover, we also explicitly pursue inequality between sub-policies by exploiting regularization terms during training to further enhance diversity. Experimental results show that our method is able to outperform the state-of-the-art neural baselines on randomly generated instances of various distributions, and also generalizes favourably on the benchmark instances from TSPLib and CVRPLib, which confirmed the effectiveness of the whole method and the respective designs.",
+  "problem_description_natural": "The paper addresses the vehicle routing problem (VRP), specifically focusing on two classic variants: the Traveling Salesman Problem (TSP) and the Capacitated Vehicle Routing Problem (CVRP). In TSP, the goal is to find the shortest possible route that visits each city exactly once and returns to the origin. In CVRP, a fleet of vehicles with limited capacity must serve clients with known demands, minimizing total travel distance while respecting vehicle capacities. The key challenge tackled is poor generalization of existing deep reinforcement learning methods when test instances come from a different spatial distribution of client locations than the training data (distribution shift). The authors aim to improve cross-distribution generalization without requiring manual labeling of distribution types or instance groups.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "TSPLib",
+    "CVRPLib",
+    "Generated TSP/CVRP instances with Explosion distribution",
+    "Generated TSP/CVRP instances with Compression distribution",
+    "Generated TSP/CVRP instances with Cluster distribution",
+    "Generated TSP/CVRP instances with Expansion distribution",
+    "Generated TSP/CVRP instances with Rotation distribution"
+  ],
+  "performance_metrics": [
+    "Tour Length",
+    "Optimality Gap (%)",
+    "Average Inference Time (s)"
+  ],
+  "lp_model": {
+    "objective": "For TSP: $\\min \\sum_{i=1}^{N} \\sum_{j=1}^{N} c_{ij} x_{ij}$; For CVRP: $\\min \\sum_{k=1}^{M} \\sum_{i=0}^{N} \\sum_{j=0}^{N} c_{ij} x_{ijk}$",
+    "constraints": [
+      "For TSP: $\\sum_{j=1}^{N} x_{ij} = 1$ for all $i \\in \\{1,\\ldots,N\\}$",
+      "For TSP: $\\sum_{i=1}^{N} x_{ij} = 1$ for all $j \\in \\{1,\\ldots,N\\}$",
+      "For TSP: $\\sum_{i \\in S} \\sum_{j \\in S} x_{ij} \\leq |S| - 1$ for all $S \\subset \\{1,\\ldots,N\\}$, $2 \\leq |S| \\leq N-1$",
+      "For CVRP: $\\sum_{j=1}^{N} x_{0jk} = 1$ for all $k \\in \\{1,\\ldots,M\\}$",
+      "For CVRP: $\\sum_{i=1}^{N} x_{i0k} = 1$ for all $k \\in \\{1,\\ldots,M\\}$",
+      "For CVRP: $\\sum_{k=1}^{M} \\sum_{j=0}^{N} x_{ijk} = 1$ for all $i \\in \\{1,\\ldots,N\\}$",
+      "For CVRP: $\\sum_{i=1}^{N} d_i \\sum_{j=0}^{N} x_{ijk} \\leq Q$ for all $k \\in \\{1,\\ldots,M\\}$",
+      "For CVRP: $\\sum_{j=0}^{N} x_{ijk} = \\sum_{j=0}^{N} x_{jik}$ for all $i \\in \\{0,\\ldots,N\\}$, $k \\in \\{1,\\ldots,M\\}$"
+    ],
+    "variables": [
+      "For TSP: $x_{ij} \\in \\{0,1\\}$ for $i,j \\in \\{1,\\ldots,N\\}$, $i \\neq j$",
+      "For CVRP: $x_{ijk} \\in \\{0,1\\}$ for $i,j \\in \\{0,\\ldots,N\\}$, $k \\in \\{1,\\ldots,M\\}$"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} &\\text{Traveling Salesman Problem (TSP):} \\\\ &\\min \\sum_{i=1}^{N} \\sum_{j=1}^{N} c_{ij} x_{ij} \\\\ &\\text{subject to:} \\\\ &\\quad \\sum_{j=1}^{N} x_{ij} = 1 \\quad \\forall i \\in \\{1,\\ldots,N\\}, \\\\ &\\quad \\sum_{i=1}^{N} x_{ij} = 1 \\quad \\forall j \\in \\{1,\\ldots,N\\}, \\\\ &\\quad \\sum_{i \\in S} \\sum_{j \\in S} x_{ij} \\leq |S| - 1 \\quad \\forall S \\subset \\{1,\\ldots,N\\}, 2 \\leq |S| \\leq N-1, \\\\ &\\quad x_{ij} \\in \\{0,1\\} \\quad \\forall i,j \\in \\{1,\\ldots,N\\}, i \\neq j. \\\\ &\\text{Capacitated Vehicle Routing Problem (CVRP):} \\\\ &\\min \\sum_{k=1}^{M} \\sum_{i=0}^{N} \\sum_{j=0}^{N} c_{ij} x_{ijk} \\\\ &\\text{subject to:} \\\\ &\\quad \\sum_{j=1}^{N} x_{0jk} = 1 \\quad \\forall k \\in \\{1,\\ldots,M\\}, \\\\ &\\quad \\sum_{i=1}^{N} x_{i0k} = 1 \\quad \\forall k \\in \\{1,\\ldots,M\\}, \\\\ &\\quad \\sum_{k=1}^{M} \\sum_{j=0}^{N} x_{ijk} = 1 \\quad \\forall i \\in \\{1,\\ldots,N\\}, \\\\ &\\quad \\sum_{i=1}^{N} d_i \\sum_{j=0}^{N} x_{ijk} \\leq Q \\quad \\forall k \\in \\{1,\\ldots,M\\}, \\\\ &\\quad \\sum_{j=0}^{N} x_{ijk} = \\sum_{j=0}^{N} x_{jik} \\quad \\forall i \\in \\{0,\\ldots,N\\}, k \\in \\{1,\\ldots,M\\}, \\\\ &\\quad x_{ijk} \\in \\{0,1\\} \\quad \\forall i,j \\in \\{0,\\ldots,N\\}, k \\in \\{1,\\ldots,M\\}. \\end{aligned}$$",
+  "algorithm_description": "The paper proposes an ensemble-based deep reinforcement learning method (EL-DRL) for solving TSP and CVRP under distribution shift. It uses multiple sub-policies (decoders) with a shared encoder, enforces diversity via Bootstrap with random initialization (assigning distinct loss signals) and regularization terms (Theil index and parameter dissimilarity), and trains using an extended REINFORCE algorithm with policy gradient to collaboratively leverage strengths across various distributions."
+}

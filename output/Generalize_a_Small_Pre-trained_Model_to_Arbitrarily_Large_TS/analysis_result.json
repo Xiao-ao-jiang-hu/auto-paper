@@ -1,0 +1,30 @@
+{
+  "paper_id": "Generalize_a_Small_Pre-trained_Model_to_Arbitrarily_Large_TS",
+  "title": "Generalize a Small Pre-trained Model to Arbitrarily Large TSP Instances",
+  "abstract": "For the traveling salesman problem (TSP), the existing supervised learning based algorithms suffer seriously from the lack of generalization ability. To overcome this drawback, this paper tries to train (in supervised manner) a small-scale model, which could be repetitively used to build heat maps for TSP instances of arbitrarily large size, based on a series of techniques such as graph sampling, graph converting and heat maps merging. Furthermore, the heat maps are fed into a reinforcement learning approach (Monte Carlo tree search), to guide the search of high-quality solutions. Experimental results based on a large number of instances (with up to 10,000 vertices) show that, this new approach clearly outperforms the existing machine learning based TSP algorithms, and significantly improves the generalization ability of the trained model.",
+  "problem_description_natural": "The paper addresses the Euclidean Traveling Salesman Problem (TSP), which involves finding the shortest possible tour that visits each of n cities exactly once and returns to the starting city. The cities are represented as points in a 2D unit square, and distances between cities are Euclidean. The challenge is to solve large-scale TSP instances (up to 10,000 cities) using a machine learning approach that generalizes well beyond the size of instances seen during training. The authors propose a hybrid method: first, a small supervised model is trained on fixed-size instances to predict edge probabilities (heat maps); then, via graph sampling, conversion, and merging, this model is applied to arbitrarily large graphs to produce a global heat map; finally, Monte Carlo Tree Search guided by this heat map explores the solution space by transforming complete tours using k-opt moves to find high-quality solutions.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "Set 1",
+    "Set 2"
+  ],
+  "performance_metrics": [
+    "Average tour length",
+    "Average gap in percentage w.r.t. Concorde",
+    "Optimality Gap",
+    "Total clock time"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\sum_{i \\in V} \\sum_{j \\in V, j \\neq i} d_{ij} x_{ij}$",
+    "constraints": [
+      "$\\sum_{j \\in V, j \\neq i} x_{ij} = 2 \\quad \\forall i \\in V$",
+      "$\\sum_{i \\in S} \\sum_{j \\in V \\setminus S} x_{ij} \\geq 2 \\quad \\forall S \\subset V, 2 \\leq |S| \\leq n-2$",
+      "$x_{ij} \\in \\{0,1\\} \\quad \\forall i,j \\in V, i \\neq j$"
+    ],
+    "variables": [
+      "$x_{ij}$: binary decision variable indicating if edge $(i,j)$ is included in the tour"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned}\\min & \\sum_{i \\in V} \\sum_{j \\in V, j \\neq i} d_{ij} x_{ij} \\\\\\text{s.t.} & \\sum_{j \\in V, j \\neq i} x_{ij} = 2 \\quad \\forall i \\in V \\\\& \\sum_{i \\in S} \\sum_{j \\in V \\setminus S} x_{ij} \\geq 2 \\quad \\forall S \\subset V, 2 \\leq |S| \\leq n-2 \\\\& x_{ij} \\in \\{0,1\\} \\quad \\forall i,j \\in V, i \\neq j\\end{aligned}$$",
+  "algorithm_description": "The paper uses a hybrid approach combining supervised learning (SL) and reinforcement learning (RL). First, a small graph convolutional residual network with attention (Att-GCRN) is trained on small TSP instances to predict heat maps (edge probabilities). For large instances, graph sampling, converting, and merging techniques generalize the model. Then, Monte Carlo Tree Search (MCTS) is applied for solution optimization, guided by the heat map."
+}

@@ -1,0 +1,32 @@
+{
+  "paper_id": "Ensuring_DNN_Solution_Feasibility_for_Optimization_Problems_",
+  "title": "ENSURING DNN SOLUTION FEASIBILITY FOR OPTIMIZATION PROBLEMS WITH LINEAR CONSTRAINTS",
+  "abstract": "We propose preventive learning as the first framework to guarantee Deep Neural Network (DNN) solution feasibility for optimization problems with linear constraints without post-processing, upon satisfying a mild condition on constraint calibration. Without loss of generality, we focus on problems with only inequality constraints. We systematically calibrate the inequality constraints used in training, thereby anticipating DNN prediction errors and ensuring the obtained solutions remain feasible. We characterize the calibration rate and a critical DNN size, based on which we can directly construct a DNN with provable solution feasibility guarantee. We further propose an Adversarial-Sample Aware training algorithm to improve its optimality performance. We apply the framework to develop DeepOPF+ for solving essential DC optimal power flow problems in grid operation. Simulation results over IEEE test cases show that it outperforms existing strong DNN baselines in ensuring 100% feasibility and attaining consistent optimality loss (<0.19%) and speedup (up to ×228) in both light-load and heavy-load regimes, as compared to a state-of-the-art solver. We also apply our framework to a non-convex problem and show its performance advantage over existing schemes.",
+  "problem_description_natural": "The paper addresses the challenge of using deep neural networks (DNNs) to solve constrained optimization problems with linear inequality constraints and bounded decision variables, where the problem input parameters vary but the structure of the objective and constraints remains fixed. The core issue is that standard DNN approaches cannot guarantee that their outputs satisfy all constraints due to inherent prediction errors. The authors focus on Optimization Problems with Linear Constraints (OPLC), formulated as minimizing a possibly non-convex objective function f(x, θ) subject to linear inequality constraints a_j^T x + b_j^T θ ≤ e_j for all j, and box constraints on the decision variables x. The goal is to train a DNN that maps input parameters θ to a solution x̂(θ) that is always feasible (i.e., satisfies all original constraints) without requiring post-processing, while maintaining high solution quality (optimality).",
+  "problem_type": "Optimization Problems with Linear Constraints (OPLC) — includes both convex and non-convex objectives with linear inequality and bound constraints; special cases include Linear Programs (LP) and certain Mixed-Integer Linear Programs (MILP) when integer variables are handled via reformulation, though the primary focus is on continuous-variable problems like DC Optimal Power Flow.",
+  "datasets": [
+    "IEEE 30-bus test case",
+    "IEEE 118-bus test case",
+    "IEEE 300-bus test case"
+  ],
+  "performance_metrics": [
+    "Percentage of feasible solutions",
+    "Average relative optimality difference",
+    "Average speedup",
+    "Worst-case violation rate"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\sum_{i \\in \\mathcal{G}} c_i(P_{Gi})$",
+    "constraints": [
+      "$P_G^{\\min} \\leq P_G \\leq P_G^{\\max}$",
+      "$\\mathbf{M} \\cdot \\Phi = P_G - P_D$",
+      "$-P_{\\text{line}}^{\\max} \\leq \\mathbf{B}_{\\text{line}} \\cdot \\Phi \\leq P_{\\text{line}}^{\\max}$"
+    ],
+    "variables": [
+      "$P_G$: active power generation vector for all buses, with $P_{Gi} = 0$ for $i \\notin \\mathcal{G}$",
+      "$\\Phi$: bus phase angle vector for all buses"
+    ]
+  },
+  "raw_latex_model": "$$\\min_{P_G,\\, \\Phi} \\sum_{i \\in \\mathcal{G}} c_i(P_{Gi}) \\quad \\text{s.t.} \\quad P_G^{\\min} \\leq P_G \\leq P_G^{\\max}, \\quad \\mathbf{M} \\cdot \\Phi = P_G - P_D, \\quad -P_{\\text{line}}^{\\max} \\leq \\mathbf{B}_{\\text{line}} \\cdot \\Phi \\leq P_{\\text{line}}^{\\max}.$$",
+  "algorithm_description": "Deep Neural Network (DNN) based preventive learning framework with inequality constraint calibration and an Adversarial-Sample Aware training algorithm to learn the mapping from problem inputs (e.g., load $P_D$) to optimal solutions while guaranteeing feasibility without post-processing."
+}

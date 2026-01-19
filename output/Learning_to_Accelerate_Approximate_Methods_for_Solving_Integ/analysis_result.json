@@ -1,0 +1,40 @@
+{
+  "paper_id": "Learning_to_Accelerate_Approximate_Methods_for_Solving_Integ",
+  "title": "Learning to Accelerate Approximate Methods for Solving Integer Programming via Early Fixing",
+  "abstract": "Integer programming (IP) is an important but challenging problem. Approximate methods have shown promising performance on solving the IP problem. However, we observed that a large fraction of variables solved by some iterative approximate methods fluctuate around their final converged discrete states in very long iterations. It implies that these approximate methods could be significantly accelerated by early fixing these fluctuated variables to their converged states, while not significantly harming the solution quality. To this end, we propose an innovative framework of learning to early fix variables along with the approximate method. Specifically, we formulate the early fixing process as a Markov decision process, and train it using imitation learning, where a policy network evaluates the posterior probability of each free variable concerning its discrete candidate states in each block of iterations. Extensive experiments on three typical IP applications are conducted, including constrained linear programming, MRF energy minimization and sparse adversarial attack, covering moderate and large-scale IP problems. The results demonstrate that our method could not only significantly accelerate the previous approximate method up to over 10 times in most cases, but also produce similar or even better solutions.",
+  "problem_description_natural": "The paper addresses the challenge of solving integer programming (IP) problems efficiently. IP involves optimizing a linear or quadratic objective function subject to constraints, where variables must take integer (typically binary) values. The authors focus on accelerating iterative approximate methods—particularly ADMM-based solvers like ℓp-Box ADMM—that exhibit long convergence tails due to variables fluctuating near their final discrete states (0 or 1). Instead of running all variables to full convergence or applying global early stopping, the proposed method identifies variables that have stabilized and fixes them early to their likely final states, reducing computational cost without degrading solution quality.",
+  "problem_type": "Integer Programming (IP)",
+  "datasets": [
+    "Generated combinatorial auction instances (bid=500, item=100)",
+    "Generated combinatorial auction instances (bid=1000, item=200)",
+    "Generated combinatorial auction instances (bid=1500, item=300)",
+    "Generated combinatorial auction instances (bid=4000, item=800)",
+    "Generated combinatorial auction instances (bid=1e4, item=100)",
+    "Generated combinatorial auction instances (bid=5e4, item=500)",
+    "Generated combinatorial auction instances (bid=1e5, item=1000)",
+    "Generated combinatorial auction instances (bid=2e5, item=2000)",
+    "PASCAL Visual Object Classes Challenge 2012 (VOC2012)"
+  ],
+  "performance_metrics": [
+    "Objective value",
+    "Objective Gap",
+    "Runtime",
+    "Speedup",
+    "Number of Solution Differences (#Sol. Diff.)",
+    "Accuracy",
+    "Number of infeasible constraints",
+    "Energy"
+  ],
+  "lp_model": {
+    "objective": "$\\max \\mathbf{x}^\\top \\mathbf{A} \\mathbf{x} + \\mathbf{b}^\\top \\mathbf{x}$",
+    "constraints": [
+      "$\\mathbf{C} \\mathbf{x} \\otimes \\mathbf{d}$",
+      "$\\mathbf{x} \\in \\{0,1\\}^n$"
+    ],
+    "variables": [
+      "$\\mathbf{x}$: binary decision vector of size $n$, where each element $x_i \\in \\{0,1\\}$"
+    ]
+  },
+  "raw_latex_model": "$$\\arg\\max_{\\mathbf{x}} \\mathbf{x}^\\top \\mathbf{A} \\mathbf{x} + \\mathbf{b}^\\top \\mathbf{x}, \\quad \\text{s.t. } \\mathbf{C} \\mathbf{x} \\otimes \\mathbf{d}, \\quad \\mathbf{x} \\in \\{0,1\\}^n.$$",
+  "algorithm_description": "A learning-based early fixing framework that accelerates iterative approximate methods (e.g., $\\ell_p$-box ADMM) for solving integer programming problems. It uses a policy network with attention layers, trained via imitation learning (behavior cloning), to decide when to fix variables early to their converged states based on their iterative values over blocks of iterations, thereby reducing computation time while maintaining solution quality."
+}

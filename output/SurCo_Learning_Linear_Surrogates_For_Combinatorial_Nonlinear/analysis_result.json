@@ -1,0 +1,30 @@
+{
+  "paper_id": "SurCo_Learning_Linear_Surrogates_For_Combinatorial_Nonlinear",
+  "title": "SurCo: Learning Linear SURrogates for COmbinatorial Nonlinear Optimization Problems",
+  "abstract": "Optimization problems with nonlinear cost functions and combinatorial constraints appear in many real-world applications but remain challenging to solve efficiently compared to their linear counterparts. To bridge this gap, we propose SurCo that learns linear Surrogate costs which can be used in existing Combinatorial solvers to output good solutions to the original nonlinear combinatorial optimization problem. The surrogate costs are learned end-to-end with nonlinear loss by differentiating through the linear surrogate solver, combining the flexibility of gradient-based methods with the structure of linear combinatorial optimization. We propose three SurCo variants: SurCo-zero for individual nonlinear problems, SurCo-prior for problem distributions, and SurCo-hybrid to combine both distribution and problem-specific information. We give theoretical intuition motivating SurCo, and evaluate it empirically. Experiments show that SurCo finds better solutions faster than state-of-the-art and domain expert approaches in real-world optimization problems such as embedding table sharding, inverse photonic design, and nonlinear route planning.",
+  "problem_description_natural": "The paper addresses nonlinear combinatorial optimization problems of the form min_x f(x; y) subject to x ∈ Ω(y), where f is a differentiable nonlinear cost function, Ω(y) defines a combinatorial feasible region (typically with integer and linear inequality constraints), and y parameterizes a specific problem instance. The challenge is that while efficient solvers exist for linear objectives over such feasible regions (e.g., MILP solvers), they cannot directly handle nonlinear f. SurCo circumvents this by learning a linear surrogate cost vector ĉ such that solving the linear surrogate problem min_{x ∈ Ω(y)} ĉ^⊤ x yields a solution that is near-optimal for the original nonlinear objective f.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "DLRM",
+    "Ceviche Challenges"
+  ],
+  "performance_metrics": [
+    "latency",
+    "solution loss",
+    "probability of arriving on time",
+    "success rate"
+  ],
+  "lp_model": {
+    "objective": "$\\min_{\\boldsymbol{x}} f(\\boldsymbol{x}; \\boldsymbol{y})$ where $f$ is the nonlinear latency function",
+    "constraints": [
+      "$\\sum_{d=1}^{D} x_{t,d} = 1$ for all $t = 1,\\ldots,T$",
+      "$\\sum_{t=1}^{T} m_t x_{t,d} \\leq M$ for all $d = 1,\\ldots,D$",
+      "$x_{t,d} \\in \\{0,1\\}$ for all $t,d$"
+    ],
+    "variables": [
+      "$x_{t,d}$: binary decision variable indicating whether table $t$ is assigned to device $d$"
+    ]
+  },
+  "raw_latex_model": "$$\\min_{\\boldsymbol{x}} f(\\boldsymbol{x}; \\boldsymbol{y}) \\quad \\text{s.t.} \\quad \\sum_{d=1}^{D} x_{t,d} = 1 \\ \\forall t, \\quad \\sum_{t=1}^{T} m_t x_{t,d} \\leq M \\ \\forall d, \\quad x_{t,d} \\in \\{0,1\\} \\ \\forall t,d$$ where $\\boldsymbol{x} = (x_{t,d})_{t,d}$, $T$ is the number of tables, $D$ is the number of devices, $m_t$ is the memory usage of table $t$, and $M$ is the device memory capacity.",
+  "algorithm_description": "SurCo learns linear surrogate costs $\\hat{c}_{t,d}$ for each table-device assignment, uses existing combinatorial solvers (e.g., MILP solvers) to optimize the surrogate linear objective $\\min_{\\boldsymbol{x}} \\hat{\\boldsymbol{c}}^\\top \\boldsymbol{x}$ subject to the same constraints, and updates the surrogate costs via gradient descent to minimize the original nonlinear latency $f$."
+}

@@ -1,0 +1,25 @@
+{
+  "paper_id": "Neural_Multi-Objective_Combinatorial_Optimization_via_Graph-",
+  "title": "NEURAL MULTI-OBJECTIVE COMBINATORIAL OPTIMIZATION VIA GRAPH-IMAGE MULTIMODAL FUSION",
+  "abstract": "Existing neural multi-objective combinatorial optimization (MOCO) methods still exhibit an optimality gap since they fail to fully exploit the intrinsic features of problem instances. A significant factor contributing to this shortfall is their reliance solely on graph-modal information. To overcome this, we propose a novel graph-image multimodal fusion (GIMF) framework that enhances neural MOCO methods by integrating graph and image information of the problem instances. Our GIMF framework comprises three key components: (1) a constructed instance image to better represent the spatial structure of the problem instance, (2) a problem-size adaptive resolution strategy during the image construction process to improve the cross-size generalization of the model, and (3) a multimodal fusion mechanism with modality-specific bottlenecks to efficiently couple graph and image information. We demonstrate the versatility of our GIMF by implementing it with two state-of-the-art neural MOCO backbones. Experimental results on classic MOCO problems show that our GIMF significantly outperforms state-of-the-art neural MOCO methods and exhibits superior generalization capability.",
+  "problem_description_natural": "The paper addresses multi-objective combinatorial optimization (MOCO), which involves optimizing multiple conflicting objectives over a discrete solution space to find a set of Pareto-optimal solutions—where improving one objective requires degrading another. The authors focus on classic MOCO problems including the bi/tri-objective Traveling Salesman Problem (TSP), bi-objective Capacitated Vehicle Routing Problem (CVRP), and bi-objective Knapsack Problem (KP). These problems are typically NP-hard, and exact methods are infeasible for large instances. While recent neural approaches decompose MOCO into scalarized subproblems and solve them using graph-based neural models, they underutilize structural information. This work proposes enhancing neural MOCO by constructing informative instance images that capture spatial and feature relationships, then fusing this image modality with the standard graph representation via a novel multimodal architecture.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "TSPLIB"
+  ],
+  "performance_metrics": [
+    "Hypervolume (HV)"
+  ],
+  "lp_model": {
+    "objective": "$\\min_{\\boldsymbol{\\pi} \\in \\Omega} \\boldsymbol{f}(\\boldsymbol{\\pi}) = (f_1(\\boldsymbol{\\pi}), f_2(\\boldsymbol{\\pi}), \\ldots, f_M(\\boldsymbol{\\pi}))$",
+    "constraints": [
+      "$\\boldsymbol{\\pi} \\in \\Omega$",
+      "$\\Omega$ is a discrete feasible solution space defined by problem-specific constraints."
+    ],
+    "variables": [
+      "$\\boldsymbol{\\pi}$: decision variable representing a solution (e.g., a permutation for routing problems or a binary vector for knapsack)."
+    ]
+  },
+  "raw_latex_model": "$$\\min_{\\boldsymbol{\\pi} \\in \\Omega} \\boldsymbol{f}(\\boldsymbol{\\pi}) = (f_1(\\boldsymbol{\\pi}), f_2(\\boldsymbol{\\pi}), \\ldots, f_M(\\boldsymbol{\\pi}))$$",
+  "algorithm_description": "The paper proposes a neural method for multi-objective combinatorial optimization (MOCO) using a graph-image multimodal fusion (GIMF) framework. The method constructs an instance image from the problem instance and uses a multimodal Transformer encoder (with graph and vision branches) to process both graph and image modalities. The decoder autoregressively constructs solutions using attention mechanisms. The model is trained with reinforcement learning (REINFORCE algorithm) on scalarized subproblems derived from decomposition of the MOCO problem (e.g., weighted sum scalarization). The framework is implemented with two backbones: GIMF-C (based on CNH) and GIMF-P (based on PMOCO). Experiments are conducted on specific MOCO problems: bi/tri-objective traveling salesman problem (TSP), bi-objective capacitated vehicle routing problem (CVRP), and bi-objective knapsack problem (KP)."
+}

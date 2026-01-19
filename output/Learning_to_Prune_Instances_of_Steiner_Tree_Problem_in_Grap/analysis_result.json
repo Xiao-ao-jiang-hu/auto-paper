@@ -1,0 +1,32 @@
+{
+  "paper_id": "Learning_to_Prune_Instances_of_Steiner_Tree_Problem_in_Grap",
+  "title": "Learning to Prune Instances of Steiner Tree Problem in Graphs",
+  "abstract": "We consider the Steiner tree problem on graphs where we are given a set of nodes and the goal is to find a tree sub-graph of minimum weight that contains all nodes in the given set, potentially including additional nodes. This is a classical NP-hard combinatorial optimisation problem. In recent years, a machine learning framework called learning-to-prune (L2P) has been successfully used for solving a diverse range of combinatorial optimisation problems. In this paper, we use this learning framework on the Steiner tree problem and show that even on this problem, the learning-to-prune framework results in computing near-optimal solutions on a large majority of the instances at a fraction of the time required by commercial ILP solvers. Furthermore, we show that on instances from the Stein-Lib and PACE Challenge datasets where the L2P framework does not find the optimal solution, the optimal solution can often be discovered by either using a lightweight local search algorithm to improve the L2P solution or using L2P solution as a warm start in an ILP solver. Our heuristic for Steiner tree problem leverages historical solutions of known solutions for past instances from the same distribution. Our results underscore the potential of the L2P framework in solving various combinatorial optimisation problems.",
+  "problem_description_natural": "The problem addressed is the Minimum Steiner Tree problem on weighted graphs: given a connected undirected graph with edge weights and a subset of terminal nodes, the goal is to find a minimum-weight connected subgraph (a tree) that spans all terminal nodes, possibly including non-terminal (Steiner) nodes to reduce total cost. The paper focuses on using a learning-to-prune machine learning framework to accelerate the solution process by predicting and removing edges unlikely to be in the optimal tree, then solving the reduced instance with an exact ILP solver.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "SteinLib",
+    "PACE Challenge 2018 Track 1",
+    "PACE Challenge 2018 Track 2"
+  ],
+  "performance_metrics": [
+    "Objective Increase %",
+    "Runtime Decrease %",
+    "Optimality Gap"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\sum_{(i,j) \\in E} c_{ij} y_{ij}$",
+    "constraints": [
+      "$\\sum_{h \\in N} x_{ih}^k - \\sum_{j \\in N} x_{ji}^k = \\begin{cases} 1, & i = 1, \\\\ -1, & i = k, \\\\ 0, & i \\neq 1,k \\end{cases} \\quad \\forall k \\in V$",
+      "$x_{ij}^k \\leq y_{ij} \\quad \\forall (i,j) \\in E, k \\in V$",
+      "$x_{ij}^k \\geq 0 \\quad \\forall (i,j) \\in E, k \\in V$",
+      "$y_{ij} \\in \\{0,1\\} \\quad \\forall (i,j) \\in E$"
+    ],
+    "variables": [
+      "$y_{ij}$: binary variable equal to 1 if edge $(i,j)$ is in the Steiner tree, 0 otherwise",
+      "$x_{ij}^k$: flow variable representing the amount of commodity $k$ (from root node 1 to terminal node $k$) on edge $(i,j)$"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} \\text{minimize} & \\sum_{(i,j) \\in E} c_{ij} y_{ij} \\\\ \\text{subject to} & \\sum_{h \\in N} x_{ih}^k - \\sum_{j \\in N} x_{ji}^k = \\begin{cases} 1, & i = 1, \\\\ -1, & i = k, \\\\ 0, & i \\neq 1,k \\end{cases} \\quad \\forall k \\in V, \\\\ & x_{ij}^k \\leq y_{ij} \\quad \\forall (i,j) \\in E, k \\in V, \\\\ & x_{ij}^k \\geq 0 \\quad \\forall (i,j) \\in E, k \\in V, \\\\ & y_{ij} \\in \\{0,1\\} \\quad \\forall (i,j) \\in E. \\end{aligned}$$",
+  "algorithm_description": "The paper uses a learning-to-prune framework: a supervised learning model (e.g., SVM or random forest) is trained on historical instances to classify edges as likely or not to be in the optimal Steiner tree based on features like LP relaxation values, edge weights, and node centrality. Edges predicted as unlikely are pruned (fixed to 0), and the reduced instance is solved exactly using an integer linear programming solver (e.g., Gurobi). Optionally, local search or warm-starting the ILP with the pruned solution is used to improve results."
+}

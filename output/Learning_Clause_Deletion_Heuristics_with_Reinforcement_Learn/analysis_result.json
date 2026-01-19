@@ -1,0 +1,30 @@
+{
+  "paper_id": "Learning_Clause_Deletion_Heuristics_with_Reinforcement_Learn",
+  "title": "Learning Clause Deletion Heuristics with Reinforcement Learning",
+  "abstract": "We propose a method for training of clause deletion heuristics in DPLL-based solvers using Reinforcement Learning. We have implemented it as part of a software framework SAT-Gym which we plan to release as an OpenAI Gym compatible environment. We present experiments and preliminary results for the clause deletion heuristic in Glucose.",
+  "problem_description_natural": "The paper addresses the problem of optimizing clause deletion policies in Conflict-Driven Clause Learning (CDCL) SAT solvers to improve solving efficiency. Specifically, the goal is to learn a policy that decides which learned clauses to retain or delete during periodic garbage collection phases, with the objective of minimizing solver runtime (approximated by counting logical operations). The challenge lies in the large action space (each clause could be kept or dropped), which the authors mitigate by using the Literals Block Distance (LBD) metric and learning a threshold policy: all clauses with LBD above the chosen threshold are deleted. This decision is framed as a reinforcement learning problem where the agent receives observations about solver state and aims to maximize cumulative reward tied to reduced logical operations.",
+  "problem_type": "combinatorial optimization",
+  "datasets": [
+    "Cellular Automata benchmark"
+  ],
+  "performance_metrics": [
+    "number of logical operations",
+    "episode reward"
+  ],
+  "lp_model": {
+    "objective": "$\\min \\; op$ (or equivalently maximize reward $R = 200 - op \\times 10^{-7}$ for solved episodes)",
+    "constraints": [
+      "The Boolean formula in CNF must be satisfied: $\\bigwedge_{j=1}^{m} C_j$, where each clause $C_j$ is a disjunction of literals.",
+      "For each clause $C_j$, let $P_j$ be the set of variables appearing positively and $N_j$ be the set appearing negatively. The clause is satisfied if $\\sum_{i \\in P_j} x_i + \\sum_{i \\in N_j} (1 - x_i) \\ge 1$, where $x_i \\in \\{0,1\\}$.",
+      "The solver's state (e.g., learned clauses, LBD scores, trail size) evolves according to CDCL search and unit propagation rules.",
+      "Episode termination: solved if a satisfying assignment is found or unsatisfiability is proven; aborted if $op > 10^9$."
+    ],
+    "variables": [
+      "$x_i \\in \\{0,1\\}$: Boolean assignment to variable $i$.",
+      "$op$: total number of logical operations (clause accesses during unit propagation).",
+      "$\\text{LBD threshold} \\in \\mathbb{Z}^+$: action determining which learned clauses to delete (clauses with LBD $> \\text{threshold}$ are deleted)."
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned} \\text{Given:} & \\quad \\text{CNF formula } F = \\bigwedge_{j=1}^{m} C_j \\text{ with variables } x_1, \\dots, x_n \\\\ \\text{Find:} & \\quad \\text{Assignment } x_i \\in \\{0,1\\} \\text{ satisfying } F \\\\ \\text{Minimize:} & \\quad op \\quad \\text{(logical operations)} \\\\ \\text{Subject to:} & \\quad \\sum_{i \\in P_j} x_i + \\sum_{i \\in N_j} (1 - x_i) \\ge 1, \\quad \\forall j=1,\\dots,m \\\\ & \\quad \\text{Dynamic clause set updated via CDCL with learned clause deletion at garbage collection steps} \\\\ & \\quad \\text{Deletion policy: delete learned clauses with LBD score > threshold} \\\\ & \\quad \\text{Episode ends when solved or } op > 10^9 \\end{aligned}$$",
+  "algorithm_description": "Reinforcement Learning (policy gradient) is used to train a neural network policy that maps solver state features (ratio of learned/original clauses, LBD histogram, moving averages of trail size and decision level) to an LBD threshold action. This threshold determines which learned clauses to delete during garbage collection in the Glucose CDCL SAT solver, aiming to minimize logical operations (a surrogate for runtime)."
+}

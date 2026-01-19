@@ -1,0 +1,48 @@
+{
+  "paper_id": "Learning_to_CROSS_exchange_to_solve_min-max_vehicle_routing_",
+  "title": "LEARNING TO CROSS EXCHANGE TO SOLVE MIN-MAX VEHICLE ROUTING PROBLEMS",
+  "abstract": "CROSS exchange (CE), a meta-heuristic that solves various vehicle routing problems (VRPs), improves the solutions of VRPs by swapping the sub-tours of the vehicles. Inspired by CE, we propose Neuro CE (NCE), a fundamental operator of *learned* meta-heuristic, to solve various min-max VRPs while overcoming the limitations of CE, i.e., the expensive $\\mathcal{O}(n^4)$ search cost. NCE employs graph neural network to predict the cost-decrements (i.e., results of CE searches) and utilizes the predicted cost-decrements to guide the selection of sub-tours for swapping, while reducing the search cost to $\\mathcal{O}(n^2)$. As the learning objective of NCE is to predict the cost-decrement, the training can be simply done in a supervised fashion, whose training samples can be easily collected. Despite the simplicity of NCE, numerical results show that the NCE trained with min-max flexible multi-depot VRP (min-max FMDVRP) outperforms the meta-heuristic baselines. More importantly, it significantly outperforms the neural baselines when solving distinctive special cases of min-max FMDVRP (e.g., min-max MDVRP, min-max mTSP, min-max CVRP) without additional training.",
+  "problem_description_natural": "The paper addresses min-max variants of the Vehicle Routing Problem (VRP), where the objective is to minimize the maximum route cost (i.e., the makespan or longest tour length) among all vehicles, rather than minimizing the total sum of route costs. This formulation is particularly relevant for time-critical applications like vaccine or grocery delivery, where balancing workload across vehicles is essential. The primary problem studied is the min-max Flexible Multi-Depot VRP (min-max FMDVRP), which allows multiple vehicles starting from multiple depots, with the flexibility that any vehicle can return to any depot. Special cases include min-max Multi-Depot VRP (MDVRP), min-max mTSP, and min-max CVRP.",
+  "problem_type": "Unknown",
+  "datasets": [
+    "min-max FMDVRP",
+    "min-max MDVRP",
+    "min-max mTSP",
+    "min-max CVRP",
+    "mTSPLib",
+    "CVRPlib"
+  ],
+  "performance_metrics": [
+    "Cost",
+    "Gap(%)",
+    "Time(sec.)",
+    "Average makespan"
+  ],
+  "lp_model": {
+    "objective": "$\\min Q$",
+    "constraints": [
+      "$\\sum_{i \\in V} \\sum_{j \\in V} d_{ij} x_{ijk} \\leq Q, \\quad \\forall k \\in K : i \\neq j$",
+      "$\\sum_{j \\in V, j \\neq i} \\sum_{k \\in K} x_{ijk} = 1, \\quad \\forall i \\in V \\setminus S$",
+      "$\\sum_{i \\in V, j \\neq i} \\sum_{k \\in K} x_{ijk} = 1, \\quad \\forall j \\in V \\setminus S$",
+      "$\\sum_{i \\in V} x_{ijk} - \\sum_{h \\in V} x_{jhk} = 0, \\quad \\forall j \\in V \\setminus S, \\forall k \\in K$",
+      "$u_{ik} - u_{jk} + |V| x_{ijk} \\leq |V| - 1, \\quad \\forall k \\in K, j \\in V \\setminus S : i \\neq j$",
+      "$0 \\leq u_{ik} \\leq |V| - 1, \\quad \\forall k \\in K, i \\in V \\setminus S$",
+      "$x_{ijk} \\in \\{0, 1\\}, \\quad \\forall k \\in K, \\forall i, j \\in V$",
+      "$u_{ik} \\in \\mathbb{Z}, \\quad \\forall k \\in K, i \\in V$",
+      "$\\sum_{j \\in V \\setminus S} x_{s_k jk} = 1, \\quad \\forall k \\in K$",
+      "$\\sum_{j \\in V \\setminus S} x_{ijk} = 0, \\quad \\forall k \\in K, \\forall i \\in S \\setminus s_k$",
+      "$\\sum_{j \\in V \\setminus S} x_{ijk} \\leq 1, \\quad \\forall k \\in K_i, \\forall i \\in S_1$",
+      "$\\sum_{i \\in V \\setminus S} x_{ijk} \\leq 1, \\quad \\forall k \\in K_j, \\forall j \\in S_2$",
+      "$\\sum_{j \\in V \\setminus S} x_{ijk} = 0, \\quad \\forall k \\in K, \\forall i \\in S_2$",
+      "$\\sum_{j \\in V \\setminus S} x_{ijk} = 0, \\quad \\forall k \\in K, \\forall i \\in S_1$",
+      "$\\sum_{i \\in S_1} \\sum_{j \\in V \\setminus S} x_{ijk}$ (incomplete, as per provided text)"
+    ],
+    "variables": [
+      "$Q$: continuous variable representing the makespan (maximum traveling distance among vehicles)",
+      "$x_{ijk} \\in \\{0,1\\}$: binary decision variable indicating if edge $(i,j)$ is traversed by vehicle $k$",
+      "$u_{ik} \\in \\mathbb{Z}$: integer variable for subtour elimination constraints"
+    ]
+  },
+  "raw_latex_model": "$$\\begin{aligned}& \\text{minimize} & & Q \\\\& \\text{subject to.} & & \\sum_{i \\in V} \\sum_{j \\in V} d_{ij} x_{ijk} \\leq Q, & \\forall k \\in K : i \\neq j, \\quad & \\text{(A.22)} \\\\& & & \\sum_{j \\in V, j \\neq i} \\sum_{k \\in K} x_{ijk} = 1, & \\forall i \\in V \\setminus S \\quad & \\text{(A.23)} \\\\& & & \\sum_{i \\in V, j \\neq i} \\sum_{k \\in K} x_{ijk} = 1, & \\forall j \\in V \\setminus S \\quad & \\text{(A.24)} \\\\& & & \\sum_{i \\in V} x_{ijk} - \\sum_{h \\in V} x_{jhk} = 0, & \\forall j \\in V \\setminus S, \\forall k \\in K \\quad & \\text{(A.25)} \\\\& & & u_{ik} - u_{jk} + |V| x_{ijk} \\leq |V| - 1, & \\forall k \\in K, j \\in V \\setminus S : i \\neq j, \\quad & \\text{(A.26)} \\\\& & & 0 \\leq u_{ik} \\leq |V| - 1, & \\forall k \\in K, i \\in V \\setminus S \\quad & \\text{(A.27)} \\\\& & & x_{ijk} \\in \\{0, 1\\}, & \\forall k \\in K, \\forall i, j \\in V, \\quad & \\text{(A.28)} \\\\& & & u_{ik} \\in \\mathbb{Z}, & \\forall k \\in K, i \\in V \\quad & \\text{(A.29)} \\\\& & & \\sum_{j \\in V \\setminus S} x_{s_k jk} = 1, & \\forall k \\in K \\quad & \\text{(A.30)} \\\\& & & \\sum_{j \\in V \\setminus S} x_{ijk} = 0, & \\forall k \\in K, \\forall i \\in S \\setminus s_k \\quad & \\text{(A.31)} \\\\& & & \\sum_{j \\in V \\setminus S} x_{ijk} \\leq 1, & \\forall k \\in K_i, \\forall i \\in S_1 \\quad & \\text{(A.32)} \\\\& & & \\sum_{i \\in V \\setminus S} x_{ijk} \\leq 1, & \\forall k \\in K_j, \\forall j \\in S_2 \\quad & \\text{(A.33)} \\\\& & & \\sum_{j \\in V \\setminus S} x_{ijk} = 0, & \\forall k \\in K, \\forall i \\in S_2 \\quad & \\text{(A.34)} \\\\& & & \\sum_{j \\in V \\setminus S} x_{ijk} = 0, & \\forall k \\in K, \\forall i \\in S_1 \\quad & \\text{(A.35)} \\\\& & & \\sum_{i \\in S_1} \\sum_{j \\in V \\setminus S} x_{ijk} \\end{aligned}$$",
+  "algorithm_description": "Neuro CE (NCE) is a learned meta-heuristic operator that enhances the classical CROSS exchange (CE) by using a graph neural network to predict cost decrements for sub-tour swaps. It guides the selection of promising starting nodes for swapping, reducing the search complexity from O(n^4) to O(n^2), and is trained in a supervised manner on cost-decrement data from min-max flexible multi-depot VRP instances."
+}
